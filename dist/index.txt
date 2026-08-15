@@ -1,5 +1,5 @@
 # After Effects 特效／外掛索引（繁體中文）
-# 共 2733 筆　格式：名稱｜來源｜型態｜分類｜說明｜官方連結
+# 共 2741 筆　格式：名稱｜來源｜型態｜分類｜說明｜官方連結
 # 完整資料（含中英搜尋標籤、外觀描述）：dist/all.jsonl
 # 線上搜尋：https://xup61069.github.io/ae-effects-db/
 Deep Glow 2｜aescripts｜plugin｜glow｜從高光產生自然的指數衰減電影級輝光；第二代加入影像式輝光、RGB 半徑、鏡頭污漬紋理、多色染色與電影色調映射。｜https://aescripts.com/deep-glow/
@@ -989,6 +989,14 @@ Kashida Pro｜aescripts｜plugin｜text｜在 After Effects 的阿拉伯文、�
 Voxel Sorter Pro｜aescripts｜plugin｜3d｜把 After Effects 影片像素轉成可傾斜、打光與排序的三維體素世界，Pro 版再提供 AI 深度生成、景深與動態模糊，適合立體故障、像素雕塑與數位風格效果。｜https://aescripts.com/voxel-sorter-pro/
 IconDock｜aescripts｜script｜workflow｜在 After Effects 面板內搜尋數十萬個圖示、調整顏色後以 PNG、SVG 或 Shape Layer 直接匯入專案，適合 UI 動畫、資訊圖形與解說影片製作。｜https://aescripts.com/icondock/
 GrabDrop｜aescripts｜script｜workflow｜在 After Effects 直接貼上影片、音訊或字幕 URL 並下載匯入專案，支援音訊抽取、片段範圍、字幕、播放清單、格式轉換與 CSV／TSV 批次下載。｜https://aescripts.com/grabdrop/
+CorridorKey by blace.ai｜aescripts｜plugin｜keying｜以本機 AI 模型一鍵建立綠幕透明遮罩並修復透明像素、細節與色溢，適合人物去背與高品質合成。｜https://aescripts.com/corridorkey-by-blace-ai/
+Grid Composer｜aescripts｜script｜workflow｜以視覺化拖放介面建立自訂、隨機或分割網格，並輸出形狀圖層、遮罩、合成與 Alpha Matte，適合照片牆、作品集與社群版型動畫。｜https://aescripts.com/grid-composer/
+CRTX Lite｜aescripts｜plugin｜stylize｜以簡化的預設導向控制快速模擬 CRT 掃描線、遮罩、泛光、類比噪波與訊號不穩，適合復古電視、街機與故障畫面風格。｜https://aescripts.com/crtx-lite/
+Easify 3｜aescripts｜script｜animation｜在 AE 直接套用、複製與貼上 Bézier 或數學緩動曲線並管理預設，適合快速調整關鍵影格的動畫節奏與彈跳效果。｜https://aescripts.com/easify/
+Colume｜aescripts｜plugin｜color｜依 AE 燈光的位置、強度與顏色在三維空間生成可受攝影機影響的漸層，適合動態光場、背景與抽象色彩動畫。｜https://aescripts.com/colume/
+Astleyizer｜aescripts｜plugin｜stylize｜以免費人臉轉換外掛把影片中的人物套成 Rick Astley 風格，適合迷因、娛樂短片與創意角色替換。｜https://aescripts.com/astleyizer/
+Fractal Volume｜aescripts｜plugin｜3d｜在 AE 中以 GPU 生成會回應攝影機與燈光的真三維分形噪波，適合製作雲霧、星場、體積紋理與飛越動畫。｜https://aescripts.com/fractal-volume/
+Dither Decay｜aescripts｜script｜stylize｜用多種抖色演算法與 11 組色盤把影片轉成復古遊戲機般的顆粒像素質感，適合低位元美術、類比降質與懷舊畫面。｜https://aescripts.com/dither-decay/
 Japanese-effect-search｜BOOTH｜script｜workflow｜以日文、英文、平假名與片假名混合搜尋並直接套用 AE 效果、預設或執行腳本、擴充功能與常用命令，另含收藏、連續套用與隱藏舊效果選項，適合日文介面和輸入法工作流程。｜https://booth.pm/ja/items/7695646
 Layer Chicken｜BOOTH｜script｜workflow｜替已匯入 AE 的分層 Photoshop／Illustrator 文件找回後續在原檔新增的圖層，免去重新匯入整份 PSD／AI 再刪除多餘內容，適合設計稿反覆改版與補圖層的動態製作。｜https://booth.pm/ja/items/2728552
 SHIG Project Starter｜BOOTH｜script｜workflow｜依專案名、解析度、FPS、初始片長與色彩深度建立 MV 製作資料夾及 00_MAIN／00_RENDER 合成，並可把兩個合成、工作區和主合成圖層同步延長到 WAV 音樂長度，適合歌曲 MV 開案與統一專案結構。｜https://booth.pm/ja/items/8625638
