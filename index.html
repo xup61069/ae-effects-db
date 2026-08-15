@@ -259,7 +259,7 @@
 <script src="i18n.js?v=2026-08-14-1"></script>
 <script>
 const FILES = ["red-giant","universe","sapphire","continuum","builtin-ae","aescripts","third-party","booth","gumroad","installed","recipes"];
-const ASSET_VERSION = "2026-08-15-48";
+const ASSET_VERSION = "2026-08-16-3";
 let LANG=(()=>{const value=new URL(location.href).searchParams.get("lang");return ["en","ja"].includes(value)?value:"zh";})();
 const localeData=()=>AE_I18N.locales[LANG]||AE_I18N.locales.zh;
 function t(key,vars={}){let value=localeData().messages[key]??AE_I18N.locales.zh.messages[key]??key;return String(value).replace(/\{(\w+)\}/g,(_,name)=>vars[name]??"");}

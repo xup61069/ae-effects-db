@@ -115,6 +115,7 @@ BOOTH 累計評估約 1,018 個商品 id（**收錄 199、略過 832**）；Gumr
 | 70 | 交叉掃描 `AfterEffect`、`After Effects` 標籤後的 BOOTH 工具候選 | **ツールアシストセット、SolidEffects、S_tools_EffectSearcher、Layer Switcher、Additional Transform、Cleanup!、Swap Two Selected Layers Source、Easy Fader、Nulltilities、Generate Puppet Rig、アンダーライン引きmuscle**；逐頁核實工具面板、Solid 建立、效果搜尋、來源交換、Null／Puppet Rig、透明度與文字工作流功能後加入 `booth.jsonl` | AE／Element 3D 預設、AEP／FFX 模板、HUD 素材、FX Console 設定檔與作品專案 | 11 筆新增、17 筆略過；最新總筆數 2,920 |
 | 71 | 交叉標籤批次官方頁核實的 AEP 作品候選 | —；確認 Motion Graphics 習作 #5–14、2 秒 Motion Graphics #1–18、Maru、Pre：あ與 Element3D 預設資料均為研究或作品 AEP，非獨立工具 | 15 筆均為 AEP 作品、練習檔或專案預設 | 0 筆新增、15 筆略過；最新總筆數 2,920 |
 | 72 | 合併 fork（Tangzih0913）的 `booth-next`（7 commits）與 `gumroad-next`（18 commits） | **自動ファイル作成スクリプト、ばらばらに出現・消滅、マスクパスの上に画像が動け！、フォルダにある素材のリネーム、レイヤーの状態覚えておいてscript、簡易版レイヤーリネーム、簡単なWiggle制御、Auto-tress and mask layer auto-detection、シェイプレイヤーのGroupを個別レイヤーに分離、Position and Scale Key ConfirmationScript、コンポ差し替え、3Dレイヤー選択→プリコンポしてメッシュワープ、JapyTextEngine、シェイプを横移動させるだけの仕組みセット、SmartImport、Salis_OpenFileLocation、8Bit PixCam、moji_marker_cut、TextAnimator、カットナンバー増分スクリプト、StairTrim**（21 筆 BOOTH）；**Project Info List Exporter、RAFIKIT Toolbox、LetterBlack Gen AI、VHS Emulator、Field Driver、UI Animator Pro、3D to 2D、MGFX v2.0、DIIS、EaseCurve、DoCharts、superSelect、Find and Replace in Expressions、PathPrep、Keyframe、Post Notes 2、Code Buddy**（17 筆 Gumroad） | 其餘 74 個 fork 分支（含 `fork/main`）均無獨有 commit 已吸收；`skipped.tsv` 以 fork 相對 merge-base 的 89 筆新略過記錄做聯集（未復活上游已汰除的舊記錄）；全部 38 筆新條目已補英／日翻譯與 look 翻譯 | 38 筆新增（BOOTH 21＋Gumroad 17）；最新總筆數 2,988 |
+| 73 | 合併 fork `gumroad-next` 後續 10 commits（同作者） | **Render Markers、Machine Vision、BeatFlow、Forma、PinRig、RigtRect、AE Linguine**；以官方 Gumroad 頁核對 Marker 批次輸出、影片分析 HUD、音訊節拍／語音裁切、OBJ 線框、Logo 構圖導引、雙控制器響應式矩形與 AE 介面語言切換工作流，7 筆均已含英／日翻譯與 look 翻譯 | 31 個新 slug（`fjsatt`、`dxdudn`、`wxzlwd`、`kcxxlg`、Hyperpix PSD 系列與 Ableton／VRChat／listicle 等）已寫入 `skipped.tsv`，附具體理由 | 7 筆新增；最新總筆數 2,995 |
 
 ## 英／日文翻譯批次進度（截至 2026-08-15）
 
@@ -132,14 +133,14 @@ BOOTH 累計評估約 1,018 個商品 id（**收錄 199、略過 832**）；Gumr
 | `booth.jsonl` | 380 | 380（103 個 look 全部翻譯） | ✅ 100% |
 | `installed.jsonl` | 40 | 40（本機安裝辨識工具全數） | ✅ 100% |
 | `recipes.jsonl` | 35 | 35（畫面感與效果堆疊配方全數） | ✅ 100% |
-| `gumroad.jsonl` | 22 | 22（5 個 look 全部翻譯） | ✅ 100% |
+| `gumroad.jsonl` | 29 | 29（10 個 look 全部翻譯） | ✅ 100% |
 
 方針：
 
 - 第一批先譯 `curation/popularity.json` 的 featured 46 筆（2026-08-15 完成並提交），第二批為 `builtin-ae` 全數（同日完成並提交），第三批為 `aescripts` 全數（同日完成並提交），第四批為 `third-party` 全數（同日完成並提交），第五批為 `sapphire` 全數（同日完成並提交），第六批為 `continuum` 全數（同日完成並提交），第七批為 `red-giant` 全數（同日完成並提交），第八批為 `universe` 全數（同日完成並提交），第九批為 `installed` 全數（同日完成並提交），第十批為 `recipes` 全數（同日完成並提交），第十一批為 `gumroad` 全數（同日完成並提交），第十二批為 `booth` 全數 359 筆（分六個批次注入，102 個 look 全部翻譯，同日完成並提交）。
 - 翻譯逐筆人工撰寫，不得以未審核的機器翻譯充數；譯文保留產品名、避免中國用語，日文以 AE 官方日文文件用語為準。
 - 每批完成後依「完整驗證」跑一輪，重建 `dist/` 並遞增 `index.html` 的 `ASSET_VERSION`。
-- 全部 11 個資料檔的英／日翻譯均已完成（2,950 筆，102 筆 look 亦全數翻譯），不再有待翻譯來源。
+- 全部 11 個資料檔的英／日翻譯均已完成（2,995 筆，1,625 筆 look 亦全數翻譯），不再有待翻譯來源；後續 fork `gumroad-next` 新條目（Render Markers 等 7 筆）亦於合併時同步補齊英／日翻譯。
 
 ## 官方來源技巧
 

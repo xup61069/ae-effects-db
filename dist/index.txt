@@ -1,5 +1,5 @@
 # After Effects 特效／外掛索引（繁體中文）
-# 共 2988 筆　格式：名稱｜來源｜型態｜分類｜說明｜官方連結
+# 共 2995 筆　格式：名稱｜來源｜型態｜分類｜說明｜官方連結
 # 完整資料（含中英搜尋標籤、外觀描述）：dist/all.jsonl
 # 線上搜尋：https://xup61069.github.io/ae-effects-db/
 Deep Glow 2｜aescripts｜plugin｜glow｜從高光產生自然的指數衰減電影級輝光；第二代加入影像式輝光、RGB 半徑、鏡頭污漬紋理、多色染色與電影色調映射。｜https://aescripts.com/deep-glow/
@@ -2024,6 +2024,13 @@ PathPrep for After Effects｜Gumroad｜script｜workflow｜以可停駐 JSXBIN �
 Keyframe - AI image generator for After Effects｜Gumroad｜script｜workflow｜以 ScriptUI 面板從合成時間軸擷取單一畫格，交給 Replicate 的 Kontext、Nano Banana、Qwen Edit、Flux Fill 或 Seedream 模型做參考圖改圖與遮罩修補，再自動匯回並依序整理影像，適合建立影片風格定格、逐幀 VFX 概念稿與供 AI 影片工具使用的一致來源畫面。｜https://ericday.gumroad.com/l/keyframe
 Post Notes 2｜Gumroad｜script｜workflow｜以 ZXP 擴充在每個合成內建立富文字筆記與可勾選待辦，資料會嵌入 AEP 因而能隨專案交接、讓其他使用者繼續檢視與編輯，適合整理剪輯修改事項、客戶回饋與跨部門製作清單。｜https://ivoreemint.gumroad.com/l/postnotes
 Code Buddy (EZ After Effects Expressions)｜Gumroad｜script｜expression｜以可停駐 ScriptUI 面板保存、命名、編輯與套用個人常用 expressions，能從排序後的清單將程式套至目前屬性或一次清除所選屬性上的 expression，適合把反覆使用的控制器、動畫與版型程式整理成可長期取用的個人工具庫。｜https://motionbynick.gumroad.com/l/codebuddy
+Render Markers｜Gumroad｜script｜render｜讀取作用中合成的 Marker，將無時長標記自動加入 Render Queue 輸出為單張影格、將帶時長標記加入為完整影片片段，適合依審稿點、章節或交付區段一次建立多個精準算圖項目，而不必逐段重設 Work Area。｜https://leansaler.gumroad.com/l/rendermarkers
+Machine Vision｜Gumroad｜script｜mograph｜分析選取的影片圖層並自動生成含框選、節點、連線與資料標籤的機器視覺疊圖，可控制取樣密度、感度、節點形狀、顏色、混合模式及座標／角度／辨識分數等標示，適合製作科幻 HUD、運動分析、鑑識介面與產品資料視覺。｜https://theresonance.gumroad.com/l/machine-vision
+BeatFlow｜Gumroad｜script｜audio｜在 After Effects 中分析選取的音訊圖層：Music 模式偵測節拍並直接建立合成標記；Voice 模式可裁掉靜音段、選擇保留或移除間隙並建立片語標記，最後依音訊標記自動切割圖層，適合節奏剪輯、訪談精剪與旁白導向的動態設計。｜https://whatstudio.gumroad.com/l/ccetav
+Forma｜Gumroad｜plugin｜3d｜在 After Effects 以原生效果載入 OBJ 3D 模型並渲染抗鋸齒線框或面填充，可調整網格的位置、旋轉、縮放、透視／正交／等角投影與 Pivot；另能沿 XYZ 軸建立模型陣列、顯示頂點法線並控制背景與背面剔除，適合產品示意、技術圖、抽象網格與資料視覺。｜https://pinalabs.gumroad.com/l/forma
+PinRig｜Gumroad｜script｜rigging｜在 After Effects 為 Logo、字體與向量圖建立可控制的構圖 Rig，自動產生釘點、貝茲控制柄、選取範圍、邊界框、圓角、邊長、頂點座標與角度等視覺化導引，並可把多個釘點、量測與 Null 樣式儲存成完整工作流後重用，適合品牌識別、Logo build 與技術圖式動畫。｜https://whatstudio.gumroad.com/l/rvcux
+RigtRect｜Gumroad｜script｜rigging｜以兩個控制器建立原生 AE 運算式 Rig：RigtRect 會在兩點之間生成可動畫的 Shape Layer 矩形，RigtSource 將來源圖層拉伸於兩點間，RigtFill 則在同一 Rig 內保持內容比例並填滿範圍；支援錨點定位、修復斷裂 Rig 與選取式工作流，適合動態版面與可交付的 MOGRT。｜https://arnebreusing.gumroad.com/l/rigtrect
+AE Linguine｜Gumroad｜script｜utility｜以 ScriptUI 面板直接切換 After Effects 的英文、西班牙文與法文介面，透過 Debug Database 偏好設定處理而免手動改名系統資料夾，並提供跨電腦自動移轉的浮動授權，適合需跟隨外語教學或跨語言製作環境工作的剪輯與動態設計師。｜https://ihlo.gumroad.com/l/ae_linguine
 Topaz Video AI｜未驗證｜plugin｜restore｜AI影片修復增強引擎：把低解析素材放大到4K/8K、去噪點與壓縮塊、去交錯、光流補幀做慢動作/轉高幀率。老片翻新、手機素材救畫質的首選。｜https://www.topazlabs.com/topaz-video-ai
 Fast Camera Lens Blur｜未驗證｜plugin｜blur｜GPU加速的高品質鏡頭散景/景深模糊，可自訂光圈葉片形狀、邊緣高光溢出(bloom)與色差，散景比AE內建更真實。做淺景深、失焦背景。｜https://aescripts.com/fast-camera-lens-blur/
 Crate's Godrays｜未驗證｜plugin｜light｜免費：快速漂亮的體積光/放射光束，在畫面點一下設定發光點，調整光線長度、曝光、衰減與色差。從自然雲隙光到探照燈、全息光束都行。｜https://www.productioncrate.com/plugins/crates-easy-godrays
