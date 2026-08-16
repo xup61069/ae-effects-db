@@ -105,8 +105,12 @@ def quality_checks(rows: list[tuple[str, str, dict]]) -> tuple[list[str], list[s
 
     # 新條目必須附 released／updated（見 schema anyOf）；既有缺日期條目由
     # tools/backfill_dates.py 分批回補，回補完成前此檢查不進 strict。
+    # recipes.jsonl 是自建配方（無原廠頁可證日期），永久豁免，不算待辦。
     missing_dates = [
-        loc for _, loc, item in rows if not (item.get("released") or item.get("updated"))
+        loc
+        for path, loc, item in rows
+        if not (item.get("released") or item.get("updated"))
+        and os.path.basename(path) != "recipes.jsonl"
     ]
     if missing_dates:
         soft.append(f"{len(missing_dates)} 筆缺 released／updated（回補完成前不阻擋 strict）")
