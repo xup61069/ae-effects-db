@@ -179,6 +179,40 @@ test.describe("locale request ordering", () => {
     await expect(card.locator(".desc")).toHaveText(LOCALES.ja[FIRST.id][0]);
     await expect(card.locator(".desc")).not.toHaveText(LOCALES.en[FIRST.id][0]);
   });
+
+  test("a failed locale request preserves the active language and can be retried", async ({page}) => {
+    let failEnglish = true;
+    await page.route("**/dist/web/locales/en.json*", route => failEnglish ? route.abort("failed") : route.continue());
+    await ready(page);
+    await page.locator('[data-lang="en"]').click();
+    await expect(page.locator("#toast")).toContainText("無法載入語言資料");
+    await expect(page.locator("html")).toHaveAttribute("lang", "zh-Hant");
+    await expect(page.locator('[data-lang="zh"]')).toHaveAttribute("aria-pressed", "true");
+    await expect(page).not.toHaveURL(/lang=en/);
+
+    failEnglish = false;
+    await page.locator('[data-lang="en"]').click();
+    await expect(page.locator("html")).toHaveAttribute("lang", "en");
+    await expect(page.locator('[data-lang="en"]')).toHaveAttribute("aria-pressed", "true");
+    await expect(page).toHaveURL(/lang=en/);
+
+    await page.goBack();
+    await expect(page.locator("html")).toHaveAttribute("lang", "zh-Hant");
+    await page.route("**/dist/web/locales/ja.json*", route => route.abort("failed"));
+    await page.locator('[data-lang="ja"]').click();
+    await expect(page.locator("#toast")).toContainText("無法載入語言資料");
+    await expect(page.locator("html")).toHaveAttribute("lang", "zh-Hant");
+    await expect(page.locator('[data-lang="zh"]')).toHaveAttribute("aria-pressed", "true");
+  });
+
+  test("an unavailable locale in the initial URL falls back without breaking the app", async ({page}) => {
+    await page.route("**/dist/web/locales/en.json*", route => route.abort("failed"));
+    await ready(page, "/?lang=en");
+    await expect(page.locator("html")).toHaveAttribute("lang", "zh-Hant");
+    await expect(page.locator('[data-lang="zh"]')).toHaveAttribute("aria-pressed", "true");
+    await expect(page.locator("#toast")).toContainText("無法載入語言資料");
+    await expect(page).not.toHaveURL(/lang=en/);
+  });
 });
 
 test("390px filter drawer has 44px controls and no serious axe violations", async ({page}) => {
