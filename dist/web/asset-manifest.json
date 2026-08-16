@@ -1,5 +1,5 @@
 {
-  "version": "eb13fc301f069150",
+  "version": "adff83e102842dcc",
   "data": [
     "dist/web/catalog.json",
     "dist/web/locales/zh.json",
@@ -26,7 +26,7 @@
     "curation/search-aliases.ja.json"
   ],
   "integrity": {
-    "dist/web/catalog.json": "bb42091b41f0269c07d92db324d8767d4530f57a2081c5d30e0ecb36bb8fc609",
+    "dist/web/catalog.json": "e405c009dbdcab2f3788dc0711496427c8f1af8a9c89342065fefb3c96459f66",
     "dist/web/locales/zh.json": "eb07e7593b74d1e1ca957028ea166c236d121cb953dfcfa9f2302c5e3a315da2",
     "dist/web/locales/en.json": "bd7066c92ab105d3a67f704ab797ae0408617bed6bde56892910db510c3858fe",
     "dist/web/locales/ja.json": "8cc7e70973f8cc9a4432c8b9a78b9fd07821f0e780b61ed7e82a80c283e0cacf",
@@ -42,7 +42,7 @@
     "assets/pwa.js": "a7c4ba6e74f142c0af2e335ebfcf3b4fc67f25cfb42193cba848ef3d71fb5748",
     "assets/icon.svg": "899c02ea2c31bf1151dcd3cf598926e9eeadfa33f3e9b1cbf32683e960bd598e",
     "manifest.webmanifest": "d444e66a092aafe6985bd8b67e15296707c45cbb50b95963b1dc38ed52014102",
-    "service-worker.js": "159dba8f3516f02f0e0277f5858f3d2e85c6135f295840a842eebe5011c803a5",
+    "service-worker.js": "3498f5c6c9eaf129826696a4643b03979be6634de2073dba883e4573b64b83b4",
     "curation/popularity.json": "e0f24e6c2871aa360712425ee9d7e0420bcaae67b24bdca50f568906b37e4f56",
     "curation/localization.json": "07b677be774124ca663f2613bd932654de790441235f6a98dc7ae2820ef79062",
     "curation/search.json": "ce8c74d113836f1aeff0535891382ff51c3a376c8aeecda50d63a460ace7e7d8",

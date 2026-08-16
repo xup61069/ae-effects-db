@@ -21,6 +21,8 @@
     helpx     Adobe helpx 效果頁的 lastModifiedDate meta（頁面「Last updated on」）；
               填 updated＝頁面最後更新時間、不填 released（頁面出版日≠效果發行日），
               date_url＝效果頁本身。
+    page      其他原廠站逐網域 pattern；僅填頁面級 updated（或 goodboy 的產品級 released），
+               date_url＝原廠頁本身。所有網域都先人工驗證過日期語意，不掃泛用字樣。
     gumroad   Gumroad 商品頁（預留，尚未實作）
 """
 
@@ -57,12 +59,44 @@ DATE_RE = re.compile(r"(\d{4})/(\d{1,2})/(\d{1,2})")
 AE_VERSION_RE = re.compile(
     r'<p class="version-history-date inline">\s*([A-Za-z]{3} \d{1,2}, \d{4})\s*</p>'
 )
+AE_UPDATED_RE = re.compile(
+    r'class="text-base my-4">\s*Updated:\s*([A-Za-z]{3} \d{1,2}, \d{4})'
+)
 AE_DATE_FMT = "%b %d, %Y"
 GITHUB_RE = re.compile(r"github\.com/([^/?#]+)/([^/?#]+)")
 GITHUB_API = "https://api.github.com/repos/{owner}/{repo}/releases?per_page=100"
 HELPX_LASTMOD_RE = re.compile(r'<meta name="lastModifiedDate" content="(\d{4}-\d{2}-\d{2})')
 HELPX_PUBLISH_RE = re.compile(r'<meta name="publishDate" content="(\d{4}-\d{2}-\d{2})')
 HELPX_HEAD_BYTES = 400_000
+
+# page 來源：逐網域定義可取的日期欄位與 pattern。
+# 每組 (欄位, 正則, strptime 格式)；日期語意都經人工抽查原廠頁確認。
+# revisionfx     WordPress article:modified_time＝頁面修改時間（頁面級）
+# www.rowbyte.com 頁面「Last Updated: <MMM D YYYY>」（產品最後更新；部分頁面沒有）
+# www.dehancer.com Prismic last_publication_date＝頁面最後發布時間（頁面級）
+# www.live2d.com  WordPress article:published_time＝下載頁發布時間（頁面級）
+# motionbro.com   變更紀錄「Version x.y.z – <MMM D, YYYY>」最新版本日期
+# goodboy.ninja   內嵌變更紀錄 releaseDate＝初版釋出日（產品級）
+PAGE_SOURCE_CONFIGS: dict[str, list[tuple[str, str, str]]] = {
+    "revisionfx.com": [
+        ("updated", r'<meta property="article:modified_time" content="(\d{4}-\d{2}-\d{2})', "%Y-%m-%d"),
+    ],
+    "www.rowbyte.com": [
+        ("updated", r"Last Updated:\s*([A-Za-z]{3} \d{1,2} \d{4})", "%b %d %Y"),
+    ],
+    "www.dehancer.com": [
+        ("updated", r'last_publication_date:"(\d{4}-\d{2}-\d{2})', "%Y-%m-%d"),
+    ],
+    "www.live2d.com": [
+        ("updated", r'<meta property="article:published_time" content="(\d{4}-\d{2}-\d{2})', "%Y-%m-%d"),
+    ],
+    "motionbro.com": [
+        ("updated", r"<h5>Version[^<]*?(?:&#8211;|&ndash;|–)\s*([A-Za-z]{3} \d{1,2}, \d{4})", "%b %d, %Y"),
+    ],
+    "goodboy.ninja": [
+        ("released", r"releaseDate:\s*([A-Za-z]{3} \d{1,2}, \d{4})", "%b %d, %Y"),
+    ],
+}
 
 
 def fetch(url: str) -> str:
@@ -126,7 +160,11 @@ def booth_dates(item_id: str) -> dict[str, str]:
 
 
 def aescripts_dates(html: str) -> dict[str, str] | None:
-    """aescripts：版本歷史區塊的日期。updated＝最新版本日期、released＝最早可見版本日期。"""
+    """aescripts：版本歷史區塊的日期。updated＝最新版本日期、released＝最早可見版本日期。
+
+    新版版面沒有版本列表，只有產品頁的「Updated: <MMM D, YYYY>」（產品最後更新），
+    此時只填 updated、不填 released。
+    """
     import datetime as dt
 
     dates = []
@@ -135,9 +173,16 @@ def aescripts_dates(html: str) -> dict[str, str] | None:
             dates.append(dt.datetime.strptime(month_name, AE_DATE_FMT).date().isoformat())
         except ValueError:
             continue
-    if not dates:
+    if dates:
+        return {"released": min(dates), "updated": max(dates)}
+    match = AE_UPDATED_RE.search(html)
+    if not match:
         return None
-    return {"released": min(dates), "updated": max(dates)}
+    try:
+        updated = dt.datetime.strptime(match.group(1), AE_DATE_FMT).date().isoformat()
+    except ValueError:
+        return None
+    return {"updated": updated}
 
 
 def helpx_dates(url: str) -> dict[str, str] | None:
@@ -162,6 +207,30 @@ def helpx_dates(url: str) -> dict[str, str] | None:
     if not match:
         return None
     return {"updated": match.group(1)}
+
+
+def page_dates(url: str) -> dict[str, str] | None:
+    """page：逐網域 pattern 的頁面級日期（見 PAGE_SOURCE_CONFIGS）。
+
+    只處理白名單網域，避免抓到版權年份、build 戳記等無關日期。
+    """
+    import datetime as dt
+
+    host = urllib.parse.urlparse(url).hostname or ""
+    config = PAGE_SOURCE_CONFIGS.get(host)
+    if not config:
+        return None
+    html = fetch(url)
+    result: dict[str, str] = {}
+    for field, pattern, fmt in config:
+        match = re.search(pattern, html)
+        if not match:
+            continue
+        try:
+            result[field] = dt.datetime.strptime(match.group(1), fmt).date().isoformat()
+        except ValueError:
+            continue
+    return result or None
 
 
 def github_dates(url: str) -> dict[str, str] | None:
@@ -221,13 +290,17 @@ def collect_entries(source: str, file_filter: str | None) -> list[tuple[str, int
                 if source == "helpx" and os.path.basename(path) == "recipes.jsonl":
                     # 配方是自訂效果堆疊，日期應隨配方本身，不能用參考頁的日期
                     continue
+                if source == "page":
+                    host = urllib.parse.urlparse(url).hostname or ""
+                    if host not in PAGE_SOURCE_CONFIGS:
+                        continue
                 out.append((path, line_no, item, url))
     return out
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--source", choices=["booth", "aescripts", "github", "helpx", "gumroad"], default="booth")
+    parser.add_argument("--source", choices=["booth", "aescripts", "github", "helpx", "page", "gumroad"], default="booth")
     parser.add_argument("--limit", type=int, default=0, help="最多處理幾筆（0＝全部）")
     parser.add_argument("--file", help="只處理指定資料檔（例：booth）")
     parser.add_argument("--dry", action="store_true", help="只預覽，不寫入")
@@ -238,15 +311,18 @@ def main() -> None:
         label = lambda item: f"發行 {item['released']}" + (f"・更新 {item['updated']}" if item.get("updated") else "")
     elif args.source == "aescripts":
         parse = lambda url: aescripts_dates(fetch(url))
-        label = lambda item: f"發行 {item['released']}・更新 {item['updated']}"
+        label = lambda item: f"更新 {item['updated']}" if item.get("updated") and not item.get("released") else f"發行 {item['released']}・更新 {item['updated']}"
     elif args.source == "github":
         parse = github_dates
         label = lambda item: f"發行 {item['released']}・更新 {item['updated']}"
     elif args.source == "helpx":
         parse = helpx_dates
         label = lambda item: f"更新 {item['updated']}"
+    elif args.source == "page":
+        parse = page_dates
+        label = lambda item: f"更新 {item['updated']}" if item.get("updated") else f"發行 {item['released']}"
     else:
-        print(f"--source {args.source} 尚未實作；目前只有 booth、aescripts")
+        print(f"--source {args.source} 尚未實作；目前只有 booth、aescripts、github、helpx、page")
         raise SystemExit(1)
 
     entries = collect_entries(args.source, args.file)
