@@ -1,4 +1,5 @@
 import gzip
+import hashlib
 import json
 import re
 import subprocess
@@ -38,10 +39,13 @@ class StableIdAndAssetTests(unittest.TestCase):
         self.assertRegex(manifest["version"], r"^[0-9a-f]{16}$")
         worker = (ROOT / "service-worker.js").read_text(encoding="utf-8")
         self.assertIn(f'const BUILD_VERSION = "{manifest["version"]}";', worker)
+        expected_assets = set(manifest["data"] + manifest["shell"])
+        self.assertEqual(expected_assets, set(manifest["integrity"]))
         for relative in [*manifest["data"], *manifest["shell"]]:
-            if relative == "./":
-                continue
-            self.assertTrue((ROOT / relative).is_file(), relative)
+            path = ROOT / ("index.html" if relative == "./" else relative)
+            self.assertTrue(path.is_file(), relative)
+            normalized = path.read_bytes().replace(b"\r\n", b"\n")
+            self.assertEqual(hashlib.sha256(normalized).hexdigest(), manifest["integrity"][relative], relative)
 
 
 class CrossRuntimeSearchTests(unittest.TestCase):

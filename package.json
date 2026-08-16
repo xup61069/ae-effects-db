@@ -2,7 +2,7 @@
   "name": "ae-effects-db",
   "private": true,
   "scripts": {
-    "test:web": "node tests/check_web_js.js",
+    "test:web": "node tests/check_web_js.js && node tests/check_service_worker.js",
     "test:e2e": "playwright test"
   },
   "devDependencies": {

@@ -23,6 +23,9 @@ jobs:
       - uses: actions/setup-python@v7.0.0
         with:
           python-version: "3.12"
+      - uses: actions/setup-node@v7.0.0
+        with:
+          node-version: "22"
       - name: Validate data/*.jsonl
         run: python validate.py --strict
       - name: Audit curated keys and duplicate products
@@ -30,7 +33,7 @@ jobs:
       - name: Run search and consistency tests
         run: python -m unittest discover -s tests -v
       - name: Validate web JavaScript and locales
-        run: node --check tools/build_localization.js && node tests/check_web_js.js
+        run: node --check tools/build_localization.js && npm run test:web
       - name: Verify generated indexes are current
         run: python tools/build_index.py && git diff --exit-code -- dist/
       - name: Compile Python tools

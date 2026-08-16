@@ -186,6 +186,11 @@ def file_digest(paths: list[str]) -> str:
     return digest.hexdigest()[:16]
 
 
+def asset_digest(path: str) -> str:
+    with open(path, "rb") as handle:
+        return hashlib.sha256(handle.read().replace(b"\r\n", b"\n")).hexdigest()
+
+
 def stamp_service_worker(version: str) -> None:
     path = os.path.join(ROOT, "service-worker.js")
     with open(path, "r", encoding="utf-8") as handle:
@@ -254,6 +259,7 @@ def main() -> None:
             handle.write(f"{row['name']}｜{SRC_LABEL.get(row['_src'], row['_src'])}｜{row.get('kind','')}｜{row.get('cat','')}｜{row.get('desc','')}｜{row.get('url','')}\n")
 
     data_paths = [catalog_path, *locale_paths]
+    data_assets = ["dist/web/catalog.json", *[f"dist/web/locales/{lang}.json" for lang in LOCALE_FIELDS]]
     shell = [
         "./", "index.html", "i18n.js", "assets/styles.css", "assets/app.js", "assets/search.js",
         "assets/state.js", "assets/favorites.js", "assets/render.js", "assets/pwa.js", "assets/icon.svg",
@@ -263,10 +269,15 @@ def main() -> None:
     shell_paths = [os.path.join(ROOT, value) for value in shell if value != "./"]
     version = file_digest([*data_paths, *shell_paths])
     stamp_service_worker(version)
+    integrity = {
+        relative: asset_digest(os.path.join(ROOT, "index.html" if relative == "./" else relative))
+        for relative in [*data_assets, *shell]
+    }
     manifest = {
         "version": version,
-        "data": ["dist/web/catalog.json", *[f"dist/web/locales/{lang}.json" for lang in LOCALE_FIELDS]],
+        "data": data_assets,
         "shell": shell,
+        "integrity": integrity,
     }
     write_json(os.path.join(WEB_DIST, "asset-manifest.json"), manifest, pretty=True)
 

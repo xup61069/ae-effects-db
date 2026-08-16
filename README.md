@@ -68,7 +68,7 @@ python -m http.server 8000
 - [`dist/all.jsonl`](dist/all.jsonl)：完整合併資料，保留 tags、look、variants、日期等欄位。
 - [`dist/web-index.json`](dist/web-index.json)：已預建搜尋字串與熱門順位的網頁索引。
 - [`dist/web/catalog.json`](dist/web/catalog.json)：網站使用的精簡共用 catalog；說明按 `zh/en/ja` 分片載入。
-- [`dist/web/asset-manifest.json`](dist/web/asset-manifest.json)：PWA 使用的原子化資產版本與快取清單。
+- [`dist/web/asset-manifest.json`](dist/web/asset-manifest.json)：PWA 使用的原子化資產版本、快取清單與逐檔 SHA-256；Service Worker 驗證內容後才啟用離線版本。
 - [`schema/effect.schema.json`](schema/effect.schema.json)：單筆 JSON 的機器可讀規格。
 
 `dist/` 由 `python tools/build_index.py` 產生，不是第二份資料來源；真正的來源是 `data/*.jsonl`。
