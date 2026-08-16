@@ -35,9 +35,17 @@ export function resolveKey(value, byId, legacyMap) {
   return legacyMap.get(value) || null;
 }
 
-export function restoreResolvedState(raw, byId, legacyMap) {
+const SORT_MODES = new Set(["popular", "relevance", "name", "category", "source", "latest"]);
+
+const knownValues = (values, allowed) => allowed instanceof Set ? new Set([...values].filter(value => allowed.has(value))) : new Set(values);
+
+export function restoreResolvedState(raw, byId, legacyMap, allowed = {}) {
   return {
     ...raw,
+    categories:knownValues(raw.categories, allowed.categories),
+    sources:knownValues(raw.sources, allowed.sources),
+    kinds:knownValues(raw.kinds, allowed.kinds),
+    sort:SORT_MODES.has(raw.sort) ? raw.sort : "popular",
     compare:new Set(raw.compare.map(value => resolveKey(value, byId, legacyMap)).filter(Boolean).slice(0, 4)),
     item:resolveKey(raw.item, byId, legacyMap) || "",
   };

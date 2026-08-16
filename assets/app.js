@@ -36,6 +36,7 @@ let POPULARITY = {featured:[], source_weights:{}, maximum_points:{featured:56, s
 let LOCALIZATION = {localized_urls:{}, official_categories:{}, official_category_rules:[], official_effect_categories:{}};
 let POPULAR_INDEX = new Map();
 let filters = {};
+let allowedState = {};
 let visualUrl = null;
 let visualLoadToken = 0;
 const visualSelection = new Set();
@@ -145,7 +146,12 @@ async function boot() {
   configureSearch(baseSearchResult.value || {}, jaSearchResult.value || {});
   BY_ID = new Map(DATA.map(item => [item.id, item]));
   LEGACY = new Map(DATA.map(item => [item._legacy, item.id]));
-  state = restoreResolvedState(rawState, BY_ID, LEGACY);
+  allowedState = {
+    categories:new Set(DATA.map(item => item.cat).filter(Boolean)),
+    sources:new Set(DATA.map(item => item._src).filter(Boolean)),
+    kinds:new Set(DATA.map(item => item.kind).filter(Boolean)),
+  };
+  state = restoreResolvedState(rawState, BY_ID, LEGACY, allowedState);
   try {
     await loadLocale(state.lang, manifest.version);
   } catch (error) {
@@ -280,6 +286,15 @@ function syncCompareTray() {
   document.getElementById("compareTrayText").textContent = t("compareTray", {count:state.compare.size}); document.getElementById("compareOpen").disabled = state.compare.size < 2;
 }
 function commitState() { writeUrlState(state, {push:true}); }
+function adoptHistoryState(next) {
+  for (const key of ["categories", "sources", "kinds"]) {
+    const current = state[key];
+    current.clear();
+    for (const value of next[key]) current.add(value);
+    next[key] = current;
+  }
+  state = next;
+}
 function clearAll() { state.categories.clear(); state.sources.clear(); state.kinds.clear(); state.favoritesOnly = false; state.query = ""; commitState(); render(); }
 function closePanels() { document.querySelectorAll(".catpanel").forEach(panel => panel.hidden = true); document.querySelectorAll("[aria-expanded]").forEach(button => button.setAttribute("aria-expanded", "false")); hideSuggestions(); }
 
@@ -415,7 +430,7 @@ function bindEvents(version) {
   document.getElementById("aiBtn").addEventListener("click", () => document.getElementById("visualDialog").showModal());
   bindVisualFinder();
   document.addEventListener("click", delegatedClick); document.addEventListener("keydown", event => { if (event.key === "/" && !/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)) { event.preventDefault(); document.getElementById(matchMedia("(max-width:640px)").matches ? "mq" : "q").focus(); } else if (event.key === "Escape") closePanels(); });
-  window.addEventListener("popstate", () => { const restored = restoreResolvedState(readUrlState(), BY_ID, LEGACY); state = restored; const lang = state.lang; loadLocale(lang, version).then(applied => { if (!applied) return; applyLanguage(); appliedLang = lang; render(); if (state.item) openDetail(state.item, {write:false}); else closeDetail({write:false}); }).catch(error => { if (state.lang === lang) { state.lang = appliedLang; writeUrlState(state); showToast(t("loadLocaleError", {error:error.message})); } }); });
+  window.addEventListener("popstate", () => { const restored = restoreResolvedState(readUrlState(), BY_ID, LEGACY, allowedState); adoptHistoryState(restored); const lang = state.lang; loadLocale(lang, version).then(applied => { if (!applied) return; applyLanguage(); appliedLang = lang; render(); if (state.item) openDetail(state.item, {write:false}); else closeDetail({write:false}); }).catch(error => { if (state.lang === lang) { state.lang = appliedLang; writeUrlState(state); showToast(t("loadLocaleError", {error:error.message})); } }); });
 }
 
 function delegatedClick(event) {

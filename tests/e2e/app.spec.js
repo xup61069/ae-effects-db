@@ -154,6 +154,38 @@ test("legacy URLs and v1 favorites migrate to stable IDs", async ({page}) => {
   expect(storage.v2).toContain(FIRST.id);
 });
 
+test("stale URL filters and sort modes are canonicalized on load and popstate", async ({page}) => {
+  const params = new URLSearchParams({
+    q:FIRST.name,
+    cat:`${FIRST.cat},retired-category`,
+    src:`${FIRST._src},missing-source`,
+    kind:`${FIRST.kind},bogus-kind`,
+    sort:"unsupported-sort",
+    compare:JSON.stringify([FIRST.id, "missing-item"]),
+    item:"missing-item",
+  });
+  await ready(page, `/?${params}`);
+  await expect(page.locator(`[data-detail="${FIRST.id}"]`)).toBeVisible();
+  await expect(page.locator("#sort")).toHaveValue("popular");
+  await expect(page.locator("#activeFilters .a")).toHaveCount(3);
+  await expect.poll(() => page.evaluate(() => Object.fromEntries(new URL(location.href).searchParams))).toEqual({
+    q:FIRST.name, cat:FIRST.cat, src:FIRST._src, kind:FIRST.kind, compare:JSON.stringify([FIRST.id]),
+  });
+
+  await page.evaluate(() => history.pushState(null, "", "/?cat=missing-category&sort=unsupported-sort"));
+  await expect.poll(() => page.evaluate(() => location.search)).toContain("missing-category");
+  await page.goBack();
+  await expect.poll(() => page.evaluate(() => new URL(location.href).searchParams.get("q"))).toBe(FIRST.name);
+  await page.goForward();
+  await expect.poll(() => page.evaluate(() => location.search)).toBe("");
+  await expect(page.locator("#activeFilters .a")).toHaveCount(0);
+  await expect(page.locator("#sort")).toHaveValue("popular");
+  await page.locator("#catBtn").click();
+  await page.locator(`#catPanel [data-k="${FIRST.cat}"]`).click();
+  await expect(page.locator("#activeFilters .a")).toHaveCount(1);
+  await expect.poll(() => page.evaluate(() => new URL(location.href).searchParams.get("cat"))).toBe(FIRST.cat);
+});
+
 test("favorites repair malformed storage and import only known stable IDs", async ({page}) => {
   await page.addInitScript(() => localStorage.setItem("ae-effects-db:favorites:v2", "null"));
   await ready(page);

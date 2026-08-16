@@ -24,6 +24,9 @@ class WebUiContractTests(unittest.TestCase):
         self.assertIn('if (mode === "relevance" && hasTerms)', APP)
         self.assertIn('writeUrlState', APP)
         self.assertIn('set("sort"', STATE)
+        self.assertIn("SORT_MODES.has(raw.sort)", STATE)
+        self.assertIn("knownValues(raw.categories", STATE)
+        self.assertIn("adoptHistoryState(restored)", APP)
 
     def test_favorites_v1_migrate_and_v2_export(self):
         self.assertIn('id="favBtn"', HTML)
