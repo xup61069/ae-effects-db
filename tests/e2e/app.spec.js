@@ -434,8 +434,17 @@ test("PWA isolates the current catalog version and reloads offline", async ({pag
   await context.setOffline(true);
   await page.reload();
   await expect(page.locator(".card").first()).toBeVisible();
-  await page.locator("#q").fill("glow");
-  await expect(page.locator("#count")).toContainText(/結果|results|件/);
+  await page.locator("#q").fill(FIRST.name);
+  await expect(page.locator(`[data-detail="${FIRST.id}"]`)).toBeVisible();
+  await page.locator('[data-lang="en"]').click();
+  await expect(page.locator("html")).toHaveAttribute("lang", "en");
+  await expect(page.locator(`article:has([data-detail="${FIRST.id}"]) .desc`)).toHaveText(LOCALES.en[FIRST.id][0]);
+  await page.locator('[data-lang="ja"]').click();
+  await expect(page.locator("html")).toHaveAttribute("lang", "ja");
+  await expect(page.locator(`article:has([data-detail="${FIRST.id}"]) .desc`)).toHaveText(LOCALES.ja[FIRST.id][0]);
+  await page.reload();
+  await expect(page.locator("html")).toHaveAttribute("lang", "ja");
+  await expect(page.locator(`article:has([data-detail="${FIRST.id}"]) .desc`)).toHaveText(LOCALES.ja[FIRST.id][0]);
 });
 
 test("PWA update waits for explicit activation and reloads", async ({page}) => {
