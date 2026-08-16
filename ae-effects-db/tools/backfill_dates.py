@@ -14,7 +14,8 @@
     booth     商品 .json 的 published_at＝released（初版公開日）；
               商品頁「更新履歴」區塊的最晚日期＝updated；無更新履歴就不填 updated。
               date_url＝商品頁本身。
-    aescripts aescripts 商品頁（預留，尚未實作）
+    aescripts 商品頁「版本歷史」區塊；updated＝最新版本日期、released＝最早可見版本日期，
+              date_url＝商品頁本身。
     gumroad   Gumroad 商品頁（預留，尚未實作）
 """
 
@@ -47,12 +48,21 @@ SLEEP = 0.6
 BOOTH_RE = re.compile(r"booth\.pm/ja/items/(\d+)")
 HISTORY_RE = re.compile(r"更新履歴</h2>\s*<p[^>]*>(.*?)</p>", re.S)
 DATE_RE = re.compile(r"(\d{4})/(\d{1,2})/(\d{1,2})")
+AE_VERSION_RE = re.compile(
+    r'<p class="version-history-date inline">\s*([A-Za-z]{3} \d{1,2}, \d{4})\s*</p>'
+)
+AE_DATE_FMT = "%b %d, %Y"
 
 
 def fetch(url: str) -> str:
-    req = urllib.request.Request(url, headers={"User-Agent": UA})
+    req = urllib.request.Request(url, headers={"User-Agent": UA, "Accept-Encoding": "gzip"})
     with urllib.request.urlopen(req, timeout=30) as response:
-        return response.read().decode("utf-8", "ignore")
+        body = response.read()
+        if response.headers.get("Content-Encoding") == "gzip":
+            import gzip
+
+            body = gzip.decompress(body)
+        return body.decode("utf-8", "ignore")
 
 
 def booth_dates(item_id: str) -> dict[str, str]:
@@ -78,6 +88,21 @@ def booth_dates(item_id: str) -> dict[str, str]:
     return dates
 
 
+def aescripts_dates(html: str) -> dict[str, str] | None:
+    """aescripts：版本歷史區塊的日期。updated＝最新版本日期、released＝最早可見版本日期。"""
+    import datetime as dt
+
+    dates = []
+    for month_name in AE_VERSION_RE.findall(html):
+        try:
+            dates.append(dt.datetime.strptime(month_name, AE_DATE_FMT).date().isoformat())
+        except ValueError:
+            continue
+    if not dates:
+        return None
+    return {"released": min(dates), "updated": max(dates)}
+
+
 def collect_entries(source: str, file_filter: str | None) -> list[tuple[str, int, dict, str]]:
     """回傳 (檔案路徑, 行號(0 起), 條目, 來源 url) 的缺少日期清單。"""
     out = []
@@ -94,6 +119,8 @@ def collect_entries(source: str, file_filter: str | None) -> list[tuple[str, int
                 url = str(item.get("url", ""))
                 if source == "booth" and not BOOTH_RE.search(url):
                     continue
+                if source == "aescripts" and "aescripts.com" not in url:
+                    continue
                 out.append((path, line_no, item, url))
     return out
 
@@ -106,8 +133,14 @@ def main() -> None:
     parser.add_argument("--dry", action="store_true", help="只預覽，不寫入")
     args = parser.parse_args()
 
-    if args.source != "booth":
-        print(f"--source {args.source} 尚未實作；目前只有 booth")
+    if args.source == "booth":
+        parse = lambda url: booth_dates(BOOTH_RE.search(url).group(1))
+        label = lambda item: f"發行 {item['released']}" + (f"・更新 {item['updated']}" if item.get("updated") else "")
+    elif args.source == "aescripts":
+        parse = lambda url: aescripts_dates(fetch(url))
+        label = lambda item: f"發行 {item['released']}・更新 {item['updated']}"
+    else:
+        print(f"--source {args.source} 尚未實作；目前只有 booth、aescripts")
         raise SystemExit(1)
 
     entries = collect_entries(args.source, args.file)
@@ -123,19 +156,20 @@ def main() -> None:
     for index, (path, line_no, item, url) in enumerate(entries, 1):
         name = item.get("name", "?")
         try:
-            match = BOOTH_RE.search(url)
-            dates = booth_dates(match.group(1))
+            dates = parse(url)
         except Exception as exc:
             failed.append(f"{name}（抓取失敗：{exc}）")
+            continue
+        if not dates:
+            skipped.append(f"{name}（頁面無版本／更新日期）")
             continue
         item["released"] = dates["released"]
         item["date_url"] = canonical_url(url)
         if dates.get("updated"):
             item["updated"] = dates["updated"]
         by_file.setdefault(path, {})[line_no] = item
-        label = f"發行 {item['released']}" + (f"・更新 {item['updated']}" if item.get("updated") else "")
-        updated.append(f"{name} → {label}")
-        print(f"  [{index}/{len(entries)}] ✓ {name} → {label}")
+        updated.append(f"{name} → {label(item)}")
+        print(f"  [{index}/{len(entries)}] ✓ {name} → {label(item)}")
         if not args.dry:
             time.sleep(SLEEP)
 

@@ -43,8 +43,14 @@ class CliSearchContractTests(unittest.TestCase):
         self.assertEqual("VFX Suite", payload["results"][0]["source"])
 
     def test_category_listing_honors_filters(self):
+        expected = sum(
+            json.loads(line).get("kind") == "script"
+            for path in sorted(ROOT.glob("data/*.jsonl"))
+            for line in path.read_text(encoding="utf-8").splitlines()
+            if line.strip()
+        )
         payload = run_json("--list-cats", "--kind", "script")
-        self.assertEqual(1014, payload["total"])
+        self.assertEqual(expected, payload["total"])
         self.assertEqual(payload["total"], sum(payload["categories"].values()))
 
     def test_json_reports_limit_and_rejects_non_positive_top(self):
