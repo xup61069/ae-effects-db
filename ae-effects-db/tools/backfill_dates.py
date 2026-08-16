@@ -16,6 +16,8 @@
               date_url＝商品頁本身。
     aescripts 商品頁「版本歷史」區塊；updated＝最新版本日期、released＝最早可見版本日期，
               date_url＝商品頁本身。
+    github    GitHub 官方 Releases API；released＝最早釋出日、updated＝最新釋出日。
+              date_url＝repo 頁本身；只處理 repo 根目錄 URL。
     gumroad   Gumroad 商品頁（預留，尚未實作）
 """
 
@@ -28,6 +30,7 @@ import os
 import re
 import sys
 import time
+import urllib.parse
 import urllib.request
 
 try:
@@ -52,6 +55,8 @@ AE_VERSION_RE = re.compile(
     r'<p class="version-history-date inline">\s*([A-Za-z]{3} \d{1,2}, \d{4})\s*</p>'
 )
 AE_DATE_FMT = "%b %d, %Y"
+GITHUB_RE = re.compile(r"github\.com/([^/?#]+)/([^/?#]+)")
+GITHUB_API = "https://api.github.com/repos/{owner}/{repo}/releases?per_page=100"
 
 
 def fetch(url: str) -> str:
@@ -103,6 +108,38 @@ def aescripts_dates(html: str) -> dict[str, str] | None:
     return {"released": min(dates), "updated": max(dates)}
 
 
+def github_dates(url: str) -> dict[str, str] | None:
+    """GitHub 官方 Releases API：released＝最早釋出日、updated＝最新釋出日。
+
+    只處理 repo 根目錄 URL；子目錄（monorepo）的釋出日是整個倉庫的，
+    不能證明單一工具自己的日期，直接略過。
+    """
+    import datetime as dt
+
+    match = GITHUB_RE.search(url)
+    if not match:
+        return None
+    owner, repo = match.group(1), match.group(2)
+    path = urllib.parse.urlparse(url).path
+    tail = path[len(f"/{owner}/{repo}") :]
+    if tail and tail not in ("/", ""):
+        return None
+    dates = []
+    for page in range(1, 6):  # 最多 5 頁；以 API 上限 60 次/時 為限
+        payload = json.loads(
+            fetch(f"{GITHUB_API.format(owner=owner, repo=repo)}&page={page}")
+        )
+        if not isinstance(payload, list) or not payload:
+            break
+        for release in payload:
+            published = str(release.get("published_at", ""))[:10]
+            if re.fullmatch(r"\d{4}-\d{2}-\d{2}", published):
+                dates.append(published)
+    if not dates:
+        return None
+    return {"released": min(dates), "updated": max(dates)}
+
+
 def collect_entries(source: str, file_filter: str | None) -> list[tuple[str, int, dict, str]]:
     """回傳 (檔案路徑, 行號(0 起), 條目, 來源 url) 的缺少日期清單。"""
     out = []
@@ -121,13 +158,15 @@ def collect_entries(source: str, file_filter: str | None) -> list[tuple[str, int
                     continue
                 if source == "aescripts" and "aescripts.com" not in url:
                     continue
+                if source == "github" and "github.com" not in url:
+                    continue
                 out.append((path, line_no, item, url))
     return out
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--source", choices=["booth", "aescripts", "gumroad"], default="booth")
+    parser.add_argument("--source", choices=["booth", "aescripts", "github", "gumroad"], default="booth")
     parser.add_argument("--limit", type=int, default=0, help="最多處理幾筆（0＝全部）")
     parser.add_argument("--file", help="只處理指定資料檔（例：booth）")
     parser.add_argument("--dry", action="store_true", help="只預覽，不寫入")
@@ -138,6 +177,9 @@ def main() -> None:
         label = lambda item: f"發行 {item['released']}" + (f"・更新 {item['updated']}" if item.get("updated") else "")
     elif args.source == "aescripts":
         parse = lambda url: aescripts_dates(fetch(url))
+        label = lambda item: f"發行 {item['released']}・更新 {item['updated']}"
+    elif args.source == "github":
+        parse = github_dates
         label = lambda item: f"發行 {item['released']}・更新 {item['updated']}"
     else:
         print(f"--source {args.source} 尚未實作；目前只有 booth、aescripts")
