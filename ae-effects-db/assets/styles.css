@@ -94,6 +94,8 @@
   .kindbadge.kind-builtin{color:var(--builtin-label);border-color:var(--builtin-border);background:color-mix(in srgb,var(--builtin-bg) 65%,transparent)}
   .kindbadge.kind-recipe{color:var(--recipe-label);border-color:var(--recipe-border);background:color-mix(in srgb,var(--recipe-bg) 65%,transparent)}
   .catbadge{color:var(--muted);background:var(--chip);border-color:var(--border)}
+  button.kindbadge,button.catbadge{font-family:inherit;cursor:pointer}
+  button.kindbadge:hover,button.catbadge:hover,button.kindbadge.on,button.catbadge.on{color:var(--accent);border-color:var(--accent)}
   .officialbadge{color:var(--builtin-label);background:var(--builtin-bg);border-color:var(--builtin-border);text-decoration:none}
   .kindlegend{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;color:var(--muted);font-size:11.5px}
   .kindlegend span{display:inline-flex;align-items:center;gap:5px}

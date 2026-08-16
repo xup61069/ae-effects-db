@@ -77,6 +77,29 @@ async function verifyDialogAccessibility(page, dialogSelector, targetSelector) {
   }
 }
 
+test("clickable kind and category badges toggle their facets like tags", async ({page}) => {
+  await ready(page);
+  const card = page.locator(".card").first();
+  const cat = await card.locator(".catbadge").getAttribute("data-cat-filter");
+  const kind = await card.locator(".kindbadge").getAttribute("data-kind-filter");
+  expect(cat).toBeTruthy();
+  expect(kind).toBeTruthy();
+
+  await card.locator(".catbadge").click();
+  await expect(page).toHaveURL(new RegExp(`cat=${cat}`));
+  await expect(page.locator(`#activeFilters [data-filter="cat"][data-value="${cat}"]`)).toBeVisible();
+  await expect(card.locator(".catbadge")).toHaveAttribute("aria-pressed", "true");
+
+  await card.locator(".kindbadge").click();
+  await expect(page).toHaveURL(new RegExp(`kind=${kind}`));
+  await expect(page.locator(`#activeFilters [data-filter="kind"][data-value="${kind}"]`)).toBeVisible();
+
+  await card.locator(".catbadge").click();
+  await expect(page).not.toHaveURL(/cat=/);
+  await card.locator(".kindbadge").click();
+  await expect(page).not.toHaveURL(/kind=/);
+});
+
 test("search suggestions, dynamic facets, history, detail and compare", async ({page}) => {
   await ready(page);
   await page.locator("#q").fill("glwo");
