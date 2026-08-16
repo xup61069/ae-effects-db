@@ -17,3 +17,8 @@ scratch/
 
 # tools cache
 tools/.sitemap_cache.xml
+
+# Node / browser tests
+node_modules/
+test-results/
+playwright-report/
