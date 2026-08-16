@@ -67,7 +67,7 @@
 | `look` | 建議填寫可見外觀，不重複 `desc` |
 | `desc_en`／`desc_ja`／`look_en`／`look_ja` | 選填的英／日文翻譯；逐筆人工審核，不得塞未審核的機器翻譯。英文、日文介面有對應語系時顯示它，缺漏時回退顯示中文並標「原文」 |
 | `url` | 原廠產品／效果頁；必須實際得到 HTTP 200 或出現在原廠索引，不能猜 slug |
-| `released`／`updated` | 必填（至少其一）：原廠可證明的 `YYYY-MM-DD`，並同時填直接支持日期的 `date_url`。`released` 限產品級（初版公開日）；`updated` 可為產品級（版本更新）或頁面級（原廠官方頁「Last updated on」這類頁面最後更新時間，如 helpx 效果頁）。新條目由 `tools/add.py` 強制；既有缺日期條目由 `tools/backfill_dates.py` 分批回補，完成前驗證器僅列為回補待辦、不阻擋 strict |
+| `released`／`updated` | 必填（至少其一）：原廠可證明的 `YYYY-MM-DD`，並同時填直接支持日期的 `date_url`。`released` 限產品級（初版公開日）；`updated` 可為產品級（版本更新）或頁面級（原廠官方頁「Last updated on」這類頁面最後更新時間，如 helpx 效果頁）。新條目由 `tools/add.py` 強制；既有缺日期條目由 `tools/backfill_dates.py` 分批回補，完成前驗證器僅列為回補待辦、不阻擋 strict。`recipes.jsonl` 是自建配方、無原廠頁可證日期，永久豁免此項 |
 | `variants` | 只用於功能高度相近、同頁說明的同族變體；判重時必須一起搜尋 |
 | `stack`／`builtin` | 僅 `recipe` 使用，分別描述外掛堆疊與純內建替代流程 |
 
