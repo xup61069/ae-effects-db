@@ -1,901 +1,161 @@
 <!doctype html>
 <html lang="zh-Hant">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="搜尋 After Effects 外掛、腳本、內建效果與效果配方；支援繁中、英文、日文與 AI 可讀索引。">
-<link rel="alternate" type="text/plain" href="llms.txt" title="AI-readable project guide">
-<title>AE 特效資料庫 · 搜尋</title>
-<style>
-  :root{
-    --bg:#0e0f13; --panel:#171922; --panel2:#1e2130; --text:#e8eaf0; --muted:#9aa0b4;
-    --accent:#6ea8fe; --accent2:#f0a; --border:#2a2e3f; --chip:#232735;
-    --plugin-bg:#101f2b; --plugin-border:#2b5d82; --plugin-label:#83c8ff;
-    --script-bg:#24182d; --script-border:#704789; --script-label:#dda4ff;
-    --builtin-bg:#15251d; --builtin-border:#397356; --builtin-label:#82dca9;
-    --recipe-bg:#292115; --recipe-border:#80652e; --recipe-label:#f0c66e;
-  }
-  @media (prefers-color-scheme: light){
-    :root{ --bg:#f6f7fb; --panel:#fff; --panel2:#f0f2f8; --text:#1a1d29; --muted:#666e85;
-           --accent:#2563eb; --accent2:#c026a8; --border:#e2e5ee; --chip:#eef1f8;
-           --plugin-bg:#edf7ff; --plugin-border:#9bc9ee; --plugin-label:#17649d;
-           --script-bg:#f8effd; --script-border:#d1abe5; --script-label:#7d3d9d;
-           --builtin-bg:#eef9f2; --builtin-border:#a7d7b7; --builtin-label:#267349;
-           --recipe-bg:#fff8e8; --recipe-border:#dfc682; --recipe-label:#8a6815;}
-  }
-  *{box-sizing:border-box}
-  body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 -apple-system,"Segoe UI",Roboto,"Noto Sans TC",sans-serif}
-  header{position:sticky;top:0;z-index:10;background:var(--bg);border-bottom:1px solid var(--border);padding:14px 18px}
-  h1{margin:0 0 2px;font-size:18px;letter-spacing:.5px}
-  .sub{color:var(--muted);font-size:12.5px}
-  .headrow{display:flex;align-items:center;justify-content:space-between;gap:12px}
-  .langswitch{display:flex;gap:4px;padding:3px;border:1px solid var(--border);border-radius:10px;background:var(--panel)}
-  .langswitch button{border:0;border-radius:7px;padding:4px 8px;background:transparent;color:var(--muted);font:inherit;font-size:11px;cursor:pointer}
-  .langswitch button:hover{color:var(--text)}.langswitch button.on{background:var(--accent);color:#fff}
-  .language-note{margin-top:7px;padding:7px 9px;border-left:3px solid var(--accent);border-radius:5px;background:var(--panel);color:var(--muted);font-size:11.5px}
-  .language-note a{color:var(--accent);text-underline-offset:2px}.language-note .verified{white-space:nowrap}
-  .language-note[hidden]{display:none}.original-label{display:block;margin-top:4px;color:var(--muted);font-size:10.5px}
-  .wrap{max-width:920px;margin:0 auto;padding:0 18px}
-  .searchbox{position:relative;margin-top:12px}
-  #q{width:100%;padding:13px 44px 13px 15px;font-size:16px;border-radius:12px;border:1px solid var(--border);
-     background:var(--panel);color:var(--text);outline:none}
-  #q:focus{border-color:var(--accent)}
-  #clearQ{position:absolute;right:6px;top:50%;transform:translateY(-50%);width:34px;height:34px;border:0;
-    border-radius:9px;background:transparent;color:var(--muted);font-size:18px;cursor:pointer}
-  #clearQ:hover{color:var(--text);background:var(--panel2)}
-  #clearQ[hidden]{display:none}
-  .filters{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
-  .filters select{background:var(--panel);color:var(--text);border:1px solid var(--border);border-radius:9px;padding:7px 9px;font-size:13px}
-  .filters button{background:var(--panel);color:var(--accent);border:1px solid var(--border);border-radius:9px;
-    padding:7px 11px;font-size:13px;cursor:pointer;font-family:inherit}
-  .filters button:hover{border-color:var(--accent)}
-  .aimsg{margin-top:8px;font-size:12.5px;color:var(--accent);min-height:1em}
-  .aimsg:empty{display:none;margin-top:0;min-height:0}
-  .aimsg a{color:var(--accent)}
-  .dd{position:relative;display:inline-block}
-  .aibtn{margin-left:auto}
-  .catpanel{position:absolute;top:calc(100% + 6px);left:0;z-index:30;
-    width:max-content;max-width:min(560px,88vw);
-    padding:10px;border:1px solid var(--border);border-radius:12px;background:var(--panel);
-    box-shadow:0 10px 30px rgba(0,0,0,.28);
-    display:flex;flex-wrap:wrap;gap:6px;max-height:min(300px,50vh);overflow-y:auto}
-  .catpanel[hidden]{display:none}   /* 必要：class 的 display:flex 會蓋過 [hidden] 的 display:none */
-  .actbar{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
-  .actbar:empty{display:none;margin-top:0}
-  .actbar .a{font:inherit;font-size:12px;background:var(--accent);color:#fff;border:0;border-radius:20px;padding:3px 9px;
-    cursor:pointer;user-select:none}
-  .actbar .a .x{margin-left:6px;opacity:.85}
-  .actbar .allclr{font:inherit;font-size:12px;color:var(--muted);background:transparent;border:1px dashed var(--border);
-    border-radius:20px;padding:3px 9px;cursor:pointer}
-  .catpanel .c{font-size:12.5px;border:1px solid var(--border);background:var(--panel2);color:var(--text);
-    border-radius:20px;padding:4px 11px;cursor:pointer;user-select:none;white-space:nowrap}
-  .catpanel .c:hover{border-color:var(--accent)}
-  .catpanel .c.on{background:var(--accent);border-color:var(--accent);color:#fff}
-  .catpanel .c .n{color:var(--muted);font-size:11px;margin-left:5px}
-  .catpanel .c.on .n{color:rgba(255,255,255,.8)}
-  .catpanel .clr{color:var(--accent);border-style:dashed}
-  .filters button.active{background:var(--accent);border-color:var(--accent);color:#fff}
-  .favfilter{white-space:nowrap}
-  .favfilter .n{margin-left:4px;font-size:11px;opacity:.8}
-  button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-  .hint{color:var(--muted);font-size:12px;margin-top:8px}
-  .hint b{color:var(--accent);cursor:pointer;font-weight:600}
-  #count{color:var(--muted);font-size:12.5px;margin:14px 0 4px}
-  .summary{display:inline-flex;flex-wrap:wrap;gap:5px;margin-left:7px}
-  .summary i{font-style:normal;border:1px solid var(--border);border-radius:20px;padding:1px 7px}
-  .card{background:var(--panel);border:1px solid var(--border);border-left-width:4px;border-radius:12px;padding:13px 15px;margin:9px 0;
-    content-visibility:auto;contain-intrinsic-size:0 220px}
-  .card.kind-plugin{background:var(--plugin-bg);border-color:var(--plugin-border)}
-  .card.kind-script{background:var(--script-bg);border-color:var(--script-border)}
-  .card.kind-builtin{background:var(--builtin-bg);border-color:var(--builtin-border)}
-  .card.kind-recipe{background:var(--recipe-bg);border-color:var(--recipe-border)}
-  .card .top{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap}
-  .name{font-size:16px;font-weight:650}
-  .kindbadge,.catbadge,.officialbadge{font-size:11px;padding:2px 8px;border-radius:20px;border:1px solid transparent}
-  .kindbadge{font-weight:700}
-  .kindbadge.kind-plugin{color:var(--plugin-label);border-color:var(--plugin-border);background:color-mix(in srgb,var(--plugin-bg) 65%,transparent)}
-  .kindbadge.kind-script{color:var(--script-label);border-color:var(--script-border);background:color-mix(in srgb,var(--script-bg) 65%,transparent)}
-  .kindbadge.kind-builtin{color:var(--builtin-label);border-color:var(--builtin-border);background:color-mix(in srgb,var(--builtin-bg) 65%,transparent)}
-  .kindbadge.kind-recipe{color:var(--recipe-label);border-color:var(--recipe-border);background:color-mix(in srgb,var(--recipe-bg) 65%,transparent)}
-  .catbadge{color:var(--muted);background:var(--chip);border-color:var(--border)}
-  .officialbadge{color:var(--builtin-label);background:var(--builtin-bg);border-color:var(--builtin-border);text-decoration:none}
-  .kindlegend{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;color:var(--muted);font-size:11.5px}
-  .kindlegend span{display:inline-flex;align-items:center;gap:5px}
-  .kindlegend i{width:9px;height:9px;border-radius:3px;display:inline-block}
-  .kindlegend .plugin{background:var(--plugin-label)} .kindlegend .script{background:var(--script-label)}
-  .kindlegend .builtin{background:var(--builtin-label)} .kindlegend .recipe{background:var(--recipe-label)}
-  .warn{font-size:11px;color:#e0a020;background:rgba(224,160,32,.13);padding:2px 8px;border-radius:20px}
-  a.namelink{color:var(--text);text-decoration:none}
-  a.namelink:hover{color:var(--accent);text-decoration:underline;text-underline-offset:3px}
-  .ext{font-size:11px;color:var(--muted);margin-left:5px;vertical-align:2px}
-  a.namelink:hover .ext{color:var(--accent)}
-  .src{font-size:11px;color:var(--muted);margin-left:auto}
-  .favbtn{align-self:center;width:28px;height:28px;margin:-4px -4px -4px 0;padding:0;border:1px solid transparent;
-    border-radius:8px;background:transparent;color:var(--muted);font:18px/1 inherit;cursor:pointer}
-  .favbtn:hover{color:#f3c64e;background:var(--chip);border-color:var(--border)}
-  .favbtn.on{color:#f3c64e}
-  .cardactions{display:flex;gap:5px;margin-left:auto}
-  .cardactions button,.popscore,.datebadge{font:inherit;font-size:11px;border:1px solid var(--border);border-radius:8px;
-    background:var(--chip);color:var(--muted);padding:3px 7px}
-  .cardactions button{cursor:pointer}.cardactions button:hover,.cardactions button.on{color:var(--accent);border-color:var(--accent)}
-  .popscore{cursor:help}.datebadge{color:var(--builtin-label)}
-  .desc{color:var(--text);margin-top:6px;font-size:14px}
-  .stack{margin-top:8px;padding-left:2px}
-  .stack li{font-size:13px;color:var(--muted);margin:2px 0}
-  .variants{margin-top:8px;display:flex;flex-wrap:wrap;gap:5px}
-  .variants span{font-size:11.5px;background:var(--panel2);border:1px solid var(--border);border-radius:7px;padding:2px 7px;color:var(--muted)}
-  .tags{margin-top:8px;display:flex;flex-wrap:wrap;gap:5px}
-  .tags button{font:inherit;font-size:11px;color:var(--muted);background:var(--chip);border:0;border-radius:6px;padding:1px 7px;cursor:pointer}
-  .tags button:hover{color:var(--accent)}
-  mark{background:transparent;color:var(--accent2);font-weight:700}
-  footer{color:var(--muted);font-size:12px;text-align:center;padding:26px 0 40px}
-  footer a{color:var(--accent)}
-  .empty{color:var(--muted);text-align:center;padding:40px 0}
-  .lnk{color:var(--accent);cursor:pointer;text-decoration:underline;text-underline-offset:3px}
-  .more{display:block;margin:18px auto 4px;padding:9px 18px;border:1px solid var(--border);border-radius:10px;
-    background:var(--panel);color:var(--accent);font:inherit;cursor:pointer}
-  .more:hover{border-color:var(--accent)}
-  dialog.modal{width:min(760px,calc(100vw - 24px));max-height:min(86vh,820px);padding:0;border:1px solid var(--border);
-    border-radius:16px;background:var(--panel);color:var(--text);box-shadow:0 24px 80px rgba(0,0,0,.55)}
-  dialog.modal::backdrop{background:rgba(4,6,10,.72);backdrop-filter:blur(3px)}
-  .modalhead{position:sticky;top:0;z-index:2;display:flex;align-items:center;gap:10px;padding:14px 16px;
-    border-bottom:1px solid var(--border);background:var(--panel)}
-  .modalhead h2{font-size:17px;margin:0}.modalhead .close{margin-left:auto;width:34px;height:34px;border:0;border-radius:9px;
-    background:var(--chip);color:var(--text);font-size:18px;cursor:pointer}
-  .modalbody{padding:16px;overflow:auto}.modalbody h3{font-size:13px;margin:18px 0 6px;color:var(--muted)}
-  .detailmeta{display:flex;gap:6px;flex-wrap:wrap}.detailtags{display:flex;gap:5px;flex-wrap:wrap}
-  .detailtags span{font-size:12px;border-radius:7px;padding:3px 8px;background:var(--chip);color:var(--muted)}
-  .detailactions,.favtools{display:flex;flex-wrap:wrap;gap:7px;margin-top:14px}.detailactions a,.detailactions button,.favtools button{
-    font:inherit;font-size:13px;text-decoration:none;border:1px solid var(--border);border-radius:9px;padding:7px 10px;
-    background:var(--panel2);color:var(--accent);cursor:pointer}
-  .popbreak{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}.popbreak span{padding:8px 5px;text-align:center;
-    border:1px solid var(--border);border-radius:9px;background:var(--chip);font-size:11px;color:var(--muted)}
-  .popbreak b{display:block;color:var(--text);font-size:15px}
-  .comparetray{position:fixed;z-index:40;left:50%;bottom:14px;transform:translateX(-50%);display:flex;align-items:center;gap:9px;
-    max-width:calc(100vw - 24px);padding:9px 11px;border:1px solid var(--accent);border-radius:13px;background:var(--panel);
-    box-shadow:0 12px 35px rgba(0,0,0,.45)}
-  .comparetray[hidden]{display:none}.comparetray button{font:inherit;font-size:12px;border:1px solid var(--border);border-radius:8px;
-    background:var(--chip);color:var(--accent);padding:6px 9px;cursor:pointer}.comparetray .primary{background:var(--accent);color:#fff}
-  .comparetable{width:100%;border-collapse:collapse;font-size:12.5px}.comparetable th,.comparetable td{padding:8px;
-    border-bottom:1px solid var(--border);vertical-align:top;text-align:left}.comparetable th:first-child{color:var(--muted);width:92px}
-  .mobile-searchbar{display:none}.backtop{position:fixed;right:16px;bottom:16px;z-index:35;width:42px;height:42px;border-radius:50%;
-    border:1px solid var(--border);background:var(--panel);color:var(--accent);font-size:18px;cursor:pointer;box-shadow:0 8px 22px rgba(0,0,0,.35)}
-  .backtop[hidden]{display:none}
-  @media (max-width:640px){
-    header{position:static;padding:12px 0}
-    header .searchbox{display:none}
-    .mobile-searchbar{display:flex;position:sticky;top:0;z-index:45;padding:8px 12px;background:var(--bg);border-bottom:1px solid var(--border)}
-    .mobile-searchbar input{width:100%;padding:11px 40px 11px 13px;border:1px solid var(--border);border-radius:11px;background:var(--panel);color:var(--text);font-size:16px}
-    .mobile-searchbar button{margin-left:-38px;width:36px;border:0;background:transparent;color:var(--muted);font-size:18px}
-    .wrap{padding:0 12px}
-    .headrow{align-items:flex-start}.langswitch button{padding:4px 6px}
-    .filters{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
-    .filters .dd,.filters .dd>button,.filters select,.filters .favfilter{width:100%}
-    .aibtn{grid-column:1/-1;margin-left:0}
-    .catpanel{max-width:calc(100vw - 24px)}
-    .kindlegend{gap:5px 9px}
-    .card{padding:12px;margin:8px 0}
-    .src{width:100%;margin-left:0}
-    .summary{display:flex;margin:5px 0 0}
-    .cardactions{width:100%;margin-left:0}.popbreak{grid-template-columns:repeat(2,1fr)}
-    .comparetable{display:block;overflow-x:auto;white-space:normal}.backtop{bottom:70px}
-  }
-</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0e0f13">
+  <meta name="description" content="搜尋 After Effects 外掛、腳本、內建效果與效果配方；支援繁中、英文、日文與離線搜尋。">
+  <link rel="alternate" type="text/plain" href="llms.txt" title="AI-readable project guide">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/styles.css">
+  <title>AE 特效資料庫 · 搜尋</title>
 </head>
 <body>
-<div class="mobile-searchbar"><input id="mq" placeholder="搜尋 AE 特效…" autocomplete="off" aria-label="手機搜尋 AE 特效"><button id="clearMq" type="button" aria-label="清除搜尋">×</button></div>
-<header>
-  <div class="wrap">
-    <div class="headrow"><h1 id="siteTitle">🎬 AE 特效資料庫</h1><nav id="languageSwitch" class="langswitch" aria-label="Language"><button type="button" data-lang="zh">繁中</button><button type="button" data-lang="en">English</button><button type="button" data-lang="ja">日本語</button></nav></div>
-    <div id="siteSubtitle" class="sub">描述想要的畫面，從 AE 外掛、腳本、內建效果與效果配方中找工具</div>
-    <div class="searchbox">
-      <input id="q" placeholder="輸入描述… 例：發光、故障、老電影、甩鏡轉場、粒子、去背、慢動作" autofocus autocomplete="off" aria-label="搜尋 AE 特效">
-      <button id="clearQ" type="button" title="清除搜尋" aria-label="清除搜尋" hidden>×</button>
+  <a class="skip" href="#results">跳到搜尋結果</a>
+
+  <div class="mobile-searchbar" aria-label="行動版搜尋">
+    <div class="mobileSearchWrap">
+      <input id="mq" type="search" autocomplete="off" role="combobox" aria-autocomplete="list" aria-controls="mobileSuggestions" aria-expanded="false">
+      <button id="clearMq" type="button" hidden aria-label="清除搜尋">×</button>
+      <div id="mobileSuggestions" class="suggestions" role="listbox" hidden></div>
     </div>
-    <div class="filters">
-      <span class="dd">
-        <button id="catBtn" type="button" title="可複選分類" aria-expanded="false">分類 ▾</button>
-        <div id="catPanel" class="catpanel" hidden></div>
-      </span>
-      <span class="dd">
-        <button id="srcBtn" type="button" title="可複選來源" aria-expanded="false">來源 ▾</button>
-        <div id="srcPanel" class="catpanel" hidden></div>
-      </span>
-      <span class="dd">
-        <button id="kindBtn" type="button" title="可複選工具型態" aria-expanded="false">型態 ▾</button>
-        <div id="kindPanel" class="catpanel" hidden></div>
-      </span>
-      <select id="sort" title="排序方式">
-        <option value="popular" selected>排序：精選熱門</option>
-        <option value="relevance">排序：搜尋相關度</option>
-        <option value="name">排序：名稱 A–Z</option>
-        <option value="category">排序：分類</option>
-        <option value="source">排序：來源</option>
-        <option value="latest">排序：最新（官方日期）</option>
-      </select>
-      <button id="favBtn" class="favfilter" type="button" aria-pressed="false" title="收藏只儲存在這台裝置的瀏覽器">☆ 只看收藏<span class="n">0</span></button>
-      <button id="favManageBtn" type="button" title="匯出、匯入或清除收藏">收藏管理</button>
-      <button id="aiBtn" class="aibtn" type="button" title="複製一段提示詞，貼進 ChatGPT/Claude 就能用「貼圖」找特效">🤖 用 AI 找 / 貼圖找</button>
-    </div>
-    <div id="activeFilters" class="actbar"></div>
-    <div id="aiMsg" class="aimsg"></div>
-    <div id="kindLegend" class="kindlegend" aria-label="工具型態顏色圖例">
-      <span><i class="plugin"></i>外掛／效果</span><span><i class="script"></i>腳本／面板</span>
-      <span><i class="builtin"></i>AE 內建</span><span><i class="recipe"></i>效果配方</span>
-    </div>
-    <div id="hintBox" class="hint">試試：
-      <b data-q="霓虹">霓虹</b> ·
-      <b data-q="老電影">老電影</b> ·
-      <b data-q="故障">故障</b> ·
-      <b data-q="甩鏡">甩鏡</b> ·
-      <b data-q="去背">去背</b> ·
-      <b data-q="慢動作">慢動作</b> ·
-      <b data-q="魔法">魔法</b> ·
-      <b data-q="調色">調色</b>
-    </div>
+    <button id="mobileFilterToggle" class="mobile-filter-toggle" type="button">篩選</button>
   </div>
-</header>
-<div class="wrap">
-  <div id="count" aria-live="polite"></div>
-  <div id="results"></div>
-</div>
-<footer>
-  <div id="footerSummary">共 <span id="total">…</span> 筆 · 點名稱開官方頁 · 搭配 Codex / Claude Code 的 <code>/find-effect</code> 可「貼圖」搜尋</div>
-  <div id="footerLinks" style="margin-top:10px">
-    找不到某個外掛？歡迎補充 →
-    <a href="https://github.com/xup61069/ae-effects-db/issues/new?template=add-effect.yml" target="_blank" rel="noopener">回報缺少的特效</a> ·
-    <a href="https://github.com/xup61069/ae-effects-db/blob/main/CONTRIBUTING.md" target="_blank" rel="noopener">如何貢獻</a> ·
-    <a href="https://github.com/xup61069/ae-effects-db" target="_blank" rel="noopener">GitHub</a>
+
+  <header>
+    <div class="wrap">
+      <div class="headrow">
+        <div>
+          <h1 id="siteTitle">🎬 AE 特效資料庫</h1>
+          <div id="siteSubtitle" class="sub">描述想要的畫面，找出合適的 AE 工具</div>
+        </div>
+        <div id="languageSwitch" class="langswitch" role="group" aria-label="Language">
+          <button type="button" data-lang="zh" aria-pressed="true">繁中</button>
+          <button type="button" data-lang="en" aria-pressed="false">English</button>
+          <button type="button" data-lang="ja" aria-pressed="false">日本語</button>
+        </div>
+      </div>
+
+      <div class="searchbox">
+        <input id="q" type="search" autocomplete="off" role="combobox" aria-autocomplete="list" aria-controls="suggestions" aria-expanded="false">
+        <button id="clearQ" type="button" hidden aria-label="清除搜尋">×</button>
+        <div id="suggestions" class="suggestions" role="listbox" hidden></div>
+      </div>
+
+      <div id="hintBox" class="hints"></div>
+    </div>
+  </header>
+
+  <div class="wrap layout">
+    <dialog id="filterDialog" class="filterdialog" open aria-labelledby="filterDialogTitle">
+      <div class="filterhead">
+        <h2 id="filterDialogTitle">篩選</h2>
+        <button id="filterClose" type="button">關閉</button>
+      </div>
+      <div class="filters">
+        <div class="dd">
+          <button id="catBtn" type="button" aria-expanded="false" aria-controls="catPanel">分類 ▾</button>
+          <div id="catPanel" class="catpanel" hidden></div>
+        </div>
+        <div class="dd">
+          <button id="srcBtn" type="button" aria-expanded="false" aria-controls="srcPanel">來源 ▾</button>
+          <div id="srcPanel" class="catpanel" hidden></div>
+        </div>
+        <div class="dd">
+          <button id="kindBtn" type="button" aria-expanded="false" aria-controls="kindPanel">型態 ▾</button>
+          <div id="kindPanel" class="catpanel" hidden></div>
+        </div>
+        <select id="sort" aria-label="排序方式">
+          <option value="popular">精選熱門</option>
+          <option value="relevance">搜尋相關度</option>
+          <option value="name">名稱 A–Z</option>
+          <option value="category">分類</option>
+          <option value="source">來源</option>
+          <option value="latest">最新</option>
+        </select>
+        <button id="favBtn" type="button" aria-pressed="false">☆ 只看收藏</button>
+        <button id="favManageBtn" type="button">收藏管理</button>
+        <button id="aiBtn" type="button">畫面拆解器</button>
+      </div>
+      <div id="kindLegend" class="kindlegend" aria-label="工具型態"></div>
+    </dialog>
+
+    <main>
+      <section class="discovery" aria-labelledby="discoveryTitle">
+        <h2 id="discoveryTitle" class="sr-only">用途導覽</h2>
+        <div id="discoveryGrid" class="discoverygrid"></div>
+      </section>
+      <div id="activeFilters" class="actbar" aria-label="目前篩選條件"></div>
+      <div id="count" class="count" aria-live="polite"></div>
+      <div id="results" class="grid" aria-busy="true"></div>
+    </main>
   </div>
-</footer>
 
-<div id="compareTray" class="comparetray" hidden><span id="compareTrayText"></span><button id="compareClear" type="button">清除</button><button id="compareOpen" class="primary" type="button">比較</button></div>
-<button id="backTop" class="backtop" type="button" title="返回頂端" aria-label="返回頂端" hidden>↑</button>
+  <footer>
+    <div class="wrap">
+      <div id="footerSummary"></div>
+      <nav aria-label="專案連結">
+        <a id="reportMissingLink" href="https://github.com/xup61069/ae-effects-db/issues/new?template=missing-effect.yml">回報缺少的特效</a>
+        <a id="contributeLink" href="CONTRIBUTING.md">如何貢獻</a>
+        <a id="githubLink" href="https://github.com/xup61069/ae-effects-db">GitHub</a>
+      </nav>
+    </div>
+  </footer>
 
-<dialog id="detailDialog" class="modal"><div class="modalhead"><h2 id="detailTitle">工具詳情</h2><button class="close" type="button" data-close="detailDialog" aria-label="關閉">×</button></div><div id="detailBody" class="modalbody"></div></dialog>
-<dialog id="compareDialog" class="modal"><div class="modalhead"><h2 id="compareDialogTitle">工具比較</h2><button class="close" type="button" data-close="compareDialog" aria-label="關閉">×</button></div><div id="compareBody" class="modalbody"></div></dialog>
-<dialog id="favoritesDialog" class="modal"><div class="modalhead"><h2 id="favoritesDialogTitle">收藏管理</h2><button class="close" type="button" data-close="favoritesDialog" aria-label="關閉">×</button></div><div class="modalbody"><p id="favoritesHelp">收藏只存在目前瀏覽器；可匯出 JSON 備份，再到另一台裝置匯入。</p><div class="favtools"><button id="favExport" type="button">匯出收藏</button><button id="favImport" type="button">匯入收藏</button><button id="favClearAll" type="button">清除全部</button><input id="favImportFile" type="file" accept="application/json,.json" hidden></div><div id="favManageMsg" class="aimsg" aria-live="polite"></div></div></dialog>
+  <div id="compareTray" class="comparetray" hidden>
+    <span id="compareTrayText"></span>
+    <button id="compareOpen" type="button">比較</button>
+    <button id="compareClear" type="button">清除</button>
+  </div>
+  <button id="backTop" class="backtop" type="button" hidden aria-label="返回頂端">↑</button>
 
-<script src="i18n.js?v=2026-08-14-1"></script>
-<script>
-const FILES = ["red-giant","universe","sapphire","continuum","builtin-ae","aescripts","third-party","booth","gumroad","installed","recipes"];
-const ASSET_VERSION = "2026-08-16-3";
-let LANG=(()=>{const value=new URL(location.href).searchParams.get("lang");return ["en","ja"].includes(value)?value:"zh";})();
-const localeData=()=>AE_I18N.locales[LANG]||AE_I18N.locales.zh;
-function t(key,vars={}){let value=localeData().messages[key]??AE_I18N.locales.zh.messages[key]??key;return String(value).replace(/\{(\w+)\}/g,(_,name)=>vars[name]??"");}
-let SRC_LABEL={...localeData().sources},KIND_LABEL={...localeData().kinds},CAT_LABEL={...localeData().categories};
-let DATA = [];
-let LOAD_ERRORS = [];
-let visibleLimit = 60;
-let favoritesOnly = false;
-const FAVORITES_KEY = "ae-effects-db:favorites:v1";
-const FAVORITES = loadFavorites();
-const COMPARE = new Set();
-const DATA_BY_KEY = new Map();
-let CURRENT_RESULTS = [];
-let POPULARITY_CONFIG = {featured:[],source_weights:{},maximum_points:{featured:56,source:20,quality:10,recency:4,curated_order:10}};
-let LOCALIZATION_CONFIG = {verified_at:"",sources:{},official_categories:{},official_category_rules:[],official_effect_categories:{},official_category_exclusions:{},localized_urls:{}};
-let POPULAR_INDEX = new Map();
-let SEARCH_VOCAB = null;
-let LOAD_MORE_OBSERVER = null;
+  <dialog id="detailDialog" class="modal" aria-labelledby="detailTitle">
+    <div class="modalhead"><h2 id="detailTitle">工具詳情</h2><button class="close" type="button" data-close="detailDialog">×</button></div>
+    <div id="detailBody" class="modalbody"></div>
+  </dialog>
 
-const SIMPLIFIED = {"发":"發","辉":"輝","颜":"顏","调":"調","颗":"顆","过":"過","转":"轉","关":"關","键":"鍵","层":"層","踪":"蹤","稳":"穩","绿":"綠","脚":"腳","内":"內","动":"動","边":"邊","镜":"鏡","雾":"霧","锐":"銳","变":"變","还":"還","显":"顯","图":"圖","线":"線","选":"選","场":"場","复":"復","术":"術","体":"體","数":"數","据":"據","画":"畫","质":"質","频":"頻","拟":"擬","应":"應","滤":"濾","渐":"漸","虚":"虛","实":"實","声":"聲","缩":"縮","扩":"擴","张":"張","摆":"擺","烧":"燒","损":"損"};
-const SEARCH_ALIASES = {slowmo:["slow motion","慢動作","補幀","升格"],"slow-mo":["slow motion","慢動作","補幀","升格"],retiming:["retime","變速","補幀"],key:["keying","去背","摳像"],greenscreen:["green screen","綠幕","去背"],glitch:["故障","數位故障","破圖"],denoise:["noise reduction","降噪","去雜訊"],beautify:["beauty","美膚","磨皮"],語音:["voice","speech","講話","說話","旁白","配音","口白","朗讀"],voice:["speech","語音","講話","說話","旁白","配音","口白","朗讀"],speech:["voice","語音","講話","說話","旁白","配音","口白","朗讀"],講話:["voice","speech","語音","說話","旁白","配音","口白","朗讀"],說話:["voice","speech","語音","講話","旁白","配音","口白","朗讀"],旁白:["voice","speech","語音","講話","說話","配音","口白","朗讀"],配音:["voice","speech","語音","講話","說話","旁白","口白","朗讀"],字幕:["subtitle","caption","cc","歌詞","lyrics","字幕機","sub"],subtitle:["caption","cc","字幕","歌詞","lyrics","sub"],caption:["subtitle","cc","字幕","歌詞","lyrics","sub"],歌詞:["lyrics","字幕","subtitle","caption","lyric"],lyrics:["歌詞","字幕","subtitle","caption","lyric"],發光:["glow","光暈","輝光","bloom","發光字"],glow:["發光","光暈","輝光","bloom"],光暈:["glow","發光","輝光","bloom"],震動:["shake","晃動","抖動","震動模糊","camera shake"],shake:["震動","晃動","抖動","震動模糊","camera shake"],碎裂:["shatter","破裂","爆裂","碎片","碎掉"],shatter:["碎裂","破裂","爆裂","碎片"],液體:["liquid","fluid","流體","水滴","水"],liquid:["液體","fluid","流體","水滴","水"],打字:["typewriter","打字機","typing","逐字敲出"],typewriter:["打字","打字機","typing","逐字敲出"],老電影:["film","底片","膠片","電影質感","old film"],film:["底片","膠片","老電影","電影質感","old film"],波形:["waveform","聲波","音波","audio waveform"],waveform:["波形","聲波","音波","audio waveform"],追蹤:["tracking","跟蹤","跟拍","track"],tracking:["追蹤","跟蹤","跟拍","track"],轉場:["transition","過場","切場","切換"],transition:["轉場","過場","切場","切換"],淡出:["fade","淡入","淡入淡出","fade in"],fade:["淡入","淡出","淡入淡出","fade in"],描邊:["stroke","輪廓","描線","outline","線框"],stroke:["描邊","輪廓","描線","outline","線框"],輪廓:["stroke","描邊","描線","outline","線框"],馬賽克:["mosaic","像素化","pixelate","點陣化"],mosaic:["馬賽克","像素化","pixelate","點陣化"],雜訊:["noise","噪點","顆粒","grain","躁點"],noise:["雜訊","噪點","顆粒","grain","躁點"],眨眼:["blink","閉眼","wink"],blink:["眨眼","閉眼","wink"],粒子:["particle","particles","微粒","粒子系統"],particle:["粒子","particles","微粒","粒子系統"],緩動:["easing","ease","緩衝","緩動曲線"],easing:["緩動","ease","緩衝","緩動曲線"],調色:["color","colour","顏色","色彩","色調"],color:["調色","colour","顏色","色彩","色調"],暈影:["vignette","暗角","周邊暗角"],vignette:["暈影","暗角","周邊暗角"],模糊:["blur","柔焦","模糊化"],blur:["模糊","柔焦","模糊化"],銳化:["sharpen","銳利","sharpening"],sharpen:["銳化","銳利","sharpening"],倒影:["reflection","反射","鏡像","mirror"],reflection:["倒影","反射","鏡像","mirror"],對齊:["align","alignment","排列","對齊工具"],align:["對齊","alignment","排列","對齊工具"],重新命名:["rename","改名","命名","重命名"],rename:["重新命名","改名","命名","重命名"],標記:["marker","時間標記","標記點"],marker:["標記","時間標記","標記點"],快捷鍵:["shortcut","快捷","熱鍵","熱鍵設定"],shortcut:["快捷鍵","快捷","熱鍵","熱鍵設定"],匯出:["export","輸出","導出"],export:["匯出","輸出","導出"],匯入:["import","導入","輸入"],import:["匯入","導入","輸入"],音樂:["audio","music","音訊","音效","節拍","bpm","節奏"],audio:["音樂","music","音訊","音效","節拍","bpm","節奏"],節拍:["bpm","節奏","拍點","beat"],bpm:["節拍","節奏","拍點","beat"],復古:["vintage","懷舊","舊化","retro","老舊"],vintage:["復古","懷舊","舊化","retro","老舊"],倒數:["countdown","計時","timer","倒數計時"],countdown:["倒數","計時","timer","倒數計時"],自動化:["automation","批次","batch","一鍵"],automation:["自動化","批次","batch","一鍵"],掉幀:["抽幀","frame step","posterize","定格"],書法:["毛筆","calligraphy","手寫字","墨筆"],calligraphy:["書法","毛筆","手寫字","墨筆"],光線:["light","光束","打光","燈光"],light:["光線","光束","打光","燈光"],陰影:["shadow","投影","影子"],shadow:["陰影","投影","影子"],火焰:["fire","火","燃燒","火燄"],fire:["火焰","火","燃燒","火燄"],煙霧:["smoke","煙","煙塵"],smoke:["煙霧","煙","煙塵"],閃電:["lightning","雷電","電光","雷"],lightning:["閃電","雷電","電光","雷"],爆炸:["explosion","爆裂","爆炸效果","炸"],explosion:["爆炸","爆裂","爆炸效果","炸"],星星:["star","星光","sparkle","閃爍","星芒"],star:["星星","星光","sparkle","閃爍","星芒"],愛心:["heart","心形","愛心形狀"],heart:["愛心","心形","愛心形狀"],箭頭:["arrow","箭頭指示","指標"],arrow:["箭頭","箭頭指示","指標"],對話框:["speech bubble","對話泡泡","氣泡","聊天框"],emoji:["表情","貼圖","笑臉","表情符號"],眼睛:["eye","眼球","眼神","瞳孔"],eye:["眼睛","眼球","眼神","瞳孔"],頭髮:["hair","髮絲","毛髮"],hair:["頭髮","髮絲","毛髮"],游標:["cursor","滑鼠","鼠標","指標"],cursor:["游標","滑鼠","鼠標","指標"],逐字:["per character","逐字元","per-char","逐字動畫"],印章:["stamp","蓋章","印鑑"],stamp:["印章","蓋章","印鑑"],備忘:["notes","筆記","記事","便條"],notes:["備忘","筆記","記事","便條"],代理:["proxy","代理檔","proxy file"],proxy:["代理","代理檔","proxy file"],縮放:["scale","放大","縮小","縮放大小"],scale:["縮放","放大","縮小","縮放大小"],旋轉:["rotate","rotation","轉動","迴轉"],rotate:["旋轉","rotation","轉動","迴轉"],照片:["photo","相片","相框","圖片"],photo:["照片","相片","相框","圖片"],...AE_I18N.searchAliases};
+  <dialog id="compareDialog" class="modal" aria-labelledby="compareTitle">
+    <div class="modalhead"><h2 id="compareTitle">工具比較</h2><button class="close" type="button" data-close="compareDialog">×</button></div>
+    <div id="compareBody" class="modalbody"></div>
+  </dialog>
 
-function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
-function itemKey(d){return `${d._src}:${d.name}`;}
-function localizedOfficialUrl(value){
-  if(!value)return "";
-  return LOCALIZATION_CONFIG.localized_urls?.[value]?.[LANG]||value;
-}
-function hasLocalizedOfficialUrl(value){return Boolean(value&&localizedOfficialUrl(value)!==value);}
-function localField(d,field){return d[field+"_"+LANG]||d[field]||"";}
-function needsOriginal(d){return LANG!=="zh"&&!d["desc_"+LANG];}
-function officialCategory(d){
-  if(d.kind!=="builtin"||!d.url)return null;
-  let url;try{url=new URL(d.url);}catch(_){return null;}
-  if(url.hostname!=="helpx.adobe.com")return null;
-  const language=LANG==="ja"?"ja":"en";
-  const categoryId=LOCALIZATION_CONFIG.official_effect_categories?.[d.name];
-  const category=categoryId?LOCALIZATION_CONFIG.official_categories?.[categoryId]:null;
-  const pathname=url.pathname.toLowerCase();
-  const rule=category?null:(LOCALIZATION_CONFIG.official_category_rules||[]).find(item=>(item.patterns||[]).some(pattern=>pathname.includes(pattern.toLowerCase())));
-  if(!category&&!rule)return null;
-  const source=LOCALIZATION_CONFIG.sources?.[`adobe_effect_categories_${language}`]||LOCALIZATION_CONFIG.sources?.adobe_effect_categories_en||d.url;
-  return {label:category?.[language]||category?.en||rule.labels?.[language]||rule.labels?.en||rule.id,source};
-}
-function normalizeText(value){return String(value??"").normalize("NFKC").replace(/[\u3400-\u9fff]/g,c=>SIMPLIFIED[c]||c).toLocaleLowerCase().replace(/\s+/g," ").trim();}
-function applyLanguage(){
-  const l=localeData(),m=l.messages;
-  SRC_LABEL={...l.sources};KIND_LABEL={...l.kinds};CAT_LABEL={...l.categories};
-  document.documentElement.lang=l.htmlLang;document.title=m.pageTitle;
-  const text=(id,value)=>{const el=document.getElementById(id);if(el)el.textContent=value;};
-  const attrs=(id,values)=>{const el=document.getElementById(id);if(el)Object.entries(values).forEach(([key,value])=>el.setAttribute(key,value));};
-  text("siteTitle",m.siteTitle);text("siteSubtitle",m.subtitle);
-  attrs("q",{placeholder:m.searchPlaceholder,"aria-label":m.searchAria});attrs("mq",{placeholder:m.mobileSearchPlaceholder,"aria-label":m.searchAria});
-  attrs("clearQ",{title:m.clearSearch,"aria-label":m.clearSearch});attrs("clearMq",{"aria-label":m.clearSearch});
-  attrs("catBtn",{title:m.multiCategory});attrs("srcBtn",{title:m.multiSource});attrs("kindBtn",{title:m.multiKind});attrs("sort",{title:m.sortTitle});
-  const options={popular:m.sortPopular,relevance:m.sortRelevance,name:m.sortName,category:m.sortCategory,source:m.sortSource,latest:m.sortLatest};
-  document.querySelectorAll("#sort option").forEach(option=>option.textContent=options[option.value]);
-  attrs("favBtn",{title:m.favoritesLocal});text("favManageBtn",m.favoritesManage);attrs("favManageBtn",{title:m.favoritesManageTitle});text("aiBtn",m.aiButton);attrs("aiBtn",{title:m.aiTitle});
-  document.getElementById("kindLegend").innerHTML=["plugin","script","builtin","recipe"].map(kind=>`<span><i class="${kind}"></i>${esc(l.kinds[kind])}</span>`).join("");
-  attrs("kindLegend",{"aria-label":m.kindLegend});
-  document.getElementById("hintBox").innerHTML=`${esc(m.try)} `+l.hints.map(hint=>`<b data-q="${esc(hint)}">${esc(hint)}</b>`).join(" · ");
-  document.getElementById("footerSummary").innerHTML=m.footerTotal.replace("{count}",`<span id="total">${DATA.length||"…"}</span>`) + ` · ${esc(m.footerOfficial)} · ${esc(m.footerImage).replace("/find-effect","<code>/find-effect</code>")}`;
-  document.getElementById("footerLinks").innerHTML=`${esc(m.missing)} → <a href="https://github.com/xup61069/ae-effects-db/issues/new?template=add-effect.yml" target="_blank" rel="noopener">${esc(m.reportMissing)}</a> · <a href="https://github.com/xup61069/ae-effects-db/blob/main/CONTRIBUTING.md" target="_blank" rel="noopener">${esc(m.contribute)}</a> · <a href="https://github.com/xup61069/ae-effects-db" target="_blank" rel="noopener">${esc(m.github)}</a>`;
-  text("compareClear",m.clear);text("compareOpen",m.compare);text("detailTitle",m.detailTitle);text("compareDialogTitle",m.compareTitle);text("favoritesDialogTitle",m.favoritesManage);text("favoritesHelp",m.favoritesHelp);
-  text("favExport",m.exportFavorites);text("favImport",m.importFavorites);text("favClearAll",m.clearFavorites);
-  attrs("backTop",{title:m.backTop,"aria-label":m.backTop});document.querySelectorAll("[data-close]").forEach(button=>button.setAttribute("aria-label",m.close));
-  document.querySelectorAll("#languageSwitch [data-lang]").forEach(button=>{const on=button.dataset.lang===LANG;button.classList.toggle("on",on);button.setAttribute("aria-pressed",String(on));});
-  syncFavoriteButton();syncCompareTray();
-  if(DATA.length){catFilter.sync();srcFilter.sync();kindFilter.sync();renderActive();}
-}
-function loadFavorites(){
-  try{
-    const saved=JSON.parse(localStorage.getItem(FAVORITES_KEY)||"[]");
-    return new Set(Array.isArray(saved)?saved:[]);
-  }catch(e){return new Set();}
-}
-function saveFavorites(){
-  try{localStorage.setItem(FAVORITES_KEY,JSON.stringify([...FAVORITES]));}catch(e){}
-  syncFavoriteButton();
-}
-function syncFavoriteButton(){
-  const btn=document.getElementById("favBtn");
-  if(!btn)return;
-  btn.classList.toggle("active",favoritesOnly);
-  btn.setAttribute("aria-pressed",String(favoritesOnly));
-  btn.firstChild.textContent=`${favoritesOnly?"★":"☆"} ${t("favoritesOnly")}`;
-  btn.querySelector(".n").textContent=FAVORITES.size;
-}
+  <dialog id="favoritesDialog" class="modal" aria-labelledby="favoritesDialogTitle">
+    <div class="modalhead"><h2 id="favoritesDialogTitle">收藏管理</h2><button class="close" type="button" data-close="favoritesDialog">×</button></div>
+    <div class="modalbody">
+      <p id="favoritesHelp"></p>
+      <div class="favtools">
+        <button id="favExport" type="button">匯出收藏</button>
+        <button id="favImport" type="button">匯入收藏</button>
+        <button id="favClearAll" type="button">清除全部</button>
+      </div>
+      <input id="favImportFile" type="file" accept="application/json,.json" hidden>
+      <p id="favManageMsg" role="status"></p>
+    </div>
+  </dialog>
 
-function deriveSrc(fileSrc,url){
-  let host="";
-  try{host=new URL(url).hostname.toLowerCase();}catch(_){}
-  if(host==="booth.pm"||host.endsWith(".booth.pm"))return "booth";
-  if(host==="gumroad.com"||host.endsWith(".gumroad.com"))return "gumroad";
-  return fileSrc;
-}
-async function loadLegacyData(){
-  const all=await Promise.all(FILES.map(async f=>{
-    try{
-      const response = await fetch("data/"+f+".jsonl");
-      if(!response.ok) throw new Error(`HTTP ${response.status}`);
-      const t = await response.text();
-      return t.split("\n").filter(l=>l.trim()).map((l,i)=>{
-        try{const o=JSON.parse(l);o._src=deriveSrc(f,o.url||"");o._rank=i;return o;}catch(e){return null;}
-      }).filter(Boolean);
-    }catch(e){LOAD_ERRORS.push(`${f}: ${e.message}`);return [];}
-  }));
-  return all.flat();
-}
+  <dialog id="visualDialog" class="modal" aria-labelledby="visualTitle">
+    <div class="modalhead"><h2 id="visualTitle">畫面拆解器</h2><button class="close" type="button" data-close="visualDialog">×</button></div>
+    <div class="modalbody visualBody">
+      <p id="visualHelp"></p>
+      <button id="visualDrop" class="visualdrop" type="button">
+        <img id="visualPreview" alt="" hidden>
+        <span id="visualDropText">選擇或拖入圖片</span>
+      </button>
+      <input id="visualFile" type="file" accept="image/png,image/jpeg,image/webp" hidden>
+      <div id="visualFeatures" class="visualfeatures" aria-label="畫面特徵"></div>
+      <p id="visualMsg" role="status"></p>
+      <div class="visualactions">
+        <button id="visualSearch" type="button">直接搜尋</button>
+        <button id="visualCopy" type="button">複製 AI 提示詞</button>
+      </div>
+    </div>
+  </dialog>
 
-async function boot(){
-  applyLanguage();
-  LOAD_ERRORS = [];
-  const [indexResult,popularityResult,localizationResult,searchAliasesResult]=await Promise.allSettled([
-    fetch(`dist/web-index.json?v=${ASSET_VERSION}`).then(r=>{if(!r.ok)throw new Error(`HTTP ${r.status}`);return r.json();}),
-    fetch(`curation/popularity.json?v=${ASSET_VERSION}`).then(r=>{if(!r.ok)throw new Error(`HTTP ${r.status}`);return r.json();}),
-    fetch(`curation/localization.json?v=${ASSET_VERSION}`).then(r=>{if(!r.ok)throw new Error(`HTTP ${r.status}`);return r.json();}),
-    fetch(`curation/search-aliases.ja.json?v=${ASSET_VERSION}`).then(r=>{if(!r.ok)throw new Error(`HTTP ${r.status}`);return r.json();})
-  ]);
-  if(popularityResult.status==="fulfilled") POPULARITY_CONFIG=popularityResult.value;
-  else LOAD_ERRORS.push(t("loadPopularityError",{error:popularityResult.reason.message}));
-  if(localizationResult.status==="fulfilled") LOCALIZATION_CONFIG=localizationResult.value;
-  else LOAD_ERRORS.push(t("loadLocalizationError",{error:localizationResult.reason.message}));
-  if(searchAliasesResult.status==="fulfilled"&&searchAliasesResult.value?.aliases){
-    Object.entries(searchAliasesResult.value.aliases).forEach(([key,values])=>{SEARCH_ALIASES[normalizeText(key)]=values;});
-  }else LOAD_ERRORS.push(t("loadSearchAliasesError",{error:searchAliasesResult.reason?.message||"invalid format"}));
-  POPULAR_INDEX=new Map((POPULARITY_CONFIG.featured||[]).map((key,index)=>[key,index]));
-  if(indexResult.status==="fulfilled"&&Array.isArray(indexResult.value)) DATA=indexResult.value;
-  else{
-    LOAD_ERRORS.push(t("loadIndexError",{error:indexResult.reason?.message||"invalid format"}));
-    DATA=await loadLegacyData();
-  }
-  DATA.forEach(d=>{
-    d._search=normalizeText(d._search||hayRaw(d));
-    d._nameSearch=normalizeText(d.name);
-    d._tagSearch=normalizeText((d.tags||[]).join(" "));
-    d._date=d.updated||d.released||"";
-    DATA_BY_KEY.set(itemKey(d),d);
-  });
-  const availableKeys=new Set(DATA.map(itemKey));
-  let favoritesChanged=false;
-  for(const key of FAVORITES){if(!availableKeys.has(key)){FAVORITES.delete(key);favoritesChanged=true;}}
-  if(favoritesChanged)saveFavorites();
-  applyLanguage();
-  // build filters
-  catFilter.build(); srcFilter.build(); kindFilter.build();
-  restoreState();
-  if(LOAD_ERRORS.length){
-    document.getElementById("aiMsg").textContent=t("loadFilesError",{count:LOAD_ERRORS.length,errors:LOAD_ERRORS.join("、")});
-  }
-  render();
-  const requestedItem=new URL(location.href).searchParams.get("item");
-  if(requestedItem&&DATA_BY_KEY.has(requestedItem)) openDetail(requestedItem,false);
-}
+  <div id="updateBanner" class="updatebanner" role="status" hidden><span></span><button type="button"></button></div>
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
 
-// ── 多選篩選器（分類 / 來源共用）────────────────────────────
-function makeFilter({btnId, panelId, labelKey, keyOf, labelOf, sortByCount}){
-  const sel = new Set();
-  const btn = () => document.getElementById(btnId);
-  const panel = () => document.getElementById(panelId);
-
-  function build(){
-    const counts = {};
-    DATA.forEach(d=>{ const k=keyOf(d); if(k) counts[k]=(counts[k]||0)+1; });
-    let keys = Object.keys(counts);
-    keys.sort(sortByCount ? (a,b)=>counts[b]-counts[a]||a.localeCompare(b)
-                          : (a,b)=>FILES.indexOf(a)-FILES.indexOf(b));   // 來源維持原本的排列順序
-    panel().innerHTML =
-      `<button type="button" class="c clr" data-clear="1">✕ ${esc(t("clear"))}</button>` +
-      keys.map(k=>`<button type="button" class="c" data-k="${esc(k)}" aria-pressed="false">${esc(labelOf(k))}<span class="n">${counts[k]}</span></button>`).join("");
-    panel().addEventListener("click", e=>{
-      const el = e.target.closest(".c");
-      if(!el) return;
-      if(el.dataset.clear) sel.clear();
-      else{ const k=el.dataset.k; sel.has(k) ? sel.delete(k) : sel.add(k); }
-      sync(); renderActive(); render();
-    });
-    btn().addEventListener("click", e=>{
-      e.stopPropagation();
-      const willOpen = panel().hidden;
-      closeAllPanels();                    // 一次只開一個
-      panel().hidden = !willOpen;
-      btn().setAttribute("aria-expanded", String(willOpen));
-    });
-    panel().addEventListener("click", e=>e.stopPropagation());
-  }
-  function sync(){
-    panel().querySelectorAll(".c[data-k]").forEach(el=>{
-      const on=sel.has(el.dataset.k),count=el.querySelector(".n")?.textContent||"";
-      el.innerHTML=`${esc(labelOf(el.dataset.k))}<span class="n">${esc(count)}</span>`;el.classList.toggle("on",on);el.setAttribute("aria-pressed",String(on));
-    });
-    const clear=panel().querySelector("[data-clear]");if(clear)clear.textContent=`✕ ${t("clear")}`;
-    const label=t(labelKey);btn().textContent = sel.size ? `${label} (${sel.size}) ▾` : `${label} ▾`;
-    btn().classList.toggle("active", sel.size>0);
-  }
-  return {build, sync, sel, labelKey, labelOf, panelId};
-}
-
-function closeAllPanels(){
-  document.querySelectorAll(".catpanel").forEach(p=>p.hidden=true);
-  ["catBtn","srcBtn","kindBtn"].forEach(id=>document.getElementById(id)?.setAttribute("aria-expanded","false"));
-}
-
-// 已選條件顯示成可個別移除的標籤，收起面板也看得到目前篩選了什麼
-function renderActive(){
-  const box=document.getElementById("activeFilters");
-  const items=[];
-  [catFilter, srcFilter, kindFilter].forEach(f=>{
-    f.sel.forEach(k=>items.push({f,k,text:f.labelOf(k)}));
-  });
-  if(!items.length){ box.innerHTML=""; return; }
-  box.innerHTML = items.map((it,i)=>
-      `<button type="button" class="a" data-i="${i}">${esc(it.text)}<span class="x">✕</span></button>`).join("")
-    + `<button type="button" class="allclr" data-all="1">${esc(t("clearAll"))}</button>`;
-  box.querySelectorAll("[data-i]").forEach(el=>{
-    el.onclick=()=>{ const it=items[+el.dataset.i]; it.f.sel.delete(it.k); it.f.sync(); renderActive(); render(); };
-  });
-  const all=box.querySelector("[data-all]");
-  if(all) all.onclick=()=>{ catFilter.sel.clear(); srcFilter.sel.clear(); kindFilter.sel.clear();
-    catFilter.sync(); srcFilter.sync(); kindFilter.sync(); renderActive(); render(); };
-}
-
-const catFilter = makeFilter({btnId:"catBtn", panelId:"catPanel", labelKey:"functionalCategory",
-  keyOf:d=>d.cat, labelOf:k=>CAT_LABEL[k]?`${CAT_LABEL[k]} · ${k}`:k, sortByCount:true});
-const srcFilter = makeFilter({btnId:"srcBtn", panelId:"srcPanel", labelKey:"source",
-  keyOf:d=>d._src, labelOf:k=>SRC_LABEL[k]||k, sortByCount:false});
-const kindFilter = makeFilter({btnId:"kindBtn", panelId:"kindPanel", labelKey:"kind",
-  keyOf:d=>d.kind, labelOf:k=>KIND_LABEL[k]||k, sortByCount:true});
-const selCats = catFilter.sel, selSrcs = srcFilter.sel, selKinds = kindFilter.sel;
-
-function restoreState(){
-  const params=new URLSearchParams(location.search);
-  document.getElementById("q").value=params.get("q")||"";
-  document.getElementById("mq").value=document.getElementById("q").value;
-  [["cat",selCats],["src",selSrcs],["kind",selKinds]].forEach(([key,set])=>{
-    (params.get(key)||"").split(",").filter(Boolean).forEach(value=>set.add(value));
-  });
-  const sort=params.get("sort");
-  if(["popular","relevance","name","category","source","latest"].includes(sort)) document.getElementById("sort").value=sort;
-  favoritesOnly=params.get("fav")==="1";
-  try{
-    const keys=JSON.parse(params.get("compare")||"[]");
-    if(Array.isArray(keys)) keys.filter(key=>DATA_BY_KEY.has(key)).slice(0,4).forEach(key=>COMPARE.add(key));
-  }catch(e){}
-  syncFavoriteButton();
-  syncCompareTray();
-  catFilter.sync();srcFilter.sync();kindFilter.sync();renderActive();
-}
-function syncState(){
-  const url=new URL(location.href);
-  const setParam=(key,value)=>value?url.searchParams.set(key,value):url.searchParams.delete(key);
-  setParam("q",document.getElementById("q").value.trim());
-  setParam("cat",[...selCats].join(","));setParam("src",[...selSrcs].join(","));setParam("kind",[...selKinds].join(","));
-  const sort=document.getElementById("sort").value;
-  setParam("sort",sort==="popular"?"":sort);
-  setParam("lang",LANG==="zh"?"":LANG);
-  setParam("fav",favoritesOnly?"1":"");
-  setParam("compare",COMPARE.size?JSON.stringify([...COMPARE]):"");
-  history.replaceState(null,"",url);
-}
-
-function hayRaw(d){
-  let s=[d.name,d.kind,KIND_LABEL[d.kind],d.cat,d.desc,d.look,d.suite,d.vendor,(d.tags||[]).join(" "),(d.stack||[]).join(" "),d.desc_en||"",d.desc_ja||"",d.look_en||"",d.look_ja||""];
-  if(d.variants){s.push(Object.keys(d.variants).join(" "));s.push(Object.values(d.variants).join(" "));}
-  return s.join(" ");
-}
-function hay(d){return d._search||normalizeText(hayRaw(d));}
-function parseTerms(raw){
-  const terms=[];
-  const pattern=/"([^"]+)"|'([^']+)'|(\S+)/g;
-  let match;
-  while((match=pattern.exec(raw))) terms.push(normalizeText(match[1]||match[2]||match[3]));
-  return [...new Set(terms)];
-}
-function termGroups(terms){return terms.map(term=>[...new Set([term,...(SEARCH_ALIASES[term]||[]).map(normalizeText)])]);}
-function score(d,terms,phrase=""){
-  const name=d._nameSearch||normalizeText(d.name), tags=d._tagSearch||normalizeText((d.tags||[]).join(" ")), text=hay(d);
-  let sc=0;
-  for(const group of termGroups(terms)){
-    let best=0;
-    for(const t of group){if(!t)continue;best=Math.max(best,(name.includes(t)?5:0)+(tags.includes(t)?3:0)+(text.includes(t)?1:0));}
-    sc+=best;
-  }
-  if(phrase){if(name===phrase)sc+=40;else if(name.includes(phrase))sc+=20;if(tags.includes(phrase))sc+=10;}
-  return sc;
-}
-// 可解釋的人工策展分數，不是下載量、銷量或使用者追蹤資料。
-const POPULAR_SRC = ["aescripts","third-party","red-giant","sapphire","universe","continuum","builtin-ae","recipes","installed"];
-function popularityBreakdown(d){
-  const featured=POPULAR_INDEX.get(`${d._src}:${d.name}`);
-  const max=POPULARITY_CONFIG.maximum_points||{};
-  const featuredCount=Math.max(1,(POPULARITY_CONFIG.featured||[]).length-1);
-  const featuredScore=featured===undefined?0:Math.round((max.featured||56)-(featured/featuredCount)*20);
-  const source=Math.min(max.source||20,POPULARITY_CONFIG.source_weights?.[d._src]||0);
-  const quality=(d.url?2:0)+(d.look?2:0)+((d.desc||"").length>=30?2:1)+((d.tags||[]).length>=8?2:1)+(d.unverified?0:2);
-  const age=d._date?Math.max(0,(Date.now()-Date.parse(d._date+"T00:00:00Z"))/(365.25*86400000)):Infinity;
-  const recency=Number.isFinite(age)?Math.max(0,Math.round((max.recency||4)-age)):0;
-  const curatedOrder=Math.max(0,(max.curated_order||10)-Math.floor(Math.min(d._rank??500,500)/50));
-  return {featured:featuredScore,source,quality,recency,curatedOrder,total:Math.min(100,featuredScore+source+quality+recency+curatedOrder)};
-}
-function popularityScore(d){return popularityBreakdown(d).total;}
-function popularCmp(a,b){
-  return popularityScore(b)-popularityScore(a)
-    || POPULAR_SRC.indexOf(a._src)-POPULAR_SRC.indexOf(b._src)
-    || (a._rank??9999)-(b._rank??9999)
-    || (a.name||"").localeCompare(b.name||"");
-}
-function sourceCmp(a,b){
-  return POPULAR_SRC.indexOf(a._src)-POPULAR_SRC.indexOf(b._src)
-    || (a._rank??9999)-(b._rank??9999)
-    || (a.name||"").localeCompare(b.name||"");
-}
-function categoryCmp(a,b){
-  return (CAT_LABEL[a.cat]||a.cat||"").localeCompare(CAT_LABEL[b.cat]||b.cat||"", localeData().locale)
-    || (a.name||"").localeCompare(b.name||"");
-}
-function resultCmp(a,b,hasTerms){
-  const mode=document.getElementById("sort").value;
-  if(mode==="name") return (a[1].name||"").localeCompare(b[1].name||"");
-  if(mode==="category") return categoryCmp(a[1],b[1]);
-  if(mode==="source") return sourceCmp(a[1],b[1]);
-  if(mode==="latest") return (b[1]._date||"").localeCompare(a[1]._date||"")||popularCmp(a[1],b[1]);
-  if(mode==="relevance" && hasTerms) return b[0]-a[0]||popularCmp(a[1],b[1]);
-  return popularCmp(a[1],b[1]);
-}
-function sortedResults(pool,terms,{requireAll=true,phrase=""}={}){
-  const hasTerms=terms.length>0;
-  return pool.map(d=>[hasTerms?score(d,terms,phrase):0,d])
-    .filter(x=>!hasTerms||(requireAll?termGroups(terms).every(group=>group.some(t=>hay(x[1]).includes(t))):x[0]>0))
-    .sort((a,b)=>resultCmp(a,b,hasTerms)).map(x=>x[1]);
-}
-function hl(txt,terms){
-  let s=esc(txt);
-  for(const t of terms){if(t.length<1)continue;
-    try{s=s.replace(new RegExp("("+t.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")+")","gi"),"<mark>$1</mark>");}catch(e){}}
-  return s;
-}
-
-// 中文長詞拆成 2 字詞組（「煙霧模擬」→ 煙霧/霧模/模擬），只在完全搜不到時當備援
-const CJK=/[一-鿿㐀-䶿]/;
-const CJK2=/^[一-鿿㐀-䶿]{2}$/;   // 兩個字都要是中文，避免產生「z不」這種混雜詞
-function segment(terms){
-  const out=[];
-  for(const t of terms){
-    if(t.length>=3 && CJK.test(t)){
-      for(let i=0;i<t.length-1;i++){
-        const g=t.slice(i,i+2);
-        if(CJK2.test(g)) out.push(g);
-      }
-    }
-  }
-  return [...new Set(out)];
-}
-
-function levenshtein(a,b){
-  let prev=Array.from({length:b.length+1},(_,i)=>i);
-  for(let i=1;i<=a.length;i++){
-    const row=[i];
-    for(let j=1;j<=b.length;j++) row[j]=Math.min(row[j-1]+1,prev[j]+1,prev[j-1]+(a[i-1]===b[j-1]?0:1));
-    prev=row;
-  }
-  return prev[b.length];
-}
-function vocabulary(){
-  if(SEARCH_VOCAB)return SEARCH_VOCAB;
-  SEARCH_VOCAB=new Set();
-  DATA.forEach(d=>[d.name,...(d.tags||[])].forEach(value=>normalizeText(value).split(/[^a-z0-9\u3400-\u9fff]+/).filter(w=>w.length>=3).forEach(w=>SEARCH_VOCAB.add(w))));
-  return SEARCH_VOCAB;
-}
-function correctTerms(terms){
-  const words=vocabulary(), corrected=[];let changed=false;
-  for(const term of terms){
-    if(term.length<4||words.has(term)||CJK.test(term)){corrected.push(term);continue;}
-    const limit=term.length>=7?2:1;
-    let best=term,bestDistance=limit+1;
-    for(const word of words){if(Math.abs(word.length-term.length)>limit)continue;const distance=levenshtein(term,word);if(distance<bestDistance){best=word;bestDistance=distance;if(!distance)break;}}
-    corrected.push(best);changed=changed||best!==term;
-  }
-  return changed?corrected:[];
-}
-
-function render(preserveLimit=false){
-  if(!preserveLimit) visibleLimit=60;
-  const raw=normalizeText(document.getElementById("q").value);
-  const terms=parseTerms(raw);
-  const phrase=terms.join(" ");
-  let pool=DATA;
-  if(selCats.size)pool=pool.filter(d=>selCats.has(d.cat));
-  if(selSrcs.size)pool=pool.filter(d=>selSrcs.has(d._src));
-  if(selKinds.size)pool=pool.filter(d=>selKinds.has(d.kind));
-  if(favoritesOnly)pool=pool.filter(d=>FAVORITES.has(itemKey(d)));
-  let list, searchNote="", highlightTerms=[...terms];
-  if(terms.length){
-    list=sortedResults(pool,terms,{requireAll:true,phrase});
-    if(!list.length){
-      if(terms.length>1){
-        list=sortedResults(pool,terms,{requireAll:false,phrase});
-        if(list.length) searchNote=t("noAnd");
-      }
-      if(!list.length){
-        const segs=segment(terms);
-        if(segs.length){
-          list=sortedResults(pool,segs,{requireAll:false});
-          if(list.length){searchNote=t("segmented",{query:esc(raw),terms:segs.map(esc).join(LANG==="en"?", ":"、")});highlightTerms.push(...segs);}
-        }
-      }
-      if(!list.length){
-        const corrected=correctTerms(terms);
-        if(corrected.length){
-          list=sortedResults(pool,corrected,{requireAll:true,phrase:corrected.join(" ")});
-          if(list.length){searchNote=t("corrected",{query:esc(raw),terms:corrected.map(esc).join(LANG==="en"?", ":"、")});highlightTerms.push(...corrected);}
-        }
-      }
-    }
-  }else{
-    list=sortedResults(pool,[]);
-  }
-  CURRENT_RESULTS=list;
-  const kindCounts=list.reduce((counts,d)=>{counts[d.kind]=(counts[d.kind]||0)+1;return counts;},{});
-  const summary=Object.entries(kindCounts).map(([kind,n])=>`<i>${esc(KIND_LABEL[kind]||kind)} ${n}</i>`).join("");
-  const sortMode=document.getElementById("sort").value;
-  const sortNotes={
-    popular:t("sortNotePopular"),
-    relevance:raw?t("sortNoteRelevance"):t("sortNoteRelevanceEmpty"),
-    name:t("sortNoteName"),
-    category:t("sortNoteCategory"),
-    source:t("sortNoteSource"),
-    latest:t("sortNoteLatest",{count:list.filter(d=>d._date).length})
-  };
-  const sortNote=` <span title="${esc(sortNotes[sortMode])}">· ${esc(sortNotes[sortMode])} ⓘ</span>`;
-  document.getElementById("count").innerHTML =
-    ((raw||selCats.size||selSrcs.size||selKinds.size||favoritesOnly)? t("results",{count:list.length}):t("browsingAll",{count:list.length})) +
-    (searchNote?` <span>· ${searchNote}</span>`:sortNote) + `<span class="summary">${summary}</span>`;
-  syncState();
-  document.getElementById("clearQ").hidden=!raw;
-  const box=document.getElementById("results");
-  if(!list.length){
-    const hasFilter = selCats.size || selSrcs.size || selKinds.size || favoritesOnly;
-    box.innerHTML = '<div class="empty">' + (hasFilter
-      ? `${esc(t("emptyFiltered"))}<br><b class="lnk" id="emptyClear">${esc(t("clearAll"))}</b>`
-      : esc(t("emptySearch"))) + '</div>';
-    const ec = document.getElementById("emptyClear");
-    if(ec) ec.onclick = ()=>{ catFilter.sel.clear(); srcFilter.sel.clear(); kindFilter.sel.clear();favoritesOnly=false;
-      syncFavoriteButton();
-      catFilter.sync(); srcFilter.sync(); kindFilter.sync(); renderActive(); render(); };
-    return;
-  }
-  box.innerHTML=list.slice(0,visibleLimit).map(d=>{
-    const origin=d.suite||d.vendor||SRC_LABEL[d._src]||d._src;
-    let stack="";
-    if(d.stack) stack='<ul class="stack">'+d.stack.map(s=>"<li>▸ "+hl(s,highlightTerms)+"</li>").join("")+
-      (d.builtin?`<li style="color:var(--accent)">${esc(t("builtinAlternative"))} `+hl(d.builtin,highlightTerms)+'</li>':"")+"</ul>";
-    let vars="";
-    if(d.variants) vars='<div class="variants">'+Object.entries(d.variants).map(([k,v])=>
-      "<span>"+esc(k)+" · "+esc(v)+"</span>").join("")+"</div>";
-    let tags=(d.tags||[]).slice(0,12).map(t=>`<button type="button" data-q="${esc(t)}">${esc(t)}</button>`).join("");
-    const warn = d.unverified ? `<span class="warn">${esc(t("unverified"))}</span>` : '';
-    const officialUrl=localizedOfficialUrl(d.url),localizedOfficial=hasLocalizedOfficialUrl(d.url);
-    const nameHtml = d.url
-      ? `<a class="name namelink" href="${esc(officialUrl)}" target="_blank" rel="noopener" title="${esc(t(localizedOfficial?"openLocalizedOfficial":"openOfficial"))}">${hl(d.name,highlightTerms)}<span class="ext">↗</span></a>`
-      : `<span class="name">${hl(d.name,highlightTerms)}</span>`;
-    const kind=d.kind||"plugin";
-    const catLabel=CAT_LABEL[d.cat] ? `${CAT_LABEL[d.cat]} · ${d.cat}` : (d.cat||"");
-    const favorite=FAVORITES.has(itemKey(d));
-    const compared=COMPARE.has(itemKey(d));
-    const popularity=popularityBreakdown(d);
-    const adobe=officialCategory(d);
-    const adobeBadge=adobe?`<a class="officialbadge" href="${esc(adobe.source)}" target="_blank" rel="noopener" title="${esc(t("adobeCategory"))}">Adobe · ${esc(adobe.label)}</a>`:"";
-    const popularityTitle=t("popularityTitle",{...popularity,order:popularity.curatedOrder});
-    const date=d._date?`<span class="datebadge" title="${esc(t("dateSourceTitle",{url:d.date_url||d.url}))}">${esc(d.updated?t("updated"):t("released"))} ${esc(d._date)}</span>`:"";
-    const original=needsOriginal(d)?`<small class="original-label">${esc(t("descriptionOriginal"))}</small>`:"";
-    return `<div class="card kind-${kind}"><div class="top">
-        ${nameHtml}
-        <span class="kindbadge kind-${kind}">${esc(KIND_LABEL[kind]||kind)}</span>
-        <span class="catbadge" title="${esc(t("siteCategoryTitle"))}">${esc(catLabel)}</span>${adobeBadge}${warn}${date}
-        <span class="popscore" title="${esc(popularityTitle)}">${esc(t("popularity",{score:popularity.total}))}</span>
-        <span class="src">${esc(origin)}</span>
-        <span class="cardactions"><button type="button" data-detail="${esc(itemKey(d))}">${esc(t("details"))}</button><button class="${compared?"on":""}" type="button" data-compare="${esc(itemKey(d))}" aria-pressed="${compared}">${esc(compared?t("compareSelected"):t("compare"))}</button><button class="favbtn${favorite?" on":""}" type="button" data-favorite="${esc(itemKey(d))}" aria-pressed="${favorite}" title="${esc(favorite?t("removeFavorite"):t("addFavorite"))}" aria-label="${esc(t("favoriteLabel",{name:d.name}))}">${favorite?"★":"☆"}</button></span></div>
-      <div class="desc">${hl(localField(d,"desc"),highlightTerms)}${original}</div>
-      ${stack}${vars}<div class="tags">${tags}</div></div>`;
-  }).join("") + (list.length>visibleLimit
-    ? `<button id="loadMore" class="more" type="button">${esc(t("showMore",{count:list.length-visibleLimit}))}</button>`:"");
-  const more=document.getElementById("loadMore");
-  more?.addEventListener("click",()=>{visibleLimit+=60;render(true);});
-  LOAD_MORE_OBSERVER?.disconnect();
-  if(more&&"IntersectionObserver" in window){
-    LOAD_MORE_OBSERVER=new IntersectionObserver(entries=>{if(entries.some(entry=>entry.isIntersecting)){LOAD_MORE_OBSERVER.disconnect();visibleLimit+=60;render(true);}},{rootMargin:"500px"});
-    LOAD_MORE_OBSERVER.observe(more);
-  }
-}
-
-function syncCompareTray(){
-  const tray=document.getElementById("compareTray");
-  tray.hidden=COMPARE.size===0;
-  document.getElementById("compareTrayText").textContent=t("compareTray",{count:COMPARE.size});
-  document.getElementById("compareOpen").disabled=COMPARE.size<2;
-}
-function toggleCompare(key){
-  if(COMPARE.has(key))COMPARE.delete(key);
-  else if(COMPARE.size<4)COMPARE.add(key);
-  else{document.getElementById("aiMsg").textContent=t("compareMax");return;}
-  syncCompareTray();render(true);
-}
-function showDialog(id){const dialog=document.getElementById(id);if(!dialog.open)dialog.showModal();}
-function closeDialog(id){document.getElementById(id)?.close();}
-function detailList(values){return values?.length?`<div class="detailtags">${values.map(value=>`<span>${esc(value)}</span>`).join("")}</div>`:"";}
-function openDetail(key,updateUrl=true){
-  const d=DATA_BY_KEY.get(key);if(!d)return;
-  const pop=popularityBreakdown(d),origin=d.suite||d.vendor||SRC_LABEL[d._src]||d._src;
-  document.getElementById("detailTitle").textContent=d.name;
-  const variants=d.variants?`<h3>${esc(t("variants"))}</h3>${detailList(Object.entries(d.variants).map(([name,label])=>`${name} · ${label}`))}`:"";
-  const stack=d.stack?`<h3>${esc(t("effectStack"))}</h3><ol>${d.stack.map(value=>`<li>${esc(value)}</li>`).join("")}</ol>${d.builtin?`<p><b>${esc(t("builtinAlternative"))}</b> ${esc(d.builtin)}</p>`:""}`:"";
-  const date=d._date?`<p><b>${esc(d.updated?t("latestUpdate"):t("firstRelease"))}：</b>${esc(d._date)} · <a href="${esc(localizedOfficialUrl(d.date_url||d.url))}" target="_blank" rel="noopener">${esc(t("dateSource"))}</a></p>`:"";
-  const original=needsOriginal(d)?`<small class="original-label">${esc(t("descriptionOriginal"))}</small>`:"";
-  const adobe=officialCategory(d);
-  const adobeBadge=adobe?`<a class="officialbadge" href="${esc(adobe.source)}" target="_blank" rel="noopener" title="${esc(t("adobeCategory"))}">${esc(t("adobeCategory"))} · ${esc(adobe.label)}</a>`:"";
-  const officialUrl=localizedOfficialUrl(d.url),localizedOfficial=hasLocalizedOfficialUrl(d.url);
-  document.getElementById("detailBody").innerHTML=`
-    <div class="detailmeta"><span class="kindbadge kind-${esc(d.kind)}">${esc(KIND_LABEL[d.kind]||d.kind)}</span><span class="catbadge" title="${esc(t("siteCategoryTitle"))}">${esc(t("functionalCategory"))} · ${esc(CAT_LABEL[d.cat]||d.cat)}</span>${adobeBadge}<span class="catbadge">${esc(origin)}</span></div>
-    <p>${esc(localField(d,"desc"))}${original}</p>${localField(d,"look")?`<p><b>${esc(t("appearance"))}</b> ${esc(localField(d,"look"))}${original}</p>`:""}${date}${variants}${stack}
-    <h3>${esc(t("searchTags"))}</h3>${detailList(d.tags||[])}
-    <h3>${esc(t("popularityHeading",{score:pop.total}))}</h3><div class="popbreak"><span><b>${pop.featured}</b>${esc(t("featured"))}</span><span><b>${pop.source}</b>${esc(t("sourceWeight"))}</span><span><b>${pop.quality}</b>${esc(t("dataQuality"))}</span><span><b>${pop.recency}</b>${esc(t("recentUpdate"))}</span><span><b>${pop.curatedOrder}</b>${esc(t("curatedOrder"))}</span></div>
-    <div class="detailactions"><a href="${esc(officialUrl)}" target="_blank" rel="noopener">${esc(t(localizedOfficial?"localizedOfficialPage":"officialPage"))}</a><button type="button" data-favorite="${esc(key)}">${esc(FAVORITES.has(key)?t("removeFavorite"):t("addFavorite"))}</button><button type="button" data-compare="${esc(key)}">${esc(COMPARE.has(key)?t("removeCompare"):t("addCompare"))}</button><button type="button" data-share-detail="${esc(key)}">${esc(t("copyDetailUrl"))}</button></div>`;
-  if(updateUrl){const url=new URL(location.href);url.searchParams.set("item",key);history.replaceState(null,"",url);}
-  showDialog("detailDialog");
-}
-function openCompare(){
-  const rows=[...COMPARE].map(key=>DATA_BY_KEY.get(key)).filter(Boolean);if(rows.length<2)return;
-  const fields=[
-    ["fieldKind",d=>KIND_LABEL[d.kind]||d.kind],["fieldCategory",d=>CAT_LABEL[d.cat]||d.cat],["fieldAdobeCategory",d=>officialCategory(d)?.label||"—"],["fieldSource",d=>d.suite||d.vendor||SRC_LABEL[d._src]||d._src],
-    ["fieldUse",d=>localField(d,"desc")],["fieldAppearance",d=>localField(d,"look")||"—"],["fieldDate",d=>d._date||"—"],["fieldPopularity",d=>`${popularityScore(d)}/100`],
-    ["fieldTags",d=>(d.tags||[]).slice(0,12).join(LANG==="en"?", ":"、")],["fieldOfficial",d=>`<a href="${esc(localizedOfficialUrl(d.url))}" target="_blank" rel="noopener">${esc(t("open"))}</a>`]
-  ];
-  const notice=LANG==="zh"?"":`<p class="language-note">${esc(t("languageNote"))}</p>`;
-  document.getElementById("compareBody").innerHTML=notice+`<table class="comparetable"><thead><tr><th>${esc(t("compareItems"))}</th>${rows.map(d=>`<th>${esc(d.name)}</th>`).join("")}</tr></thead><tbody>${fields.map(([key,value])=>`<tr><th>${esc(t(key))}</th>${rows.map(d=>`<td>${key==="fieldOfficial"?value(d):esc(value(d))}</td>`).join("")}</tr>`).join("")}</tbody></table>`;
-  showDialog("compareDialog");
-}
-function favoriteExport(){
-  const payload={version:1,exported:new Date().toISOString(),favorites:[...FAVORITES]};
-  const href=URL.createObjectURL(new Blob([JSON.stringify(payload,null,2)],{type:"application/json"}));
-  const link=document.createElement("a");link.href=href;link.download="ae-effects-favorites.json";link.click();setTimeout(()=>URL.revokeObjectURL(href),1000);
-}
-async function favoriteImport(file){
-  const msg=document.getElementById("favManageMsg");
-  try{
-    const parsed=JSON.parse(await file.text()),keys=Array.isArray(parsed)?parsed:parsed.favorites;
-    if(!Array.isArray(keys))throw new Error(t("importMissing"));
-    let added=0;keys.forEach(key=>{if(typeof key==="string"&&DATA_BY_KEY.has(key)&&!FAVORITES.has(key)){FAVORITES.add(key);added++;}});
-    saveFavorites();render(true);msg.textContent=t("imported",{added,count:FAVORITES.size});
-  }catch(error){msg.textContent=t("importFailed",{error:error.message});}
-}
-
-function showPromptBox(msg){
-  // 瀏覽器擋剪貼簿時的備援：直接給一個已全選的文字框，按 Ctrl+C 就好
-  msg.textContent=t("copyFallback");
-  const ta = document.createElement("textarea");
-  ta.value = localeData().aiPrompt;
-  ta.rows = 6;
-  ta.style.cssText = "width:100%;margin-top:8px;padding:10px;border-radius:10px;font-size:12px;"
-    + "border:1px solid var(--border);background:var(--panel);color:var(--text);font-family:inherit";
-  msg.appendChild(ta);
-  ta.focus(); ta.select();
-}
-
-document.getElementById("aiBtn").addEventListener("click", async ()=>{
-  const msg = document.getElementById("aiMsg");
-  msg.innerHTML = "";
-  let copied = false;
-  try{
-    await navigator.clipboard.writeText(localeData().aiPrompt);
-    copied = true;
-  }catch(e){ copied = false; }
-  if(copied){
-    msg.innerHTML = `${esc(t("aiCopied"))} <a href="https://github.com/xup61069/ae-effects-db/blob/main/PROMPT.md" target="_blank" rel="noopener">${esc(t("moreUsage"))}</a>`;
-    setTimeout(()=>{ if(!msg.querySelector("textarea")) msg.textContent=""; }, 12000);
-  }else{
-    showPromptBox(msg);
-  }
-});
-
-let searchTimer;
-function scheduleSearch(value){
-  document.getElementById("q").value=value;document.getElementById("mq").value=value;
-  clearTimeout(searchTimer);searchTimer=setTimeout(()=>render(),70);
-}
-document.getElementById("q").addEventListener("input",e=>scheduleSearch(e.target.value));
-document.getElementById("mq").addEventListener("input",e=>scheduleSearch(e.target.value));
-document.getElementById("clearQ").addEventListener("click",()=>{
-  scheduleSearch("");document.getElementById("q").focus();
-});
-document.getElementById("clearMq").addEventListener("click",()=>{scheduleSearch("");document.getElementById("mq").focus();});
-document.getElementById("sort").addEventListener("change",()=>render());
-document.getElementById("favBtn").addEventListener("click",()=>{
-  favoritesOnly=!favoritesOnly;syncFavoriteButton();render();
-});
-document.getElementById("favManageBtn").addEventListener("click",()=>showDialog("favoritesDialog"));
-document.getElementById("favExport").addEventListener("click",favoriteExport);
-document.getElementById("favImport").addEventListener("click",()=>document.getElementById("favImportFile").click());
-document.getElementById("favImportFile").addEventListener("change",e=>{if(e.target.files[0])favoriteImport(e.target.files[0]);e.target.value="";});
-document.getElementById("favClearAll").addEventListener("click",()=>{
-  if(!FAVORITES.size)return;
-  if(confirm(t("clearConfirm",{count:FAVORITES.size}))){FAVORITES.clear();saveFavorites();favoritesOnly=false;syncFavoriteButton();render();document.getElementById("favManageMsg").textContent=t("cleared");}
-});
-document.getElementById("languageSwitch").addEventListener("click",event=>{
-  const button=event.target.closest("[data-lang]");if(!button||button.dataset.lang===LANG)return;
-  LANG=button.dataset.lang;document.getElementById("aiMsg").textContent="";applyLanguage();render();
-  const detail=document.getElementById("detailDialog");if(detail.open){const key=new URL(location.href).searchParams.get("item");if(key)openDetail(key,false);}
-  if(document.getElementById("compareDialog").open)openCompare();
-});
-document.getElementById("compareOpen").addEventListener("click",openCompare);
-document.getElementById("compareClear").addEventListener("click",()=>{COMPARE.clear();syncCompareTray();render(true);});
-document.getElementById("backTop").addEventListener("click",()=>window.scrollTo({top:0,behavior:"smooth"}));
-window.addEventListener("scroll",()=>{document.getElementById("backTop").hidden=scrollY<700;},{passive:true});
-document.getElementById("detailDialog").addEventListener("close",()=>{const url=new URL(location.href);url.searchParams.delete("item");history.replaceState(null,"",url);});
-// 點面板以外的地方、或按 Esc，就收起篩選面板
-document.addEventListener("click", closeAllPanels);
-document.addEventListener("keydown", e=>{ if(e.key==="Escape") closeAllPanels(); });
-document.addEventListener("click",e=>{
-  const close=e.target.closest&&e.target.closest("[data-close]");
-  if(close){closeDialog(close.dataset.close);return;}
-  const detail=e.target.closest&&e.target.closest("[data-detail]");
-  if(detail){openDetail(detail.dataset.detail);return;}
-  const compare=e.target.closest&&e.target.closest("[data-compare]");
-  if(compare){const key=compare.dataset.compare;toggleCompare(key);if(document.getElementById("detailDialog").open)openDetail(key,false);return;}
-  const favorite=e.target.closest&&e.target.closest("[data-favorite]");
-  if(favorite){
-    const key=favorite.dataset.favorite;
-    FAVORITES.has(key)?FAVORITES.delete(key):FAVORITES.add(key);
-    saveFavorites();render(true);if(document.getElementById("detailDialog").open)openDetail(key,false);return;
-  }
-  const share=e.target.closest&&e.target.closest("[data-share-detail]");
-  if(share){const url=new URL(location.href);url.searchParams.set("item",share.dataset.shareDetail);navigator.clipboard?.writeText(String(url)).then(()=>{share.textContent=t("copied");}).catch(()=>prompt(t("copyUrl"),url));return;}
-  const q=e.target.getAttribute&&e.target.getAttribute("data-q");
-  if(q){scheduleSearch(q);window.scrollTo({top:0,behavior:"smooth"});}
-});
-boot();
-</script>
+  <script src="i18n.js"></script>
+  <script type="module" src="assets/app.js"></script>
 </body>
 </html>
