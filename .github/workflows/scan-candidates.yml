@@ -12,9 +12,14 @@ permissions:
   contents: read
   issues: write
 
+concurrency:
+  group: scan-candidates
+  cancel-in-progress: true
+
 jobs:
   scan:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v7.0.1
       - uses: actions/setup-python@v7.0.0
