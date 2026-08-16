@@ -61,6 +61,22 @@ async function verifySuggestionKeyboard(page, inputSelector, listSelector) {
   await expect(input).toBeFocused();
 }
 
+async function verifyDialogAccessibility(page, dialogSelector, targetSelector) {
+  const dialog = page.locator(dialogSelector);
+  await expect(dialog).toBeVisible();
+  await expect(dialog.locator(".close")).toHaveAttribute("aria-label", /.+/);
+  const accessibility = await new AxeBuilder({page}).include(dialogSelector).analyze();
+  expect(accessibility.violations.filter(result => ["critical", "serious"].includes(result.impact))).toEqual([]);
+  const targets = dialog.locator(targetSelector);
+  expect(await targets.count()).toBeGreaterThan(0);
+  for (let index = 0; index < await targets.count(); index += 1) {
+    const box = await targets.nth(index).boundingBox();
+    expect(box, `${dialogSelector} target ${index}`).not.toBeNull();
+    expect(box.height, `${dialogSelector} target ${index} height`).toBeGreaterThanOrEqual(44);
+    expect(box.width, `${dialogSelector} target ${index} width`).toBeGreaterThanOrEqual(44);
+  }
+}
+
 test("search suggestions, dynamic facets, history, detail and compare", async ({page}) => {
   await ready(page);
   await page.locator("#q").fill("glwo");
@@ -233,6 +249,38 @@ test("390px filter drawer has 44px controls and no serious axe violations", asyn
   await expect(page.locator("#filterDialog")).not.toBeVisible();
   const accessibility = await new AxeBuilder({page}).analyze();
   expect(accessibility.violations.filter(result => ["critical", "serious"].includes(result.impact))).toEqual([]);
+});
+
+test("mobile dialogs expose named 44px targets, pass axe, and restore focus", async ({page}) => {
+  await page.setViewportSize({width:390, height:844});
+  await ready(page);
+
+  const detailOpener = page.locator("[data-detail]").first();
+  await detailOpener.click();
+  await verifyDialogAccessibility(page, "#detailDialog", ".close, .detailactions a, .detailactions button, .recommendcard");
+  await page.keyboard.press("Escape");
+  await expect(detailOpener).toBeFocused();
+
+  await page.locator("[data-compare]").nth(0).click();
+  await page.locator("[data-compare]").nth(1).click();
+  const compareOpener = page.locator("#compareOpen");
+  await compareOpener.click();
+  await verifyDialogAccessibility(page, "#compareDialog", ".close, .comparetable a");
+  await page.keyboard.press("Escape");
+  await expect(compareOpener).toBeFocused();
+
+  await page.locator("#mobileFilterToggle").click();
+  const favoritesOpener = page.locator("#favManageBtn");
+  await favoritesOpener.click();
+  await verifyDialogAccessibility(page, "#favoritesDialog", ".close, .favtools button");
+  await page.keyboard.press("Escape");
+  await expect(favoritesOpener).toBeFocused();
+
+  const visualOpener = page.locator("#aiBtn");
+  await visualOpener.click();
+  await verifyDialogAccessibility(page, "#visualDialog", ".close, #visualDrop, [data-visual], .visualactions button");
+  await page.keyboard.press("Escape");
+  await expect(visualOpener).toBeFocused();
 });
 
 test("PWA isolates the current catalog version and reloads offline", async ({page, context}) => {
