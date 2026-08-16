@@ -6,23 +6,26 @@ function safeParse(value, fallback) {
 }
 
 export function loadFavorites(resolveLegacy) {
-  const current = safeParse(localStorage.getItem(V2_KEY) || "[]", []);
-  const ids = new Set((Array.isArray(current) ? current : current.favorites || []).filter(value => typeof value === "string").map(resolveLegacy).filter(Boolean));
-  const legacy = safeParse(localStorage.getItem(V1_KEY) || "[]", []);
-  let migrated = false;
+  const currentRaw = localStorage.getItem(V2_KEY);
+  const current = safeParse(currentRaw || "[]", []);
+  const currentValues = Array.isArray(current) ? current : (Array.isArray(current?.favorites) ? current.favorites : []);
+  const ids = new Set(currentValues.filter(value => typeof value === "string").map(resolveLegacy).filter(Boolean));
+  const legacyRaw = localStorage.getItem(V1_KEY);
+  const legacy = safeParse(legacyRaw || "[]", []);
   for (const value of Array.isArray(legacy) ? legacy : []) {
     const id = resolveLegacy(value);
-    if (id && !ids.has(id)) { ids.add(id); migrated = true; }
+    if (id) ids.add(id);
   }
-  if (migrated || legacy.length) {
-    saveFavorites(ids);
-    localStorage.removeItem(V1_KEY);
+  const normalized = [...ids];
+  const currentIsCanonical = Array.isArray(current) && current.length === normalized.length && current.every((value, index) => value === normalized[index]);
+  if ((currentRaw !== null && !currentIsCanonical) || legacyRaw !== null) {
+    if (saveFavorites(ids) && legacyRaw !== null) localStorage.removeItem(V1_KEY);
   }
   return ids;
 }
 
 export function saveFavorites(ids) {
-  try { localStorage.setItem(V2_KEY, JSON.stringify([...ids])); } catch (_) {}
+  try { localStorage.setItem(V2_KEY, JSON.stringify([...ids])); return true; } catch (_) { return false; }
 }
 
 export function exportPayload(ids) {
@@ -42,12 +45,15 @@ export async function importFavorites(file, resolveLegacy, target) {
   const parsed = safeParse(await file.text(), null);
   const values = Array.isArray(parsed) ? parsed : parsed?.favorites;
   if (!Array.isArray(values)) throw new Error("favorites array missing");
-  let added = 0;
+  const next = new Set(target);
   for (const value of values) {
     if (typeof value !== "string") continue;
     const id = resolveLegacy(value);
-    if (id && !target.has(id)) { target.add(id); added += 1; }
+    if (id) next.add(id);
   }
-  saveFavorites(target);
+  const added = next.size - target.size;
+  if (!saveFavorites(next)) throw new Error("favorites storage unavailable");
+  target.clear();
+  for (const id of next) target.add(id);
   return added;
 }
