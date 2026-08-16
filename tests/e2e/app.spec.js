@@ -144,6 +144,21 @@ test("desktop and mobile suggestions support arrow navigation and focus recovery
   await verifySuggestionKeyboard(page, "#mq", "#mobileSuggestions");
 });
 
+test("programmatic result scrolling honors reduced-motion changes", async ({page}) => {
+  await page.emulateMedia({reducedMotion:"reduce"});
+  await ready(page);
+  await page.evaluate(() => {
+    window.__scrollOptions = [];
+    window.scrollTo = options => window.__scrollOptions.push(options);
+  });
+  await page.locator("[data-discovery-query]").nth(0).click();
+  await expect.poll(() => page.evaluate(() => window.__scrollOptions.at(-1)?.behavior)).toBe("auto");
+
+  await page.emulateMedia({reducedMotion:"no-preference"});
+  await page.locator("[data-discovery-query]").nth(1).click();
+  await expect.poll(() => page.evaluate(() => window.__scrollOptions.at(-1)?.behavior)).toBe("smooth");
+});
+
 test("legacy URLs and v1 favorites migrate to stable IDs", async ({page}) => {
   await page.addInitScript(legacy => localStorage.setItem("ae-effects-db:favorites:v1", JSON.stringify([legacy])), FIRST._legacy);
   await ready(page, `/?item=${encodeURIComponent(FIRST._legacy)}`);
