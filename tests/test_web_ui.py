@@ -31,6 +31,8 @@ class WebUiContractTests(unittest.TestCase):
         self.assertIn('ae-effects-db:favorites:v2', FAVORITES)
         self.assertIn('localStorage.removeItem(V1_KEY)', FAVORITES)
         self.assertIn('version:2', FAVORITES)
+        self.assertIn('Array.isArray(current?.favorites)', FAVORITES)
+        self.assertIn('if (!saveFavorites(next)) throw', FAVORITES)
         self.assertIn('id="favExport"', HTML)
         self.assertIn('id="favImport"', HTML)
 

@@ -154,6 +154,37 @@ test("legacy URLs and v1 favorites migrate to stable IDs", async ({page}) => {
   expect(storage.v2).toContain(FIRST.id);
 });
 
+test("favorites repair malformed storage and import only known stable IDs", async ({page}) => {
+  await page.addInitScript(() => localStorage.setItem("ae-effects-db:favorites:v2", "null"));
+  await ready(page);
+  expect(await page.evaluate(() => JSON.parse(localStorage.getItem("ae-effects-db:favorites:v2")))).toEqual([]);
+
+  await page.locator("#favManageBtn").click();
+  await page.locator("#favImportFile").setInputFiles({
+    name:"favorites.json", mimeType:"application/json",
+    buffer:Buffer.from(JSON.stringify({version:2, favorites:[FIRST._legacy, FIRST.id, "unknown-effect", 42]})),
+  });
+  await expect(page.locator("#favManageMsg")).toContainText("1");
+  const stored = await page.evaluate(() => JSON.parse(localStorage.getItem("ae-effects-db:favorites:v2")));
+  expect(stored).toEqual([FIRST.id]);
+  await expect(page.locator("#favBtn .n")).toHaveText("1");
+
+  await page.evaluate(() => {
+    window.__originalStorageSetItem = Storage.prototype.setItem;
+    Storage.prototype.setItem = function (key, value) {
+      if (key === "ae-effects-db:favorites:v2") throw new DOMException("blocked", "QuotaExceededError");
+      return window.__originalStorageSetItem.call(this, key, value);
+    };
+  });
+  await page.locator("#favImportFile").setInputFiles({
+    name:"more-favorites.json", mimeType:"application/json",
+    buffer:Buffer.from(JSON.stringify({version:2, favorites:[CATALOG[1].id]})),
+  });
+  await expect(page.locator("#favManageMsg")).toContainText("匯入失敗");
+  await expect(page.locator("#favBtn .n")).toHaveText("1");
+  expect(await page.evaluate(() => JSON.parse(localStorage.getItem("ae-effects-db:favorites:v2")))).toEqual([FIRST.id]);
+});
+
 test("three languages and local-only visual finder", async ({page}) => {
   const requests = [];
   page.on("request", request => { if (request.method() !== "GET") requests.push(request.url()); });
