@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0e0f13">
+  <meta name="description" content="搜尋 After Effects 外掛、腳本、內建效果與效果配方；支援繁中、英文、日文與離線搜尋。">
+  <link rel="alternate" type="text/plain" href="llms.txt" title="AI-readable project guide">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/styles.css">
+  <title>AE 特效資料庫 · 搜尋</title>
+</head>
+<body>
+  <a class="skip" href="#results">跳到搜尋結果</a>
+
+  <div class="mobile-searchbar" aria-label="行動版搜尋">
+    <div class="mobileSearchWrap">
+      <input id="mq" type="search" autocomplete="off" role="combobox" aria-autocomplete="list" aria-controls="mobileSuggestions" aria-expanded="false">
+      <button id="clearMq" type="button" hidden aria-label="清除搜尋">×</button>
+      <div id="mobileSuggestions" class="suggestions" role="listbox" hidden></div>
+    </div>
+    <button id="mobileFilterToggle" class="mobile-filter-toggle" type="button">篩選</button>
+  </div>
+
+  <header>
+    <div class="wrap">
+      <div class="headrow">
+        <div>
+          <h1 id="siteTitle">🎬 AE 特效資料庫</h1>
+          <div id="siteSubtitle" class="sub">描述想要的畫面，找出合適的 AE 工具</div>
+        </div>
+        <div id="languageSwitch" class="langswitch" role="group" aria-label="Language">
+          <button type="button" data-lang="zh" aria-pressed="true">繁中</button>
+          <button type="button" data-lang="en" aria-pressed="false">English</button>
+          <button type="button" data-lang="ja" aria-pressed="false">日本語</button>
+        </div>
+      </div>
+
+      <div class="searchbox">
+        <input id="q" type="search" autocomplete="off" role="combobox" aria-autocomplete="list" aria-controls="suggestions" aria-expanded="false">
+        <button id="clearQ" type="button" hidden aria-label="清除搜尋">×</button>
+        <div id="suggestions" class="suggestions" role="listbox" hidden></div>
+      </div>
+
+      <div id="hintBox" class="hints"></div>
+    </div>
+  </header>
+
+  <div class="wrap layout">
+    <dialog id="filterDialog" class="filterdialog" open aria-labelledby="filterDialogTitle">
+      <div class="filterhead">
+        <h2 id="filterDialogTitle">篩選</h2>
+        <button id="filterClose" type="button">關閉</button>
+      </div>
+      <div class="filters">
+        <div class="dd">
+          <button id="catBtn" type="button" aria-expanded="false" aria-controls="catPanel">分類 ▾</button>
+          <div id="catPanel" class="catpanel" hidden></div>
+        </div>
+        <div class="dd">
+          <button id="srcBtn" type="button" aria-expanded="false" aria-controls="srcPanel">來源 ▾</button>
+          <div id="srcPanel" class="catpanel" hidden></div>
+        </div>
+        <div class="dd">
+          <button id="kindBtn" type="button" aria-expanded="false" aria-controls="kindPanel">型態 ▾</button>
+          <div id="kindPanel" class="catpanel" hidden></div>
+        </div>
+        <select id="sort" aria-label="排序方式">
+          <option value="popular">精選熱門</option>
+          <option value="relevance">搜尋相關度</option>
+          <option value="name">名稱 A–Z</option>
+          <option value="category">分類</option>
+          <option value="source">來源</option>
+          <option value="latest">最新</option>
+        </select>
+        <button id="favBtn" type="button" aria-pressed="false">☆ 只看收藏</button>
+        <button id="favManageBtn" type="button">收藏管理</button>
+        <button id="aiBtn" type="button">畫面拆解器</button>
+      </div>
+      <div id="kindLegend" class="kindlegend" aria-label="工具型態"></div>
+    </dialog>
+
+    <main>
+      <section class="discovery" aria-labelledby="discoveryTitle">
+        <h2 id="discoveryTitle" class="sr-only">用途導覽</h2>
+        <div id="discoveryGrid" class="discoverygrid"></div>
+      </section>
+      <div id="activeFilters" class="actbar" aria-label="目前篩選條件"></div>
+      <div id="count" class="count" aria-live="polite"></div>
+      <div id="results" class="grid" aria-busy="true"></div>
+    </main>
+  </div>
+
+  <footer>
+    <div class="wrap">
+      <div id="footerSummary"></div>
+      <nav aria-label="專案連結">
+        <a id="reportMissingLink" href="https://github.com/xup61069/ae-effects-db/issues/new?template=missing-effect.yml">回報缺少的特效</a>
+        <a id="contributeLink" href="CONTRIBUTING.md">如何貢獻</a>
+        <a id="githubLink" href="https://github.com/xup61069/ae-effects-db">GitHub</a>
+      </nav>
+    </div>
+  </footer>
+
+  <div id="compareTray" class="comparetray" hidden>
+    <span id="compareTrayText"></span>
+    <button id="compareOpen" type="button">比較</button>
+    <button id="compareClear" type="button">清除</button>
+  </div>
+  <button id="backTop" class="backtop" type="button" hidden aria-label="返回頂端">↑</button>
+
+  <dialog id="detailDialog" class="modal" aria-labelledby="detailTitle">
+    <div class="modalhead"><h2 id="detailTitle">工具詳情</h2><button class="close" type="button" data-close="detailDialog">×</button></div>
+    <div id="detailBody" class="modalbody"></div>
+  </dialog>
+
+  <dialog id="compareDialog" class="modal" aria-labelledby="compareTitle">
+    <div class="modalhead"><h2 id="compareTitle">工具比較</h2><button class="close" type="button" data-close="compareDialog">×</button></div>
+    <div id="compareBody" class="modalbody"></div>
+  </dialog>
+
+  <dialog id="favoritesDialog" class="modal" aria-labelledby="favoritesDialogTitle">
+    <div class="modalhead"><h2 id="favoritesDialogTitle">收藏管理</h2><button class="close" type="button" data-close="favoritesDialog">×</button></div>
+    <div class="modalbody">
+      <p id="favoritesHelp"></p>
+      <div class="favtools">
+        <button id="favExport" type="button">匯出收藏</button>
+        <button id="favImport" type="button">匯入收藏</button>
+        <button id="favClearAll" type="button">清除全部</button>
+      </div>
+      <input id="favImportFile" type="file" accept="application/json,.json" hidden>
+      <p id="favManageMsg" role="status"></p>
+    </div>
+  </dialog>
+
+  <dialog id="visualDialog" class="modal" aria-labelledby="visualTitle">
+    <div class="modalhead"><h2 id="visualTitle">畫面拆解器</h2><button class="close" type="button" data-close="visualDialog">×</button></div>
+    <div class="modalbody visualBody">
+      <p id="visualHelp"></p>
+      <button id="visualDrop" class="visualdrop" type="button">
+        <img id="visualPreview" alt="" hidden>
+        <span id="visualDropText">選擇或拖入圖片</span>
+      </button>
+      <input id="visualFile" type="file" accept="image/png,image/jpeg,image/webp" hidden>
+      <div id="visualFeatures" class="visualfeatures" aria-label="畫面特徵"></div>
+      <p id="visualMsg" role="status"></p>
+      <div class="visualactions">
+        <button id="visualSearch" type="button">直接搜尋</button>
+        <button id="visualCopy" type="button">複製 AI 提示詞</button>
+      </div>
+    </div>
+  </dialog>
+
+  <div id="updateBanner" class="updatebanner" role="status" hidden><span></span><button type="button"></button></div>
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+
+  <script src="i18n.js"></script>
+  <script type="module" src="assets/app.js"></script>
+</body>
+</html>

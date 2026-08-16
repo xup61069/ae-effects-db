@@ -1,0 +1,57 @@
+name: scan-candidates
+
+# 每天自動掃描 aescripts／BOOTH／Gumroad，把「尚未收錄、也尚未略過」的
+# After Effects 工具候選整理成一個 GitHub Issue 供人工核實。
+# 掃描器只列候選，不會改動資料；收錄／略過仍須依 AGENTS.md 流程處理。
+on:
+  schedule:
+    - cron: "30 3 * * *" # 每天 03:30 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: scan-candidates
+  cancel-in-progress: true
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: actions/setup-python@v7.0.0
+        with:
+          python-version: "3.12"
+
+      - name: Scan sources
+        run: |
+          {
+            echo "> 自動掃描於 $(date -u '+%Y-%m-%d %H:%M UTC')"
+            echo "> 候選＝尚未收錄、也尚未判定略過的工具；收錄前一律回官方頁核實（見 AGENTS.md）。"
+            echo ""
+            echo "## aescripts"
+            python tools/find_new.py --refresh --limit 20 2>&1 | awk -F'\t' 'NF==2 {print "- ["$1"]("$2")"} NF!=2 {print}'
+            echo ""
+            echo "## BOOTH"
+            python tools/scan_booth.py --pages 3 --limit 30 2>&1
+            echo ""
+            echo "## Gumroad"
+            python tools/scan_gumroad.py --pages 3 --limit 30 2>&1
+          } | tee scan-report.md
+
+      - name: Create or update issue
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          LABEL="scan-candidates"
+          gh label create "$LABEL" --color "0E8A16" >/dev/null 2>&1 || true
+          NUM=$(gh issue list --label "$LABEL" --state open --limit 1 --json number --jq '.[0].number')
+          if [ -n "$NUM" ]; then
+            gh issue edit "$NUM" --body-file scan-report.md
+            echo "已更新 issue #$NUM"
+          else
+            gh issue create --title "🔍 每日候選掃描：aescripts／BOOTH／Gumroad" --label "$LABEL" --body-file scan-report.md
+          fi

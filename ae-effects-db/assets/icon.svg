@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="AE Effects Database">
+  <rect width="512" height="512" rx="112" fill="#0e0f13"/>
+  <rect x="64" y="80" width="384" height="352" rx="64" fill="#171922" stroke="#6ea8fe" stroke-width="18"/>
+  <path d="M136 352 218 155h40l82 197h-49l-17-45h-78l-17 45zm76-87h46l-23-63z" fill="#e8eaf0"/>
+  <path d="M326 214h74v37h-31v101h-43z" fill="#f0a"/>
+  <circle cx="380" cy="178" r="24" fill="#82dca9"/>
+</svg>

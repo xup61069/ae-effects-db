@@ -1,0 +1,112 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://xup61069.github.io/ae-effects-db/schema/effect.schema.json",
+  "title": "AE Effect DB entry",
+  "description": "一筆特效/外掛條目。data/*.jsonl 每一行都是一個符合此 schema 的 JSON 物件（JSONL：一行一物件，無逗號、無陣列外框）。",
+  "type": "object",
+  "required": ["name", "kind", "cat", "tags", "desc", "url"],
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{2,63}$",
+      "description": "（選填輸入；repo 內必填）穩定且全域唯一的 URL-safe ID。產品改名、移檔或更換官方網址時不得變更。"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "description": "效果名稱。Sapphire 前綴 S_、Continuum 前綴 BCC/BCC+。群組條目可用『XX系列/工具組』。"
+    },
+    "cat": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]+$",
+      "description": "分類（小寫，見 AGENTS.md 的分類清單）。常見：glow light flare particles stylize film color blur warp keying tracking restore time transition text generate 3d draw paint art texture audio physics rigging workflow render color recipe。"
+    },
+    "kind": {
+      "type": "string",
+      "enum": ["plugin", "script", "builtin", "recipe"],
+      "description": "工具型態：plugin=外掛／效果、script=腳本／面板、builtin=AE 內建、recipe=效果配方。"
+    },
+    "tags": {
+      "type": "array",
+      "minItems": 5,
+      "items": { "type": "string", "minLength": 1 },
+      "description": "中英混合關鍵字，搜尋主要靠這欄。務必同時放英文與繁中同義詞、俗名、常見講法。越多越好搜。"
+    },
+    "desc": {
+      "type": "string",
+      "minLength": 1,
+      "description": "一句話繁中說明：它做什麼＋典型用途。"
+    },
+    "look": {
+      "type": "string",
+      "description": "（選填）畫面長什麼樣，一句描述外觀。"
+    },
+    "desc_en": {
+      "type": "string",
+      "description": "（選填）desc 的英文翻譯。缺漏時英文介面顯示繁體中文原文並標註。"
+    },
+    "desc_ja": {
+      "type": "string",
+      "description": "（選填）desc 的日文翻譯。缺漏時日文介面顯示繁體中文原文並標註。"
+    },
+    "look_en": {
+      "type": "string",
+      "description": "（選填）look 的英文翻譯。"
+    },
+    "look_ja": {
+      "type": "string",
+      "description": "（選填）look 的日文翻譯。"
+    },
+    "variants": {
+      "type": "object",
+      "additionalProperties": { "type": "string" },
+      "description": "（選填）同族變體，格式 {變體名: 簡短中文註}。把幾十個相似效果收在一行時用。"
+    },
+    "stack": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "（選填，僅 recipes 用）達成某畫面感要疊的效果清單，依順序。"
+    },
+    "builtin": {
+      "type": "string",
+      "description": "（選填，僅 recipes 用）不買外掛時的 AE 內建替代做法。"
+    },
+    "suite": {
+      "type": "string",
+      "description": "（選填）所屬套件，例：Trapcode Suite / Magic Bullet Suite / VFX Suite。"
+    },
+    "vendor": {
+      "type": "string",
+      "description": "（選填）廠商/作者，例：Video Copilot、Boris FX、Plugin Everything、aescripts。不確定作者就寫 aescripts 或 未知/免費。"
+    },
+    "url": {
+      "type": "string",
+      "pattern": "^https?://",
+      "description": "必填、已實際確認存在的官方產品頁連結（aescripts 為 https://aescripts.com/<slug>/），不得憑名稱猜 slug。"
+    },
+    "released": {
+      "type": "string",
+      "format": "date",
+      "description": "（選填）官方可查證的首次發行日期，ISO 8601 YYYY-MM-DD。"
+    },
+    "updated": {
+      "type": "string",
+      "format": "date",
+      "description": "（選填）官方可查證的最近重大更新日期，ISO 8601 YYYY-MM-DD。"
+    },
+    "date_url": {
+      "type": "string",
+      "pattern": "^https?://",
+      "description": "填 released 或 updated 時必填，連到能直接支持日期的官方頁。"
+    },
+    "unverified": {
+      "type": "boolean",
+      "description": "（選填）true = 查無官方說明、描述是推測。網頁會顯示 ⚠ 未驗證。查證後請移除此欄。"
+    },
+    "aex": {
+      "type": "string",
+      "description": "（選填）對應的 .aex 外掛檔名（掃描本機安裝時用來對照）。"
+    }
+  }
+}

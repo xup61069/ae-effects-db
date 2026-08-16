@@ -1,0 +1,51 @@
+{
+  "version": "2836caad24294eb7",
+  "data": [
+    "dist/web/catalog.json",
+    "dist/web/locales/zh.json",
+    "dist/web/locales/en.json",
+    "dist/web/locales/ja.json"
+  ],
+  "shell": [
+    "./",
+    "index.html",
+    "i18n.js",
+    "assets/styles.css",
+    "assets/app.js",
+    "assets/search.js",
+    "assets/state.js",
+    "assets/favorites.js",
+    "assets/render.js",
+    "assets/pwa.js",
+    "assets/icon.svg",
+    "manifest.webmanifest",
+    "service-worker.js",
+    "curation/popularity.json",
+    "curation/localization.json",
+    "curation/search.json",
+    "curation/search-aliases.ja.json"
+  ],
+  "integrity": {
+    "dist/web/catalog.json": "d91455b3359cf2c0f39f2103b1791cc4ae75ef3ac763c3f7a0b0eb8caaa11d2e",
+    "dist/web/locales/zh.json": "6077c01d93123f20bdbd48bf191ee7612bdf1698a3773912a48bd3b8dfa9dc51",
+    "dist/web/locales/en.json": "ac768b88bafe594e10f6906a06db966e598a682420da5775639547633ed1682f",
+    "dist/web/locales/ja.json": "834e414d3da7232f74d804a76d39e2f23304e410405e6eb3214c4e306dc0860b",
+    "./": "ce0b7257e7793bc755e5e54b601d13c69172c4a0007fe2bf37b3db9c54c6a3b9",
+    "index.html": "ce0b7257e7793bc755e5e54b601d13c69172c4a0007fe2bf37b3db9c54c6a3b9",
+    "i18n.js": "0cde1b1be573ccef483dd8400cd7a33677578926fd7600b60be27fbd021be305",
+    "assets/styles.css": "c2f3cb2814d886e6d5dadfae363359ecf2076f239bca39465127644f2bb5dbe4",
+    "assets/app.js": "e3abbbcfc8cafb893e925c3366065d7412f71307f4c4641ec2af581822a287c3",
+    "assets/search.js": "b0b0ff83d758e694a5212cbba1337eadf2e523f7a09d6e66a193d4c31ab31393",
+    "assets/state.js": "84e882cf4a230370017c272779c3581f0bfe48ff264601532fe52b2c45550331",
+    "assets/favorites.js": "2fa61c5fadaa04d22e6523c1e4fcd40950cbb69613c9f3c9c39a7139a357ca86",
+    "assets/render.js": "3d9b7a2a1c0bfe4b134cbef49899bfa91fc28634d66b644316186318474106cd",
+    "assets/pwa.js": "a7c4ba6e74f142c0af2e335ebfcf3b4fc67f25cfb42193cba848ef3d71fb5748",
+    "assets/icon.svg": "899c02ea2c31bf1151dcd3cf598926e9eeadfa33f3e9b1cbf32683e960bd598e",
+    "manifest.webmanifest": "d444e66a092aafe6985bd8b67e15296707c45cbb50b95963b1dc38ed52014102",
+    "service-worker.js": "dba681233ede7a14a1ef3b01fe0b0968bae615413a8e899fbb2540684f19fdcc",
+    "curation/popularity.json": "e0f24e6c2871aa360712425ee9d7e0420bcaae67b24bdca50f568906b37e4f56",
+    "curation/localization.json": "e0363a541030999b53ddaf05023e80e18bcc767c55e909c9247782af4fabb684",
+    "curation/search.json": "ce8c74d113836f1aeff0535891382ff51c3a376c8aeecda50d63a460ace7e7d8",
+    "curation/search-aliases.ja.json": "74630bfeb1012ff026e259001eff0a61a6b9fefbd1f65db104e8a5c14cd2ad43"
+  }
+}

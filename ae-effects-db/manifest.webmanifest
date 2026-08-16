@@ -1,0 +1,16 @@
+{
+  "name": "AE Effects Database",
+  "short_name": "AE Effects DB",
+  "description": "在瀏覽器中搜尋 After Effects 外掛、腳本、內建效果與配方。",
+  "id": "./",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0e0f13",
+  "theme_color": "#0e0f13",
+  "lang": "zh-Hant",
+  "categories": ["productivity", "utilities", "design"],
+  "icons": [
+    {"src": "assets/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable"}
+  ]
+}
