@@ -158,7 +158,9 @@ def file_digest(paths: list[str]) -> str:
     digest = hashlib.sha256()
     for path in paths:
         with open(path, "rb") as handle:
-            digest.update(handle.read())
+            # Git may check text files out as CRLF on Windows. Asset versions
+            # must remain identical to Linux CI for the same repository tree.
+            digest.update(handle.read().replace(b"\r\n", b"\n"))
     return digest.hexdigest()[:16]
 
 
