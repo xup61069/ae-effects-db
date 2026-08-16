@@ -91,6 +91,8 @@ class WebUiContractTests(unittest.TestCase):
         manifest = json.loads((ROOT / "manifest.webmanifest").read_text(encoding="utf-8"))
         self.assertEqual("standalone", manifest["display"])
         self.assertIn("asset-manifest.json", SW)
+        self.assertIn("BUILD_VERSION", SW)
+        self.assertIn('updateViaCache:"none"', (ROOT / "assets" / "pwa.js").read_text(encoding="utf-8"))
         self.assertIn("cache.addAll", SW)
         self.assertIn("SKIP_WAITING", SW)
         self.assertNotIn("skipWaiting();\nself.addEventListener(\"install\"", SW)

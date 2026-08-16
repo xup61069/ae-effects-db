@@ -1,10 +1,12 @@
 const MANIFEST_URL = "dist/web/asset-manifest.json";
 const CACHE_PREFIX = "ae-effects-db-";
+const BUILD_VERSION = "cde9da7f3fda399e";
 
 async function installVersion() {
   const manifestResponse = await fetch(MANIFEST_URL, {cache:"no-store"});
   if (!manifestResponse.ok) throw new Error(`asset manifest: ${manifestResponse.status}`);
   const manifest = await manifestResponse.clone().json();
+  if (manifest.version !== BUILD_VERSION) throw new Error(`asset version mismatch: ${manifest.version}`);
   const cache = await caches.open(`${CACHE_PREFIX}${manifest.version}`);
   const base = self.registration.scope;
   const urls = [...new Set(["./", MANIFEST_URL, ...(manifest.shell || []), ...(manifest.data || [])])]
@@ -22,8 +24,7 @@ self.addEventListener("message", event => {
 self.addEventListener("activate", event => {
   event.waitUntil((async () => {
     const names = await caches.keys();
-    const versionedNames = names.filter(name => name.startsWith(CACHE_PREFIX));
-    const currentName = versionedNames.at(-1) || "";
+    const currentName = `${CACHE_PREFIX}${BUILD_VERSION}`;
     await Promise.all(names.filter(name => name.startsWith(CACHE_PREFIX) && name !== currentName).map(name => caches.delete(name)));
     await self.clients.claim();
   })());
@@ -40,8 +41,8 @@ self.addEventListener("fetch", event => {
     try {
       const response = await fetch(request);
       if (response.ok) {
-        const names = (await caches.keys()).filter(name => name.startsWith(CACHE_PREFIX));
-        if (names[0]) (await caches.open(names[0])).put(request, response.clone());
+        const currentName = `${CACHE_PREFIX}${BUILD_VERSION}`;
+        if ((await caches.has(currentName))) (await caches.open(currentName)).put(request, response.clone());
       }
       return response;
     } catch (error) {

@@ -35,6 +35,8 @@ class StableIdAndAssetTests(unittest.TestCase):
     def test_asset_manifest_is_complete_and_versioned(self):
         manifest = json.loads((ROOT / "dist" / "web" / "asset-manifest.json").read_text(encoding="utf-8"))
         self.assertRegex(manifest["version"], r"^[0-9a-f]{16}$")
+        worker = (ROOT / "service-worker.js").read_text(encoding="utf-8")
+        self.assertIn(f'const BUILD_VERSION = "{manifest["version"]}";', worker)
         for relative in [*manifest["data"], *manifest["shell"]]:
             if relative == "./":
                 continue
