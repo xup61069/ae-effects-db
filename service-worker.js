@@ -1,19 +1,40 @@
 const MANIFEST_URL = "dist/web/asset-manifest.json";
 const CACHE_PREFIX = "ae-effects-db-";
-const BUILD_VERSION = "a7fa9ebf9d7740b2";
+const BUILD_VERSION = "aee78ca3188ecd67";
 const currentCacheName = () => `${CACHE_PREFIX}${BUILD_VERSION}`;
+
+async function sha256(response) {
+  const bytes = await response.clone().arrayBuffer();
+  const normalized = new TextEncoder().encode(new TextDecoder().decode(bytes).replace(/\r\n/g, "\n"));
+  const digest = await crypto.subtle.digest("SHA-256", normalized);
+  return [...new Uint8Array(digest)].map(value => value.toString(16).padStart(2, "0")).join("");
+}
+
+async function fetchVerifiedAsset(path, url, expected) {
+  if (!/^[0-9a-f]{64}$/.test(expected || "")) throw new Error(`asset integrity missing: ${path}`);
+  const response = await fetch(new Request(url, {cache:"no-store"}));
+  if (!response.ok) throw new Error(`asset fetch: ${path} (${response.status})`);
+  const actual = await sha256(response);
+  if (actual !== expected) throw new Error(`asset integrity mismatch: ${path}`);
+  return [url, response];
+}
 
 async function cacheManifestAssets(manifestResponse) {
   const manifest = await manifestResponse.clone().json();
   if (manifest.version !== BUILD_VERSION) throw new Error(`asset version mismatch: ${manifest.version}`);
   const cache = await caches.open(currentCacheName());
   const base = self.registration.scope;
-  const urls = [...new Set(["./", MANIFEST_URL, ...(manifest.shell || []), ...(manifest.data || [])])]
-    .map(path => new URL(path, base).href)
-    .filter(url => url !== new URL(MANIFEST_URL, base).href);
+  const paths = [...new Set(["./", ...(manifest.shell || []), ...(manifest.data || [])])]
+    .filter(path => path !== MANIFEST_URL);
   const missing = [];
-  for (const url of urls) if (!(await cache.match(url, {ignoreSearch:true}))) missing.push(url);
-  if (missing.length) await cache.addAll(missing);
+  for (const path of paths) {
+    const url = new URL(path, base).href;
+    if (!(await cache.match(url, {ignoreSearch:true}))) missing.push([path, url]);
+  }
+  const verified = await Promise.all(
+    missing.map(([path, url]) => fetchVerifiedAsset(path, url, manifest.integrity?.[path]))
+  );
+  await Promise.all(verified.map(([url, response]) => cache.put(url, response)));
   await cache.put(new URL(MANIFEST_URL, base), manifestResponse);
 }
 
