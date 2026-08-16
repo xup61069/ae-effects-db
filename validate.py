@@ -20,6 +20,8 @@ import re
 import sys
 from urllib.parse import urlparse
 
+from tools.common import ID_PATTERN
+
 try:
     sys.stdout.reconfigure(encoding="utf-8")
 except Exception:
@@ -40,7 +42,7 @@ KNOWN_CATS = {
 KNOWN_KINDS = {"plugin", "script", "builtin", "recipe"}
 REQUIRED = ("name", "kind", "cat", "tags", "desc", "url")
 OPTIONAL = {
-    "look", "variants", "stack", "builtin", "suite", "vendor",
+    "id", "look", "variants", "stack", "builtin", "suite", "vendor",
     "released", "updated", "date_url", "unverified", "aex",
     "desc_en", "desc_ja", "look_en", "look_ja",
 }
@@ -88,6 +90,10 @@ def quality_checks(rows: list[tuple[str, str, dict]]) -> list[str]:
         more = "…" if len(unverified) > 5 else ""
         warnings.append(f"{len(unverified)} 筆仍標為 unverified：{sample}{more}")
 
+    missing_ids = [loc for _, loc, item in rows if not item.get("id")]
+    if missing_ids:
+        warnings.append(f"{len(missing_ids)} 筆缺少穩定 id：" + "、".join(missing_ids[:5]))
+
     # 防止以「風格 × 動畫」笛卡兒積灌水；變體應收在單一條目的 variants。
     generated = [loc for _, loc, item in rows if item.get("kind") == "recipe" and "・" in item["name"]]
     if generated:
@@ -107,6 +113,7 @@ def main() -> None:
     names: dict[str, list[str]] = collections.defaultdict(list)
     name_urls: dict[tuple[str, str], list[str]] = collections.defaultdict(list)
     aescripts_urls: dict[str, list[tuple[str, str]]] = collections.defaultdict(list)
+    ids: dict[str, list[str]] = collections.defaultdict(list)
     total = 0
     stats = collections.Counter()
 
@@ -144,6 +151,13 @@ def main() -> None:
                     errors.append(f"{loc} name 必須是非空字串")
                 else:
                     names[name.strip().casefold()].append(loc)
+
+                stable_id = item.get("id")
+                if stable_id is not None:
+                    if not isinstance(stable_id, str) or not ID_PATTERN.fullmatch(stable_id):
+                        errors.append(f"{loc} id 必須是 3–64 字元的小寫英數與連字號")
+                    else:
+                        ids[stable_id].append(loc)
 
                 kind = item.get("kind")
                 if kind not in KNOWN_KINDS:
@@ -223,6 +237,10 @@ def main() -> None:
             per_file = collections.Counter(loc.split(":", 1)[0] for loc in locs)
             if any(count > 1 for count in per_file.values()):
                 errors.append(f"同一資料檔重複名稱 {normalized!r}：{', '.join(locs)}")
+
+    for stable_id, locs in ids.items():
+        if len(locs) > 1:
+            errors.append(f"穩定 id 重複 {stable_id!r}：{', '.join(locs)}")
 
     for (normalized_name, normalized_url), locs in name_urls.items():
         source_files = {loc.split(":", 1)[0] for loc in locs}

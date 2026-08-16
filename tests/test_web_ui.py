@@ -1,4 +1,4 @@
-import re
+import json
 import unittest
 from pathlib import Path
 
@@ -6,76 +6,95 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 HTML = (ROOT / "index.html").read_text(encoding="utf-8")
 I18N = (ROOT / "i18n.js").read_text(encoding="utf-8")
+APP = (ROOT / "assets" / "app.js").read_text(encoding="utf-8")
+SEARCH = (ROOT / "assets" / "search.js").read_text(encoding="utf-8")
+STATE = (ROOT / "assets" / "state.js").read_text(encoding="utf-8")
+FAVORITES = (ROOT / "assets" / "favorites.js").read_text(encoding="utf-8")
+RENDER = (ROOT / "assets" / "render.js").read_text(encoding="utf-8")
+CSS = (ROOT / "assets" / "styles.css").read_text(encoding="utf-8")
+SW = (ROOT / "service-worker.js").read_text(encoding="utf-8")
 
 
 class WebUiContractTests(unittest.TestCase):
-    def test_sort_modes_are_distinct_and_shareable(self):
-        options = re.findall(r'<option value="([^"]+)"', HTML)
-        self.assertEqual(
-            ["popular", "relevance", "name", "category", "source", "latest"], options
-        )
-        self.assertIn('if(mode==="category") return categoryCmp', HTML)
-        self.assertIn('if(mode==="relevance" && hasTerms)', HTML)
-        self.assertIn('return popularCmp(a[1],b[1]);', HTML)
-        self.assertIn('setParam("sort"', HTML)
-        self.assertIn("curation/popularity.json", HTML)
-        self.assertIn('function popularityBreakdown', HTML)
-        self.assertIn('if(mode==="latest")', HTML)
+    def test_native_module_shell_and_sort_modes(self):
+        self.assertIn('type="module" src="assets/app.js"', HTML)
+        self.assertNotIn("<style>", HTML)
+        for value in ("popular", "relevance", "name", "category", "source", "latest"):
+            self.assertIn(f'<option value="{value}"', HTML)
+        self.assertIn('if (mode === "relevance" && hasTerms)', APP)
+        self.assertIn('writeUrlState', APP)
+        self.assertIn('set("sort"', STATE)
 
-    def test_favorites_are_local_persistent_and_filterable(self):
+    def test_favorites_v1_migrate_and_v2_export(self):
         self.assertIn('id="favBtn"', HTML)
-        self.assertIn('const FAVORITES_KEY = "ae-effects-db:favorites:v1"', HTML)
-        self.assertIn("localStorage.setItem(FAVORITES_KEY", HTML)
-        self.assertIn("if(favoritesOnly)pool=pool.filter", HTML)
-        self.assertIn('setParam("fav"', HTML)
-        self.assertIn('data-favorite="${esc(itemKey(d))}"', HTML)
+        self.assertIn('ae-effects-db:favorites:v1', FAVORITES)
+        self.assertIn('ae-effects-db:favorites:v2', FAVORITES)
+        self.assertIn('localStorage.removeItem(V1_KEY)', FAVORITES)
+        self.assertIn('version:2', FAVORITES)
         self.assertIn('id="favExport"', HTML)
         self.assertIn('id="favImport"', HTML)
 
-    def test_compare_detail_and_shareable_state_exist(self):
-        self.assertIn('id="compareTray"', HTML)
-        self.assertIn('id="compareDialog"', HTML)
-        self.assertIn('id="detailDialog"', HTML)
-        self.assertIn('data-detail="${esc(itemKey(d))}"', HTML)
-        self.assertIn('setParam("compare"', HTML)
-        self.assertIn('url.searchParams.set("item"', HTML)
+    def test_detail_compare_recommendations_and_legacy_urls(self):
+        for element_id in ("compareTray", "compareDialog", "detailDialog"):
+            self.assertIn(f'id="{element_id}"', HTML)
+        self.assertIn('data-detail="${escapeHtml(item.id)}"', RENDER)
+        self.assertIn('url.searchParams.set("item"', APP)
+        self.assertIn("legacyMap.get(value)", STATE)
+        self.assertIn('t("similarTools")', RENDER)
+        self.assertIn('t("builtinRecommendations")', RENDER)
+        self.assertIn('t("relatedRecipes")', RENDER)
 
-    def test_prebuilt_index_and_mobile_performance_contract(self):
-        self.assertIn("dist/web-index.json", HTML)
-        self.assertIn('content-visibility:auto', HTML)
-        self.assertIn('IntersectionObserver', HTML)
+    def test_compact_localized_index_and_mobile_performance(self):
+        self.assertIn("dist/web/catalog.json", APP)
+        self.assertIn("dist/web/locales/${lang}.json", APP)
+        self.assertIn("dist/web-index.json", APP)
+        self.assertIn("content-visibility:auto", CSS)
+        self.assertIn("IntersectionObserver", APP)
         self.assertIn('id="mq"', HTML)
-        self.assertIn('id="backTop"', HTML)
+        self.assertIn('id="mobileFilterToggle"', HTML)
+        self.assertIn('dialog.filterdialog', CSS)
 
-    def test_search_normalizes_simplified_text_and_corrects_typos(self):
-        self.assertIn('function normalizeText', HTML)
-        self.assertIn('const SEARCH_ALIASES', HTML)
-        self.assertIn('function levenshtein', HTML)
-        self.assertIn('function correctTerms', HTML)
+    def test_search_weights_aliases_corrections_and_facets(self):
+        for contract in ("normalizeText", "termGroups", "damerauLevenshtein", "correctTerms", "autocomplete"):
+            self.assertIn(f"function {contract}", SEARCH)
+        self.assertIn("syncFilterCounts", APP)
+        self.assertIn("matchedBy", I18N)
+        self.assertIn("didYouMean", I18N)
 
-    def test_cards_keep_distinct_kind_colors(self):
+    def test_cards_keep_distinct_kind_colors_and_focus(self):
         for kind in ("plugin", "script", "builtin", "recipe"):
-            self.assertIn(f".card.kind-{kind}", HTML)
-            self.assertIn(f".kindbadge.kind-{kind}", HTML)
+            self.assertIn(f".card.kind-{kind}", CSS)
+            self.assertIn(f".kindbadge.kind-{kind}", CSS)
+        self.assertIn(":focus-visible", CSS)
+        self.assertIn("prefers-reduced-motion:reduce", CSS)
+        self.assertIn("min-height:44px", CSS)
 
-    def test_english_and_japanese_are_shareable_complete_locales(self):
-        self.assertIn('src="i18n.js?', HTML)
+    def test_complete_shareable_locales(self):
+        self.assertIn('src="i18n.js"', HTML)
         self.assertIn('data-lang="en"', HTML)
         self.assertIn('data-lang="ja"', HTML)
-        self.assertIn('setParam("lang"', HTML)
+        self.assertIn('set("lang"', STATE)
         self.assertIn('htmlLang:"en"', I18N)
         self.assertIn('htmlLang:"ja"', I18N)
         self.assertIn('AE エフェクトデータベース', I18N)
         self.assertIn('AE Effects Database', I18N)
-        self.assertIn('"グリッチ":["glitch"', I18N)
 
-    def test_non_chinese_locales_label_curated_description_fallback(self):
-        self.assertIn('class="original-label"', HTML)
-        self.assertIn('Traditional Chinese original', I18N)
-        self.assertIn('繁体字中国語の原文', I18N)
-        self.assertIn('localField', HTML)
-        self.assertIn('needsOriginal', HTML)
-        self.assertIn('desc_"+LANG', HTML)
+    def test_visual_finder_is_local_only_and_bounded(self):
+        self.assertIn('accept="image/png,image/jpeg,image/webp"', HTML)
+        self.assertIn("20 * 1024 * 1024", APP)
+        self.assertIn("URL.createObjectURL(file)", APP)
+        self.assertIn("URL.revokeObjectURL", APP)
+        self.assertNotIn("FormData", APP)
+        self.assertNotIn("fetch(visual", APP)
+
+    def test_pwa_version_is_atomic_and_user_activated(self):
+        manifest = json.loads((ROOT / "manifest.webmanifest").read_text(encoding="utf-8"))
+        self.assertEqual("standalone", manifest["display"])
+        self.assertIn("asset-manifest.json", SW)
+        self.assertIn("cache.addAll", SW)
+        self.assertIn("SKIP_WAITING", SW)
+        self.assertNotIn("skipWaiting();\nself.addEventListener(\"install\"", SW)
+        self.assertIn("onUpdate", (ROOT / "assets" / "pwa.js").read_text(encoding="utf-8"))
 
 
 if __name__ == "__main__":

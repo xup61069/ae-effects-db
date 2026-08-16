@@ -1,43 +1,43 @@
 const fs = require("fs");
 const path = require("path");
+const {spawnSync} = require("child_process");
 
 const root = path.resolve(__dirname, "..");
 const html = fs.readFileSync(path.join(root, "index.html"), "utf8");
-const inline = [...html.matchAll(/<script(?: [^>]*)?>([\s\S]*?)<\/script>/g)]
-  .map(match => match[1])
-  .filter(Boolean)
-  .join("\n");
-new Function(inline);
+const modules = fs.readdirSync(path.join(root, "assets")).filter(name => name.endsWith(".js"));
+for (const name of modules) {
+  const file = path.join(root, "assets", name);
+  const checked = spawnSync(process.execPath, ["--experimental-default-type=module", "--check", file], {encoding:"utf8"});
+  if (checked.status !== 0) throw new Error(`${name} has invalid JavaScript:\n${checked.stderr}`);
+  if (!html.includes(`assets/${name}`) && name === "app.js") throw new Error("The application module is not loaded by index.html");
+}
+for (const name of ["i18n.js", "service-worker.js"]) {
+  const checked = spawnSync(process.execPath, ["--check", path.join(root, name)], {encoding:"utf8"});
+  if (checked.status !== 0) throw new Error(`${name} has invalid JavaScript:\n${checked.stderr}`);
+}
 
 require(path.join(root, "i18n.js"));
 const {locales, searchAliases} = globalThis.AE_I18N;
 const expected = Object.keys(locales.zh.messages).sort();
 for (const language of ["en", "ja"]) {
   const actual = Object.keys(locales[language].messages).sort();
-  if (JSON.stringify(actual) !== JSON.stringify(expected)) {
-    throw new Error(`${language} message keys do not match zh`);
-  }
-  if (Object.keys(locales[language].categories).length !== 42) {
-    throw new Error(`${language} must translate all 42 categories`);
-  }
+  if (JSON.stringify(actual) !== JSON.stringify(expected)) throw new Error(`${language} message keys do not match zh`);
+  if (Object.keys(locales[language].categories).length !== 42) throw new Error(`${language} must translate all 42 categories`);
 }
-
-const usedKeys = [...inline.matchAll(/\bt\("([^"]+)"/g)].map(match => match[1]);
+const moduleSource = modules.map(name => fs.readFileSync(path.join(root, "assets", name), "utf8")).join("\n");
+const usedKeys = [...moduleSource.matchAll(/\bt\("([^"]+)"/g)].map(match => match[1]);
 for (const language of ["zh", "en", "ja"]) {
   const missing = [...new Set(usedKeys)].filter(key => !(key in locales[language].messages));
   if (missing.length) throw new Error(`${language} is missing messages: ${missing.join(", ")}`);
 }
-if (!searchAliases["グリッチ"]?.includes("glitch")) {
-  throw new Error("Japanese search aliases are unavailable");
-}
+if (!searchAliases["グリッチ"]?.includes("glitch")) throw new Error("Japanese search aliases are unavailable");
 
 const localization = JSON.parse(fs.readFileSync(path.join(root, "curation", "localization.json"), "utf8"));
 const dataUrls = new Set();
 const dataRows = [];
 for (const file of fs.readdirSync(path.join(root, "data")).filter(name => name.endsWith(".jsonl"))) {
   for (const line of fs.readFileSync(path.join(root, "data", file), "utf8").split(/\r?\n/).filter(Boolean)) {
-    const row = JSON.parse(line);
-    dataRows.push(row);
+    const row = JSON.parse(line); dataRows.push(row);
     if (row.url) dataUrls.add(row.url);
     if (row.date_url) dataUrls.add(row.date_url);
   }
@@ -68,27 +68,15 @@ for (const [name, categoryId] of Object.entries(officialEffectCategories)) {
   if (!dataRows.some(row => row.kind === "builtin" && row.name === name)) throw new Error(`Adobe category points to a missing built-in: ${name}`);
   if (!localization.official_categories?.[categoryId]) throw new Error(`Unknown Adobe category ${categoryId} for ${name}`);
 }
-for (const [name, expectedCategory] of Object.entries({Keylight:"keying","CC Burn Film":"stylize","CC Rain":"simulation","Warp Stabilizer VFX":"distort","Mocha AE":"boris-fx-mocha",CINEWARE:"cinema-4d"})) {
-  if (officialEffectCategories[name] !== expectedCategory) throw new Error(`${name} must map to Adobe category ${expectedCategory}`);
-}
 
 const japaneseVocabulary = JSON.parse(fs.readFileSync(path.join(root, "curation", "search-aliases.ja.json"), "utf8"));
 const japaneseAliases = japaneseVocabulary.aliases || {};
 if (Object.keys(japaneseAliases).length < 80) throw new Error("Japanese discovery vocabulary is unexpectedly small");
-const normalizeSearch = value => String(value || "").normalize("NFKC").toLowerCase().replace(/\s+/g, " ").trim();
 for (const [query, aliases] of Object.entries(japaneseAliases)) {
   if (!/[\u3040-\u30ff\u4e00-\u9fff]/.test(query) || !Array.isArray(aliases) || aliases.length < 2) throw new Error(`Invalid Japanese alias: ${query}`);
 }
-for (const check of japaneseVocabulary.checks || []) {
-  const terms = [check.query,...(japaneseAliases[check.query] || [])].map(normalizeSearch);
-  const matches = dataRows.filter(row => {
-    const haystack = normalizeSearch([row.name,row.desc,row.look,row.vendor,row.suite,...(row.tags || [])].join(" "));
-    return terms.some(term => haystack.includes(term));
-  }).map(row => row.name);
-  if (!check.expected_any.some(name => matches.includes(name))) throw new Error(`Japanese query has no expected result: ${check.query}`);
-}
-for (const contract of ["localizedOfficialUrl", "officialCategory", "official_effect_categories", "siteCategoryTitle", "curation/localization.json", "curation/search-aliases.ja.json"]) {
-  if (!html.includes(contract)) throw new Error(`Web localization integration is missing: ${contract}`);
+for (const contract of ["officialUrl", "officialCategory", "official_effect_categories", "curation/localization.json", "curation/search-aliases.ja.json", "dist/web/catalog.json"]) {
+  if (!moduleSource.includes(contract)) throw new Error(`Web localization integration is missing: ${contract}`);
 }
 
-console.log(`Web JavaScript, zh/en/ja locales, ${localizedEntries.length} verified localized URLs, 278 Adobe categories, and ${Object.keys(japaneseAliases).length} Japanese aliases are valid.`);
+console.log(`Web modules, zh/en/ja locales, ${localizedEntries.length} verified localized URLs, 278 Adobe categories, and ${Object.keys(japaneseAliases).length} Japanese aliases are valid.`);

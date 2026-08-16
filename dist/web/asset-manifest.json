@@ -1,0 +1,28 @@
+{
+  "version": "21aba001f77405ce",
+  "data": [
+    "dist/web/catalog.json",
+    "dist/web/locales/zh.json",
+    "dist/web/locales/en.json",
+    "dist/web/locales/ja.json"
+  ],
+  "shell": [
+    "./",
+    "index.html",
+    "i18n.js",
+    "assets/styles.css",
+    "assets/app.js",
+    "assets/search.js",
+    "assets/state.js",
+    "assets/favorites.js",
+    "assets/render.js",
+    "assets/pwa.js",
+    "assets/icon.svg",
+    "manifest.webmanifest",
+    "service-worker.js",
+    "curation/popularity.json",
+    "curation/localization.json",
+    "curation/search.json",
+    "curation/search-aliases.ja.json"
+  ]
+}
