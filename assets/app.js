@@ -323,6 +323,10 @@ function focusSuggestion(list, index) {
   options.forEach(option => option.setAttribute("aria-selected", String(option === target)));
   target.focus(); return true;
 }
+function selectSuggestion(suggestion) {
+  const input = document.getElementById(suggestion.closest("#mobileSuggestions") ? "mq" : "q");
+  state.query = suggestion.dataset.suggestion; hideSuggestions(); commitState(); render(); input.focus();
+}
 function bindSuggestionKeyboard(input, list) {
   input.addEventListener("keydown", event => {
     if (event.key === "ArrowDown" || event.key === "ArrowUp") {
@@ -343,6 +347,7 @@ function bindSuggestionKeyboard(input, list) {
     else if (event.key === "Home") { event.preventDefault(); focusSuggestion(list, 0); }
     else if (event.key === "End") { event.preventDefault(); focusSuggestion(list, options.length - 1); }
     else if (event.key === "Escape") { event.preventDefault(); hideSuggestions(); input.focus(); }
+    else if (event.key === "Enter" || event.key === " ") { event.preventDefault(); selectSuggestion(option); }
   });
 }
 function hideSuggestions() { for (const id of ["suggestions", "mobileSuggestions"]) { const list = document.getElementById(id); list.hidden = true; list.querySelectorAll('[role="option"]').forEach(option => option.setAttribute("aria-selected", "false")); } for (const id of ["q", "mq"]) document.getElementById(id).setAttribute("aria-expanded", "false"); }
@@ -390,7 +395,7 @@ function delegatedClick(event) {
   const favorite = event.target.closest?.("[data-favorite]"); if (favorite) { const id = favorite.dataset.favorite; FAVORITES.has(id) ? FAVORITES.delete(id) : FAVORITES.add(id); saveFavorites(FAVORITES); render(true); if (state.item) openDetail(id, {write:false}); return; }
   const share = event.target.closest?.("[data-share-detail]"); if (share) { const url = new URL(location.href); url.searchParams.set("item", share.dataset.shareDetail); navigator.clipboard?.writeText(String(url)).then(() => { share.textContent = t("copied"); }).catch(() => prompt(t("copyUrl"), url)); return; }
   const query = event.target.closest?.("[data-q]"); if (query) { state.query = query.dataset.q; commitState(); render(); scrollTo({top:0, behavior:"smooth"}); return; }
-  const suggestion = event.target.closest?.("[data-suggestion]"); if (suggestion) { const input = document.getElementById(suggestion.closest("#mobileSuggestions") ? "mq" : "q"); state.query = suggestion.dataset.suggestion; hideSuggestions(); commitState(); render(); input.focus(); return; }
+  const suggestion = event.target.closest?.("[data-suggestion]"); if (suggestion) { selectSuggestion(suggestion); return; }
   const discovery = event.target.closest?.("[data-discovery-query]"); if (discovery) { state.query = discovery.dataset.discoveryQuery; state.categories.clear(); if (discovery.dataset.discoveryCat) state.categories.add(discovery.dataset.discoveryCat); commitState(); render(); scrollTo({top:0, behavior:"smooth"}); return; }
   const active = event.target.closest?.("[data-filter]"); if (active) { if (active.dataset.filter === "fav") state.favoritesOnly = false; else filters[active.dataset.filter]?.set.delete(active.dataset.value); commitState(); render(); return; }
   if (event.target.closest?.("[data-clear-all]")) { clearAll(); return; }

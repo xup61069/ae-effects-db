@@ -112,11 +112,17 @@ test("desktop and mobile suggestions support arrow navigation and focus recovery
   await page.keyboard.press("Escape");
   await page.locator("#q").fill("glwo");
   await page.locator("#q").press("ArrowDown");
-  await page.keyboard.press("Enter");
+  await page.locator('#suggestions [role="option"]:focus').dispatchEvent("keydown", {key:"Enter", bubbles:true});
   await expect(page.locator("#q")).toHaveValue("glow");
   await expect(page.locator("#q")).toBeFocused();
   await expect(page.locator("#suggestions")).toBeHidden();
   await expect(page).toHaveURL(/q=glow/);
+
+  await page.locator("#q").fill("glwo");
+  await page.locator("#q").press("ArrowDown");
+  await page.locator('#suggestions [role="option"]:focus').dispatchEvent("keydown", {key:" ", bubbles:true});
+  await expect(page.locator("#q")).toHaveValue("glow");
+  await expect(page.locator("#q")).toBeFocused();
 
   await page.setViewportSize({width:390, height:844});
   await verifySuggestionKeyboard(page, "#mq", "#mobileSuggestions");
