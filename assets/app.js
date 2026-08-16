@@ -29,6 +29,7 @@ let loadMoreObserver = null;
 let searchTimer = null;
 let currentResults = [];
 let localeCache = new Map();
+let localeLoads = new Map();
 let POPULARITY = {featured:[], source_weights:{}, maximum_points:{featured:56, source:20, quality:10, recency:4, curated_order:10}};
 let LOCALIZATION = {localized_urls:{}, official_categories:{}, official_category_rules:[], official_effect_categories:{}};
 let POPULAR_INDEX = new Map();
@@ -95,14 +96,25 @@ async function fetchJson(path, version = "") {
 }
 
 async function loadLocale(lang, version) {
-  if (!localeCache.has(lang)) localeCache.set(lang, await fetchJson(`dist/web/locales/${lang}.json`, version));
-  const values = localeCache.get(lang);
+  let values = localeCache.get(lang);
+  if (!values) {
+    let request = localeLoads.get(lang);
+    if (!request) {
+      request = fetchJson(`dist/web/locales/${lang}.json`, version).then(result => {
+        localeCache.set(lang, result); localeLoads.delete(lang); return result;
+      }, error => { localeLoads.delete(lang); throw error; });
+      localeLoads.set(lang, request);
+    }
+    values = await request;
+  }
+  if (state?.lang !== lang) return false;
   DATA.forEach(item => {
     const localized = values[item.id] || [item.desc || "", item.look || "", 0];
     item._desc = localized[0] || "";
     item._look = localized[1] || "";
     item._original = Boolean(localized[2]);
   });
+  return true;
 }
 
 function resolveLegacy(value) { return resolveKey(value, BY_ID, LEGACY); }
@@ -331,7 +343,7 @@ function bindEvents(version) {
   document.getElementById("favImport").addEventListener("click", () => document.getElementById("favImportFile").click());
   document.getElementById("favImportFile").addEventListener("change", async event => { if (!event.target.files[0]) return; try { const added = await importFavorites(event.target.files[0], resolveLegacy, FAVORITES); document.getElementById("favManageMsg").textContent = t("imported", {added, count:FAVORITES.size}); render(true); } catch (error) { document.getElementById("favManageMsg").textContent = t("importFailed", {error:error.message}); } event.target.value = ""; });
   document.getElementById("favClearAll").addEventListener("click", () => { if (FAVORITES.size && confirm(t("clearConfirm", {count:FAVORITES.size}))) { FAVORITES.clear(); saveFavorites(FAVORITES); state.favoritesOnly = false; document.getElementById("favManageMsg").textContent = t("cleared"); render(); } });
-  document.getElementById("languageSwitch").addEventListener("click", async event => { const button = event.target.closest("[data-lang]"); if (!button || button.dataset.lang === state.lang) return; state.lang = button.dataset.lang; await loadLocale(state.lang, version); applyLanguage(); commitState(); render(); if (state.item) openDetail(state.item, {write:false}); });
+  document.getElementById("languageSwitch").addEventListener("click", async event => { const button = event.target.closest("[data-lang]"); if (!button || button.dataset.lang === state.lang) return; const lang = button.dataset.lang; state.lang = lang; if (!await loadLocale(lang, version)) return; applyLanguage(); commitState(); render(); if (state.item) openDetail(state.item, {write:false}); });
   document.getElementById("compareOpen").addEventListener("click", openCompare); document.getElementById("compareClear").addEventListener("click", () => { state.compare.clear(); commitState(); render(true); });
   document.getElementById("backTop").addEventListener("click", () => scrollTo({top:0, behavior:"smooth"})); window.addEventListener("scroll", () => { document.getElementById("backTop").hidden = scrollY < 700; }, {passive:true});
   document.getElementById("detailDialog").addEventListener("close", () => { if (state.item) { state.item = ""; writeUrlState(state); } });
@@ -339,7 +351,7 @@ function bindEvents(version) {
   document.getElementById("aiBtn").addEventListener("click", () => document.getElementById("visualDialog").showModal());
   bindVisualFinder();
   document.addEventListener("click", delegatedClick); document.addEventListener("keydown", event => { if (event.key === "/" && !/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)) { event.preventDefault(); document.getElementById(matchMedia("(max-width:640px)").matches ? "mq" : "q").focus(); } else if (event.key === "Escape") closePanels(); });
-  window.addEventListener("popstate", () => { const restored = restoreResolvedState(readUrlState(), BY_ID, LEGACY); state = restored; loadLocale(state.lang, version).then(() => { applyLanguage(); render(); if (state.item) openDetail(state.item, {write:false}); else closeDetail({write:false}); }); });
+  window.addEventListener("popstate", () => { const restored = restoreResolvedState(readUrlState(), BY_ID, LEGACY); state = restored; const lang = state.lang; loadLocale(lang, version).then(applied => { if (!applied) return; applyLanguage(); render(); if (state.item) openDetail(state.item, {write:false}); else closeDetail({write:false}); }); });
 }
 
 function delegatedClick(event) {

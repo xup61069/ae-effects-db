@@ -5,6 +5,9 @@ const path = require("path");
 
 const ROOT = path.resolve(__dirname, "../..");
 const CATALOG = JSON.parse(fs.readFileSync(path.join(ROOT, "dist/web/catalog.json"), "utf8"));
+const LOCALES = Object.fromEntries(["en", "ja"].map(lang => [
+  lang, JSON.parse(fs.readFileSync(path.join(ROOT, `dist/web/locales/${lang}.json`), "utf8")),
+]));
 const FIRST = CATALOG[0];
 const PAGE_ERRORS = new WeakMap();
 
@@ -96,6 +99,25 @@ test("three languages and local-only visual finder", async ({page}) => {
   await page.locator("#visualSearch").click();
   await expect(page.locator("#q")).toHaveValue(/glow bloom/);
   expect(requests).toEqual([]);
+});
+
+test.describe("locale request ordering", () => {
+  test.use({serviceWorkers:"block"});
+
+  test("the latest language wins when locale requests finish out of order", async ({page}) => {
+    await page.route("**/dist/web/locales/en.json*", async route => {
+      await new Promise(resolve => setTimeout(resolve, 500));
+      await route.continue();
+    });
+    await ready(page, `/?q=${encodeURIComponent(FIRST.name)}`);
+    await page.locator('[data-lang="en"]').click();
+    await page.locator('[data-lang="ja"]').click();
+    await page.waitForTimeout(700);
+    const card = page.locator(`article:has([data-detail="${FIRST.id}"])`);
+    await expect(page.locator("html")).toHaveAttribute("lang", "ja");
+    await expect(card.locator(".desc")).toHaveText(LOCALES.ja[FIRST.id][0]);
+    await expect(card.locator(".desc")).not.toHaveText(LOCALES.en[FIRST.id][0]);
+  });
 });
 
 test("390px filter drawer has 44px controls and no serious axe violations", async ({page}) => {
