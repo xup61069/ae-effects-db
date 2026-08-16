@@ -49,7 +49,8 @@ JSON 必填：name、kind、cat、tags、desc、url。
 - tags：中英混合至少 5 個，包含名稱、中文俗名、外觀與典型用途；至少 3 個不能只是分類名。
 - desc：繁體中文一句話，同時說明「做什麼＋典型用途」。把產品名遮掉後仍要能辨認功能。
 - url：已實際驗證存在的原廠產品／效果頁，不能猜 slug。
-- 可選：look、vendor、suite、released／updated 與 date_url。日期沒有原廠直接證據就不填。
+- 必填：released 或 updated 至少其一（原廠頁可查證的 YYYY-MM-DD），並附對應的 date_url；查不到原廠日期就輸出「略過：官方頁無可查證日期」。
+- 可選：look、vendor、suite。
 - 新候選不得用 unverified:true 湊數；無法確認就略過。
 
 輸出只有一行壓縮 JSON，下一行寫建議資料檔，不要加 Markdown code fence。

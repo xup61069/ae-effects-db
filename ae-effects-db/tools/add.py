@@ -170,6 +170,14 @@ def main() -> None:
         if not valid_url(item.get("url")):
             errors.append(f"第 {line_no} 行「{item.get('name', '?')}」缺少有效官方 URL")
             continue
+        if not (item.get("released") or item.get("updated")):
+            errors.append(
+                f"第 {line_no} 行「{item.get('name', '?')}」缺 released／updated（至少其一，需原廠可查證）"
+            )
+            continue
+        if not valid_url(item.get("date_url")):
+            errors.append(f"第 {line_no} 行「{item.get('name', '?')}」有日期時必須附可查證的 date_url")
+            continue
 
         target = args.file or guess_file(item)
         if item.get("id"):

@@ -75,8 +75,9 @@ def parse_date(value: object) -> dt.date | None:
         return None
 
 
-def quality_checks(rows: list[tuple[str, str, dict]]) -> list[str]:
+def quality_checks(rows: list[tuple[str, str, dict]]) -> tuple[list[str], list[str]]:
     warnings: list[str] = []
+    soft: list[str] = []
 
     no_cjk = [loc for _, loc, item in rows if not any(CJK.search(str(t)) for t in item["tags"])]
     if no_cjk:
@@ -102,7 +103,15 @@ def quality_checks(rows: list[tuple[str, str, dict]]) -> list[str]:
             + "、".join(generated[:5])
         )
 
-    return warnings
+    # 新條目必須附 released／updated（見 schema anyOf）；既有缺日期條目由
+    # tools/backfill_dates.py 分批回補，回補完成前此檢查不進 strict。
+    missing_dates = [
+        loc for _, loc, item in rows if not (item.get("released") or item.get("updated"))
+    ]
+    if missing_dates:
+        soft.append(f"{len(missing_dates)} 筆缺 released／updated（回補完成前不阻擋 strict）")
+
+    return warnings, soft
 
 
 def main() -> None:
@@ -257,7 +266,7 @@ def main() -> None:
                 + ", ".join(loc for loc, _ in entries)
             )
 
-    warnings.extend(quality_checks(rows))
+    warnings, soft = quality_checks(rows)
     if strict and warnings:
         errors.extend(warnings)
         warnings = []
@@ -265,6 +274,8 @@ def main() -> None:
     print(f"檢查 {total} 筆 / {len(data_files)} 個資料檔")
     for warning in warnings:
         print("  ⚠ " + warning)
+    for note in soft:
+        print("  ℹ " + note)
     for error in errors:
         print("  ✗ " + error)
 
@@ -272,7 +283,7 @@ def main() -> None:
         print(f"\n失敗：{len(errors)} 個錯誤、{len(warnings)} 個警告")
         raise SystemExit(1)
 
-    print(f"\n通過：{len(warnings)} 個警告")
+    print(f"\n通過：{len(warnings)} 個警告" + (f"、{len(soft)} 條回補待辦" if soft else ""))
     print(
         "   型態："
         f"外掛 {stats['plugin']} / 腳本 {stats['script']} / "
