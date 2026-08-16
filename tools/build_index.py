@@ -9,6 +9,7 @@ import hashlib
 import json
 import math
 import os
+import re
 import sys
 
 try:
@@ -160,8 +161,31 @@ def file_digest(paths: list[str]) -> str:
         with open(path, "rb") as handle:
             # Git may check text files out as CRLF on Windows. Asset versions
             # must remain identical to Linux CI for the same repository tree.
-            digest.update(handle.read().replace(b"\r\n", b"\n"))
+            content = handle.read().replace(b"\r\n", b"\n")
+            if os.path.basename(path) == "service-worker.js":
+                content = re.sub(
+                    rb'const BUILD_VERSION = "[0-9a-f]{16}";',
+                    b'const BUILD_VERSION = "__BUILD_VERSION__";',
+                    content,
+                )
+            digest.update(content)
     return digest.hexdigest()[:16]
+
+
+def stamp_service_worker(version: str) -> None:
+    path = os.path.join(ROOT, "service-worker.js")
+    with open(path, "r", encoding="utf-8") as handle:
+        content = handle.read().replace("\r\n", "\n")
+    updated, count = re.subn(
+        r'const BUILD_VERSION = "(?:[0-9a-f]{16}|__BUILD_VERSION__)";',
+        f'const BUILD_VERSION = "{version}";',
+        content,
+        count=1,
+    )
+    if count != 1:
+        raise RuntimeError("service-worker.js is missing the BUILD_VERSION marker")
+    with open(path, "w", encoding="utf-8", newline="\n") as handle:
+        handle.write(updated)
 
 
 def main() -> None:
@@ -223,8 +247,10 @@ def main() -> None:
         "curation/popularity.json", "curation/localization.json", "curation/search.json", "curation/search-aliases.ja.json",
     ]
     shell_paths = [os.path.join(ROOT, value) for value in shell if value != "./"]
+    version = file_digest([*data_paths, *shell_paths])
+    stamp_service_worker(version)
     manifest = {
-        "version": file_digest([*data_paths, *shell_paths]),
+        "version": version,
         "data": ["dist/web/catalog.json", *[f"dist/web/locales/{lang}.json" for lang in LOCALE_FIELDS]],
         "shell": shell,
     }

@@ -1,6 +1,6 @@
 export async function registerPwa({onUpdate, onOfflineReady} = {}) {
   if (!("serviceWorker" in navigator) || location.protocol === "file:") return null;
-  const registration = await navigator.serviceWorker.register("service-worker.js", {scope:"./"});
+  const registration = await navigator.serviceWorker.register("service-worker.js", {scope:"./", updateViaCache:"none"});
   let reloadRequested = false;
   const notifyWaiting = () => registration.waiting && onUpdate?.(() => {
     reloadRequested = true;
