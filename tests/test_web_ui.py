@@ -86,6 +86,8 @@ class WebUiContractTests(unittest.TestCase):
         self.assertIn("20 * 1024 * 1024", APP)
         self.assertIn("URL.createObjectURL(file)", APP)
         self.assertIn("URL.revokeObjectURL", APP)
+        self.assertIn('t("visualInvalidImage")', APP)
+        self.assertIn("visualLoadToken", APP)
         self.assertNotIn("FormData", APP)
         self.assertNotIn("fetch(visual", APP)
 
