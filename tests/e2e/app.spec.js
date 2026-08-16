@@ -201,13 +201,22 @@ test("390px filter drawer has 44px controls and no serious axe violations", asyn
   expect(accessibility.violations.filter(result => ["critical", "serious"].includes(result.impact))).toEqual([]);
 });
 
-test("PWA reloads the full catalog offline", async ({page, context}) => {
+test("PWA isolates the current catalog version and reloads offline", async ({page, context}) => {
   await ready(page);
   await page.evaluate(() => navigator.serviceWorker.ready);
   if (!(await page.evaluate(() => Boolean(navigator.serviceWorker.controller)))) {
     await page.reload();
     await expect(page.locator(".card").first()).toBeVisible();
   }
+  const version = await page.evaluate(async () => (await fetch("dist/web/asset-manifest.json", {cache:"no-store"})).json().then(value => value.version));
+  await page.evaluate(async currentVersion => {
+    await caches.delete(`ae-effects-db-${currentVersion}`);
+    const stale = await caches.open("ae-effects-db-stale-regression");
+    await stale.put(new URL("dist/web/catalog.json", location.href), new Response("[]", {headers:{"Content-Type":"application/json"}}));
+  }, version);
+  await page.reload();
+  await expect(page.locator(".card").first()).toBeVisible();
+  await page.evaluate(() => caches.delete("ae-effects-db-stale-regression"));
   await context.setOffline(true);
   await page.reload();
   await expect(page.locator(".card").first()).toBeVisible();
