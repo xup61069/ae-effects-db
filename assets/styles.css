@@ -22,6 +22,8 @@
   body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 -apple-system,"Segoe UI",Roboto,"Noto Sans TC",sans-serif}
   header{position:sticky;top:0;z-index:10;background:var(--bg);border-bottom:1px solid var(--border);padding:14px 18px}
   h1{margin:0 0 2px;font-size:18px;letter-spacing:.5px}
+  #siteTitle{color:inherit;text-decoration:none;cursor:pointer}
+  #siteTitle:hover{color:var(--accent)}
   .sub{color:var(--muted);font-size:12.5px}
   .headrow{display:flex;align-items:center;justify-content:space-between;gap:12px}
   .langswitch{display:flex;gap:4px;padding:3px;border:1px solid var(--border);border-radius:10px;background:var(--panel)}
@@ -77,8 +79,12 @@
   .hint,.hints{color:var(--muted);font-size:12px;margin-top:8px}
   .hint b,.hints button{color:var(--accent);cursor:pointer;font:inherit;font-weight:600;border:0;background:transparent;padding:3px}
   #count{color:var(--muted);font-size:12.5px;margin:14px 0 4px}
+  .countbrowse,.kindchip{background:transparent;border:0;padding:0;font:inherit;color:inherit;cursor:pointer}
+  .countbrowse:hover,.countbrowse.on,.kindchip.on{color:var(--accent)}
+  .countbrowse.on{font-weight:700}
   .summary{display:inline-flex;flex-wrap:wrap;gap:5px;margin-left:7px}
-  .summary i{font-style:normal;border:1px solid var(--border);border-radius:20px;padding:1px 7px}
+  .summary .kindchip{font-style:normal;border:1px solid var(--border);border-radius:20px;padding:1px 7px;font-family:inherit}
+  .summary .kindchip:hover,.summary .kindchip.on{color:var(--accent);border-color:var(--accent)}
   .card{background:var(--panel);border:1px solid var(--border);border-left-width:4px;border-radius:12px;padding:13px 15px;margin:9px 0;
     content-visibility:auto;contain-intrinsic-size:0 220px}
   .card.kind-plugin{background:var(--plugin-bg);border-color:var(--plugin-border)}
