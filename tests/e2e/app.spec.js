@@ -355,6 +355,34 @@ test("390px filter drawer has 44px controls and no serious axe violations", asyn
   expect(accessibility.violations.filter(result => ["critical", "serious"].includes(result.impact))).toEqual([]);
 });
 
+test("390px navigation, empty state, tags, footer, and update actions are 44px targets", async ({page}) => {
+  await page.setViewportSize({width:390, height:844});
+  await ready(page);
+  const selectors = [".langswitch button", ".card:first-of-type .tags button", "footer nav a", ".skip"];
+  for (const selector of selectors) {
+    const targets = page.locator(selector);
+    expect(await targets.count(), selector).toBeGreaterThan(0);
+    for (let index = 0; index < await targets.count(); index += 1) {
+      const box = await targets.nth(index).boundingBox();
+      expect(box, `${selector} target ${index}`).not.toBeNull();
+      expect(box.width, `${selector} target ${index} width`).toBeGreaterThanOrEqual(44);
+      expect(box.height, `${selector} target ${index} height`).toBeGreaterThanOrEqual(44);
+    }
+  }
+
+  await page.locator("#mq").fill("definitely-no-such-effect");
+  await expect(page.locator(".empty")).toBeVisible();
+  await page.evaluate(() => { const banner = document.getElementById("updateBanner"); banner.hidden = false; banner.querySelector("button").textContent = "Update"; });
+  for (const selector of [".empty button", "#updateBanner button"]) {
+    const box = await page.locator(selector).boundingBox();
+    expect(box, selector).not.toBeNull();
+    expect(box.width, `${selector} width`).toBeGreaterThanOrEqual(44);
+    expect(box.height, `${selector} height`).toBeGreaterThanOrEqual(44);
+  }
+  const english = await page.locator('[data-lang="en"]').boundingBox();
+  expect(english.x + english.width).toBeLessThanOrEqual(390);
+});
+
 test("mobile dialogs expose named 44px targets, pass axe, and restore focus", async ({page}) => {
   await page.setViewportSize({width:390, height:844});
   await ready(page);

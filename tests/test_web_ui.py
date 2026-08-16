@@ -74,6 +74,8 @@ class WebUiContractTests(unittest.TestCase):
         self.assertIn("prefers-reduced-motion:reduce", CSS)
         self.assertIn('matchMedia("(prefers-reduced-motion: reduce)")', APP)
         self.assertNotIn('behavior:"smooth"}));', APP)
+        self.assertIn(".langswitch button{flex:none;min-width:44px", CSS)
+        self.assertIn(".updatebanner button{min-width:44px;min-height:44px", CSS)
         self.assertIn("min-height:44px", CSS)
 
     def test_complete_shareable_locales(self):
