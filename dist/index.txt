@@ -2872,8 +2872,8 @@ AI Lipsync｜第三方｜plugin｜animation｜在 After Effects 面板分析音�
 X-Motion｜第三方｜script｜workflow｜在 After Effects 面板直接使用 Vidimize 生成或取得 AI 影片、特效、圖像、音樂與配音，並將素材匯入合成時間軸，另提供可編輯的 TextFlow 文字動畫與 Production Scenes。｜https://www.vidimize.com/x-motion
 MotionFlow｜第三方｜plugin｜animation｜在 After Effects 面板瀏覽、預覽並一鍵套用文字與物件動畫預設，提供可編輯的 timing、easing、motion、Scene 與自訂預設保存，適合快速建立可再調整的動態圖形。｜https://exchange.adobe.com/apps/cc/205603/motionflow
 Epidemic Sound｜第三方｜plugin｜audio｜在 After Effects 面板搜尋、預覽並將 Epidemic Sound 的音樂、音效與配音放入時間軸，支援依描述、參考曲目或影片內容找聲音，以及調整長度與循環。｜https://www.epidemicsound.com/plugins/adobe/
-Atom｜第三方｜script｜workflow｜在 After Effects 內讀取開啟的合成與專案脈絡，依自然語言規劃並執行腳本、自動化、轉錄字幕、重新構圖與專案整理工作，適合減少重複操作。｜https://tryatom.ai/
-Soundly｜第三方｜plugin｜audio｜在 After Effects 工作流中搜尋、預覽並拖放 Soundly 雲端或本機音效庫的聲音，支援自然語言找聲、相似搜尋、音效處理與直接送入專案。｜https://getsoundly.com/
+Atom｜第三方｜script｜workflow｜在 After Effects 內讀取開啟的合成與專案脈絡，依自然語言規劃並執行腳本、自動化、轉錄字幕、重新構圖與專案整理工作，適合減少重複操作。｜https://tryatom.ai/docs/introduction
+Soundly｜第三方｜plugin｜audio｜在 After Effects 工作流中搜尋、預覽並拖放 Soundly 雲端或本機音效庫的聲音，支援自然語言找聲、相似搜尋、音效處理與直接送入專案。｜https://getsoundly.com/news/new-soundly-finally-compatible-with-human-beings/
 Ziflow｜第三方｜script｜workflow｜在 After Effects 面板直接 render、上傳與管理 Ziflow video proofs，建立新版本並把逐格留言、標註與審核回饋同步回時間軸，適合團隊審稿與版本控管。｜https://help.ziflow.com/hc/en-us/articles/30725337596820-Ziflow-Adobe-plugin
 Boombox Studio｜第三方｜plugin｜audio｜在 After Effects 連接 Boombox Studio 的音效庫，搜尋、預覽並以 Cue Points 將聲音一鍵對齊時間軸，還能用 Swap、Cue、Auto-Mix 與 Constellation mixer 調整整個合成的音訊。｜https://mtmograph.com/products/boombox
 Frame.io V4 Panel｜第三方｜script｜workflow｜After Effects 內建的 Frame.io V4 panel 可從 Render Queue render／上傳 composition、建立分享連結與版本堆疊，並將 Frame.io 留言同步成時間軸標記以便逐格回應審稿。｜https://help.frame.io/en/articles/15291379-adobe-after-effects-frame-io-v4-panel-overview
