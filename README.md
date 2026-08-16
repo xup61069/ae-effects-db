@@ -41,6 +41,7 @@
 ```bash
 python search.py 發光
 python search.py neon glow          # 多詞預設 AND；無結果才明確退回 OR
+python search.py "keying audio"     # shell 傳成單一參數時仍依兩個搜尋詞處理
 python search.py --any glow bloom   # 強制 OR
 python search.py --kind script 字幕
 python search.py --cat transition 甩鏡

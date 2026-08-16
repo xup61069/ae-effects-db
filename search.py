@@ -28,7 +28,9 @@ from search_core import (
     local_field,
     match_details,
     normalize_text,
+    parse_terms,
     ranked as ranked_detailed,
+    search_with_fallback,
     score,
     segment,
     split_words,
@@ -94,31 +96,8 @@ def _result_payload(value: int, row: dict, reasons: list[str], lang: str, explai
 
 
 def _search(rows: list[dict], terms: list[str], require_all: bool, lang: str):
-    fallback = None
-    used_terms = [normalize_text(term) for term in terms]
-    results = ranked_detailed(rows, used_terms, require_all=require_all, lang=lang)
-    if not results and len(terms) > 1 and require_all:
-        results = ranked_detailed(rows, used_terms, require_all=False, lang=lang)
-        if results:
-            fallback = "or"
-    if not results:
-        segmented = segment(used_terms)
-        if segmented:
-            results = ranked_detailed(rows, segmented, require_all=False, lang=lang)
-            if results:
-                fallback, used_terms = "segmented", segmented
-    suggestions: dict[str, list[str]] = {}
-    if not results:
-        for term in used_terms:
-            values = correction_suggestions(rows, term)
-            if values:
-                suggestions[term] = values
-        corrected = correct_terms(rows, used_terms)
-        if corrected:
-            results = ranked_detailed(rows, corrected, require_all=require_all, lang=lang)
-            if results:
-                fallback, used_terms = "corrected", corrected
-    return results, fallback, used_terms, suggestions
+    outcome = search_with_fallback(rows, terms, require_all=require_all, lang=lang)
+    return outcome["matches"], outcome["fallback"], outcome["used_terms"], outcome["suggestions"]
 
 
 def main() -> None:
@@ -159,7 +138,8 @@ def main() -> None:
     if args.kind:
         pool = [row for row in pool if row.get("kind") == args.kind]
 
-    results, fallback, used_terms, suggestions = _search(pool, args.terms, not args.any, args.lang)
+    parsed_terms = list(dict.fromkeys(term for raw in args.terms for term in parse_terms(raw)))
+    results, fallback, used_terms, suggestions = _search(pool, parsed_terms, not args.any, args.lang)
     if args.json:
         output = {
             "query": args.terms,

@@ -6,7 +6,7 @@ import unittest
 from pathlib import Path
 
 import search
-from search_core import parse_terms, ranked as ranked_detailed
+from search_core import parse_terms, ranked as ranked_detailed, search_with_fallback
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -76,6 +76,21 @@ class CrossRuntimeSearchTests(unittest.TestCase):
         self.assertEqual(["particular"], self.javascript["corrections"]["particlar"])
         self.assertEqual(["glow"], self.javascript["suggestions"]["glwo"])
         self.assertEqual(["particular"], self.javascript["suggestions"]["particlar"])
+
+    def test_python_and_javascript_fallback_flow_match(self):
+        expected = {
+            "en:keying audio": "or", "zh:粒子發光": "segmented",
+            "zh:glwo": "corrected", "en:zzzz": None,
+        }
+        for key, fallback in expected.items():
+            lang, query = key.split(":", 1)
+            python = search_with_fallback(self.rows, parse_terms(query), lang=lang)
+            javascript = self.javascript["fallbacks"][key]
+            self.assertEqual(fallback, python["fallback"], key)
+            self.assertEqual(python["fallback"], javascript["fallback"], key)
+            self.assertEqual(python["used_terms"], javascript["usedTerms"], key)
+            self.assertEqual(python["suggestions"], javascript["suggestions"], key)
+            self.assertEqual([row["id"] for _, row, _ in python["matches"][:25]], javascript["ids"], key)
 
 
 if __name__ == "__main__":
