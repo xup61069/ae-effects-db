@@ -107,6 +107,8 @@ class WebUiContractTests(unittest.TestCase):
         self.assertIn("cache.addAll", SW)
         self.assertIn("const currentCacheName = () =>", SW)
         self.assertIn("const cache = await caches.open(currentCacheName())", SW)
+        self.assertIn("cacheManifestAssets", SW)
+        self.assertIn("if (missing.length) await cache.addAll(missing)", SW)
         self.assertNotIn("await caches.match(request", SW)
         self.assertNotIn("await caches.match(new URL", SW)
         self.assertIn("SKIP_WAITING", SW)

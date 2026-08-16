@@ -1,19 +1,26 @@
 const MANIFEST_URL = "dist/web/asset-manifest.json";
 const CACHE_PREFIX = "ae-effects-db-";
-const BUILD_VERSION = "12dd59037a28fdb7";
+const BUILD_VERSION = "a7fa9ebf9d7740b2";
 const currentCacheName = () => `${CACHE_PREFIX}${BUILD_VERSION}`;
 
-async function installVersion() {
-  const manifestResponse = await fetch(MANIFEST_URL, {cache:"no-store"});
-  if (!manifestResponse.ok) throw new Error(`asset manifest: ${manifestResponse.status}`);
+async function cacheManifestAssets(manifestResponse) {
   const manifest = await manifestResponse.clone().json();
   if (manifest.version !== BUILD_VERSION) throw new Error(`asset version mismatch: ${manifest.version}`);
   const cache = await caches.open(currentCacheName());
   const base = self.registration.scope;
   const urls = [...new Set(["./", MANIFEST_URL, ...(manifest.shell || []), ...(manifest.data || [])])]
-    .map(path => new URL(path, base).href);
-  await cache.addAll(urls.filter(url => url !== new URL(MANIFEST_URL, base).href));
+    .map(path => new URL(path, base).href)
+    .filter(url => url !== new URL(MANIFEST_URL, base).href);
+  const missing = [];
+  for (const url of urls) if (!(await cache.match(url, {ignoreSearch:true}))) missing.push(url);
+  if (missing.length) await cache.addAll(missing);
   await cache.put(new URL(MANIFEST_URL, base), manifestResponse);
+}
+
+async function installVersion() {
+  const manifestResponse = await fetch(MANIFEST_URL, {cache:"no-store"});
+  if (!manifestResponse.ok) throw new Error(`asset manifest: ${manifestResponse.status}`);
+  await cacheManifestAssets(manifestResponse);
 }
 
 self.addEventListener("install", event => event.waitUntil(installVersion()));
@@ -39,10 +46,18 @@ self.addEventListener("fetch", event => {
   event.respondWith((async () => {
     const cache = await caches.open(currentCacheName());
     const cached = await cache.match(request, {ignoreSearch:true});
-    if (cached) return cached;
+    const manifestUrl = new URL(MANIFEST_URL, self.registration.scope);
+    const isManifest = url.pathname === manifestUrl.pathname;
+    if (cached) {
+      if (isManifest) await cacheManifestAssets(cached.clone()).catch(() => {});
+      return cached;
+    }
     try {
       const response = await fetch(request);
-      if (response.ok) await cache.put(request, response.clone());
+      if (response.ok) {
+        if (isManifest) await cacheManifestAssets(response.clone());
+        else await cache.put(request, response.clone());
+      }
       return response;
     } catch (error) {
       if (request.mode === "navigate") return (await cache.match(new URL("./", self.registration.scope))) || Response.error();
