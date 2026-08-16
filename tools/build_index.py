@@ -46,9 +46,12 @@ LOCALE_FIELDS = {
 DISPLAY_FIELDS = {"desc", "look", "desc_en", "desc_ja", "look_en", "look_ja"}
 GENERIC_TAGS = {
     "after effects", "ae", "plugin", "script", "effect", "effects", "preset",
+    "after effects plugin", "after effects script", "scriptui panel", "windows plugin", "macos plugin",
     "adobe", "adobe after effects", "aescripts", "boris fx", "maxon", "red giant",
-    "sapphire", "continuum", "universe", "gumroad", "booth", "外掛", "腳本", "內建", "效果",
+    "sapphire", "continuum", "universe", "gumroad", "booth", "fxfactory", "fxfactory pro",
+    "noise industries", "pixelan", "wipology", "外掛", "腳本", "內建", "效果",
 }
+GENERIC_TAG_PREFIXES = ("continuum ",)
 
 
 def search_text(item: dict) -> str:
@@ -89,7 +92,8 @@ def load_rows() -> list[dict]:
 def normalized_tags(item: dict) -> set[str]:
     return {
         value for tag in item.get("tags", [])
-        if (value := normalize_text(tag)) and value not in GENERIC_TAGS and len(value) > 1
+        if (value := normalize_text(tag)) and value not in GENERIC_TAGS
+        and not value.startswith(GENERIC_TAG_PREFIXES) and len(value) > 1
     }
 
 
@@ -127,10 +131,18 @@ def related_indexes(rows: list[dict]) -> dict[str, dict[str, list[str]]]:
         value += min(2, source_weights.get(candidate.get("_src"), 0) / 10)
         return value
 
-    def top(item: dict, candidates: list[dict], count: int, category_bonus: bool = True) -> list[str]:
+    def top(
+        item: dict,
+        candidates: list[dict],
+        count: int,
+        category_bonus: bool = True,
+        require_overlap: bool = False,
+    ) -> list[str]:
         ranked = [
             (scored(item, candidate, category_bonus), candidate)
-            for candidate in candidates if candidate["id"] != item["id"]
+            for candidate in candidates
+            if candidate["id"] != item["id"]
+            and (not require_overlap or tag_sets[item["id"]] & tag_sets[candidate["id"]])
         ]
         ranked = [pair for pair in ranked if pair[0] > 0]
         ranked.sort(key=lambda pair: (-pair[0], pair[1].get("_rank", 9999), pair[1].get("name", "")))
@@ -142,8 +154,10 @@ def related_indexes(rows: list[dict]) -> dict[str, dict[str, list[str]]]:
         builtin_pool = same_category if item.get("cat") != "recipe" else builtins
         output[item["id"]] = {
             "similar": top(item, same_category, 6),
-            "builtin": [] if item.get("kind") == "builtin" else top(item, [row for row in builtin_pool if row.get("kind") == "builtin"], 3),
-            "recipes": top(item, recipes, 3, category_bonus=False),
+            "builtin": [] if item.get("kind") == "builtin" else top(
+                item, [row for row in builtin_pool if row.get("kind") == "builtin"], 3, require_overlap=True
+            ),
+            "recipes": top(item, recipes, 3, category_bonus=False, require_overlap=True),
         }
     return output
 

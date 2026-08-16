@@ -1,6 +1,6 @@
 const MANIFEST_URL = "dist/web/asset-manifest.json";
 const CACHE_PREFIX = "ae-effects-db-";
-const BUILD_VERSION = "b6c3113d3417fb78";
+const BUILD_VERSION = "3ac688d3db839137";
 
 async function installVersion() {
   const manifestResponse = await fetch(MANIFEST_URL, {cache:"no-store"});

@@ -7,6 +7,7 @@ from pathlib import Path
 
 import search
 from search_core import parse_terms, ranked as ranked_detailed, search_with_fallback
+from tools.build_index import load_rows, normalized_tags, related_indexes
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -91,6 +92,31 @@ class CrossRuntimeSearchTests(unittest.TestCase):
             self.assertEqual(python["used_terms"], javascript["usedTerms"], key)
             self.assertEqual(python["suggestions"], javascript["suggestions"], key)
             self.assertEqual([row["id"] for _, row, _ in python["matches"][:25]], javascript["ids"], key)
+
+
+class RecommendationTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.rows = load_rows()
+        cls.related = related_indexes(cls.rows)
+
+    def test_platform_and_brand_labels_do_not_create_similarity(self):
+        self.assertEqual(
+            {"glow"},
+            normalized_tags({"tags": [
+                "After Effects plugin", "ScriptUI panel", "FxFactory Pro",
+                "Noise Industries", "Continuum Transitions", "glow",
+            ]}),
+        )
+
+    def test_alternatives_require_functional_tag_evidence(self):
+        self.assertEqual([], self.related["third-party-atom"]["recipes"])
+        self.assertEqual([], self.related["third-party-soundly"]["builtin"])
+        self.assertIn(
+            "recipes-e905fc52a1",
+            self.related["aescripts-quick-chromatic-aberration-3"]["recipes"],
+        )
+        self.assertIn("builtin-ae-glow", self.related["aescripts-deep-glow-2"]["builtin"])
 
 
 if __name__ == "__main__":
