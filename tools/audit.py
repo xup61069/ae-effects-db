@@ -41,6 +41,35 @@ def popular_keys() -> list[str]:
     return keys
 
 
+def dedicated_product_roots() -> set[str]:
+    path = os.path.join(ROOT, "curation", "audit.json")
+    with open(path, encoding="utf-8") as handle:
+        config = json.load(handle)
+    values = config.get("dedicated_product_roots")
+    if not isinstance(values, list) or not all(isinstance(value, str) for value in values):
+        raise ValueError("curation/audit.json 的 dedicated_product_roots 必須是字串陣列")
+    normalized = {canonical_url(value) for value in values}
+    if len(normalized) != len(values):
+        raise ValueError("curation/audit.json 的 dedicated_product_roots 不應重複")
+    if any(urlparse(value).path not in {"", "/"} for value in normalized):
+        raise ValueError("dedicated_product_roots 只能列出網站根網址")
+    return normalized
+
+
+def homepage_only_candidates(rows: list[tuple[str, dict]]) -> list[str]:
+    allowed = dedicated_product_roots()
+    available = {canonical_url(item.get("url", "")) for _, item in rows}
+    missing = allowed - available
+    if missing:
+        raise ValueError(f"dedicated_product_roots 未對應資料：{', '.join(sorted(missing))}")
+    return [
+        item["name"]
+        for _, item in rows
+        if urlparse(item.get("url", "")).path in {"", "/"}
+        and canonical_url(item.get("url", "")) not in allowed
+    ]
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
@@ -94,11 +123,7 @@ def main() -> None:
         != len(item.get("tags", []))
     ]
     missing_popular = [key for key in popular_keys() if key not in available_popular]
-    root_urls = [
-        item["name"]
-        for _, item in rows
-        if urlparse(item.get("url", "")).path in {"", "/"}
-    ]
+    root_urls = homepage_only_candidates(rows)
 
     checks = {
         "缺少 URL": [item["name"] for _, item in rows if not item.get("url")],

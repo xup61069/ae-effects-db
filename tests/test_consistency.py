@@ -1,7 +1,7 @@
 import unittest
 
 import search
-from tools.audit import popular_keys
+from tools.audit import dedicated_product_roots, homepage_only_candidates, popular_keys
 from tools.classify_kind import classify
 
 
@@ -17,6 +17,15 @@ class DatabaseConsistencyTests(unittest.TestCase):
         self.assertGreater(len(keys), 30, "熱門清單不應為空或意外縮水")
         self.assertEqual(len(keys), len(set(keys)), "POPULAR_KEYS 不應重複")
         self.assertEqual([], [key for key in keys if key not in available])
+
+    def test_dedicated_product_roots_are_curated_not_reported_as_homepages(self):
+        roots = dedicated_product_roots()
+        self.assertEqual(
+            {"https://freqreact.com", "https://www.voukoder.org"},
+            roots,
+        )
+        rows = [(f"{row['_src']}.jsonl", row) for row in self.rows]
+        self.assertEqual([], homepage_only_candidates(rows))
 
     def test_multi_term_search_prefers_exact_product(self):
         results = search.ranked(self.rows, ["fx", "console"], require_all=True)

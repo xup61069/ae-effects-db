@@ -124,6 +124,7 @@
 - `curation/popularity.json` 定義網站預設的可解釋熱門排序；它不是銷量榜。
 - `curation/localization.json` 只放實際驗證過的官方在地化頁與 Adobe 官方分類；不要自行翻譯產品名或猜 locale URL。
 - `curation/search-aliases.ja.json` 是人工審查過的日文搜尋別名。
+- `curation/audit.json` 只列根網址本身就是單一產品頁的已驗證例外；新增值必須仍對應現有資料，不能拿來略過泛用公司首頁。
 - 前端與資料版本由 `dist/web/asset-manifest.json` 的內容雜湊自動產生；不要手動維護版本號。
 
 ## 完成前檢查
