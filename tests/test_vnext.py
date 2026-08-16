@@ -118,6 +118,26 @@ class RecommendationTests(unittest.TestCase):
         )
         self.assertIn("builtin-ae-glow", self.related["aescripts-deep-glow-2"]["builtin"])
 
+    def test_every_recommendation_has_meaningful_tag_evidence(self):
+        by_id = {row["id"]: row for row in self.rows}
+        for item in self.rows:
+            item_tags = normalized_tags(item)
+            for section, candidate_ids in self.related[item["id"]].items():
+                for candidate_id in candidate_ids:
+                    with self.subTest(item=item["id"], section=section, candidate=candidate_id):
+                        self.assertTrue(item_tags & normalized_tags(by_id[candidate_id]))
+
+    def test_broad_category_does_not_backfill_unrelated_popular_tools(self):
+        self.assertEqual([], self.related["aescripts-ae-gpt"]["similar"])
+        self.assertNotIn(
+            "third-party-fx-console",
+            self.related["gumroad-3d-to-2d"]["similar"],
+        )
+        self.assertIn(
+            "red-giant-optical-glow",
+            self.related["aescripts-deep-glow-2"]["similar"],
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
