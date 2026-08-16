@@ -1532,11 +1532,11 @@ Parametric EQ｜AE內建｜builtin｜audio｜精準調整指定中心頻率、�
 Reverb｜AE內建｜builtin｜audio｜模擬房間或大廳的聲音反射，適合讓乾燥錄音融入場景或營造遼闊空間感。｜https://helpx.adobe.com/after-effects/desktop/apply-effects-and-animation-presets/list-of-effects/audio-effects.html
 Stereo Mixer｜AE內建｜builtin｜audio｜分別控制左右聲道音量與混合，適合修正立體聲平衡或製作聲音左右移動。｜https://helpx.adobe.com/after-effects/desktop/apply-effects-and-animation-presets/list-of-effects/audio-effects.html
 Tone｜AE內建｜builtin｜audio｜生成可調頻率與音量的純音，適合製作測試音、電子嗶聲或簡單提示聲。｜https://helpx.adobe.com/after-effects/desktop/apply-effects-and-animation-presets/list-of-effects/audio-effects.html
-Bilateral Blur｜AE內建｜builtin｜blur｜在柔化同色區域時保留明顯邊緣，適合磨皮、降噪與平滑表面而不糊掉輪廓。｜https://helpx.adobe.com/after-effects/desktop/apply-effects-and-animation-presets/list-of-effects/blur-and-sharpen-effects.html
-Box Blur｜AE內建｜builtin｜blur｜以方形取樣快速平均像素，適合製作背景柔化、重複模糊與效能友善的過場。｜https://helpx.adobe.com/after-effects/desktop/apply-effects-and-animation-presets/list-of-effects/blur-and-sharpen-effects.html
-Sharpen｜AE內建｜builtin｜restore｜提高相鄰像素的邊緣對比來增加清晰感，適合快速補強略軟的影片與圖形。｜https://helpx.adobe.com/after-effects/desktop/apply-effects-and-animation-presets/list-of-effects/blur-and-sharpen-effects.html
-Smart Blur｜AE內建｜builtin｜blur｜依邊緣門檻選擇性柔化區域，適合磨皮、降低細碎雜訊或製作平滑卡通色塊。｜https://helpx.adobe.com/after-effects/desktop/apply-effects-and-animation-presets/list-of-effects/blur-and-sharpen-effects.html
-Unsharp Mask｜AE內建｜builtin｜restore｜以半徑與門檻精細控制邊緣銳化，適合恢復攝影細節並避免整片雜訊被放大。｜https://helpx.adobe.com/after-effects/desktop/apply-effects-and-animation-presets/list-of-effects/blur-and-sharpen-effects.html
+Bilateral Blur｜AE內建｜builtin｜blur｜在柔化同色區域時保留明顯邊緣，適合磨皮、降噪與平滑表面而不糊掉輪廓。｜https://helpx.adobe.com/after-effects/desktop/apply-effects-and-animation-presets/list-of-effects/blur-sharpen-effects.html
+Box Blur｜AE內建｜builtin｜blur｜以方形取樣快速平均像素，適合製作背景柔化、重複模糊與效能友善的過場。｜https://helpx.adobe.com/after-effects/desktop/apply-effects-and-animation-presets/list-of-effects/blur-sharpen-effects.html
+Sharpen｜AE內建｜builtin｜restore｜提高相鄰像素的邊緣對比來增加清晰感，適合快速補強略軟的影片與圖形。｜https://helpx.adobe.com/after-effects/desktop/apply-effects-and-animation-presets/list-of-effects/blur-sharpen-effects.html
+Smart Blur｜AE內建｜builtin｜blur｜依邊緣門檻選擇性柔化區域，適合磨皮、降低細碎雜訊或製作平滑卡通色塊。｜https://helpx.adobe.com/after-effects/desktop/apply-effects-and-animation-presets/list-of-effects/blur-sharpen-effects.html
+Unsharp Mask｜AE內建｜builtin｜restore｜以半徑與門檻精細控制邊緣銳化，適合恢復攝影細節並避免整片雜訊被放大。｜https://helpx.adobe.com/after-effects/desktop/apply-effects-and-animation-presets/list-of-effects/blur-sharpen-effects.html
 Arithmetic｜AE內建｜builtin｜color｜對影像色彩通道執行加減乘除等運算，適合技術合成、通道修正與特殊色彩處理。｜https://helpx.adobe.com/after-effects/desktop/apply-effects-and-animation-presets/list-of-effects/channel-effects.html
 Blend｜AE內建｜builtin｜composite｜以混合比例與模式合成兩個圖層，適合快速交叉淡化、疊圖與建立簡單轉場。｜https://helpx.adobe.com/after-effects/desktop/apply-effects-and-animation-presets/list-of-effects/channel-effects.html
 Calculations｜AE內建｜builtin｜composite｜把兩個圖層的指定通道混合成新結果，適合建立 Alpha 遮罩與複雜通道合成。｜https://helpx.adobe.com/after-effects/desktop/apply-effects-and-animation-presets/list-of-effects/channel-effects.html
@@ -1548,26 +1548,26 @@ Remove Color Matting｜AE內建｜builtin｜matte｜移除預乘背景色造成�
 Set Channels｜AE內建｜builtin｜color｜從來源圖層指定各個紅綠藍與 Alpha 通道，適合交換通道、組合遮罩與技術調色。｜https://helpx.adobe.com/after-effects/desktop/apply-effects-and-animation-presets/list-of-effects/channel-effects.html
 Shift Channels｜AE內建｜builtin｜color｜把輸出通道替換成其他色彩或 Alpha 通道，適合快速提取遮罩、重排 RGB 與建立單色結果。｜https://helpx.adobe.com/after-effects/desktop/apply-effects-and-animation-presets/list-of-effects/channel-effects.html
 Solid Composite｜AE內建｜builtin｜composite｜在透明區域後方合成指定純色，適合預覽 Alpha、加入底色或輸出不透明畫面。｜https://helpx.adobe.com/after-effects/desktop/apply-effects-and-animation-presets/list-of-effects/channel-effects.html
-Auto Color｜AE內建｜builtin｜color｜自動分析高光、中間調與陰影來中和偏色，適合快速修正色溫不均與整體色偏。｜https://helpx.adobe.com/after-effects/desktop/apply-effects-and-animation-presets/list-of-effects/color-correction-effects.html
-Auto Contrast｜AE內建｜builtin｜color｜自動設定黑白點以擴展明暗範圍，適合快速改善灰霧、低反差或曝光平淡的素材。｜https://helpx.adobe.com/after-effects/desktop/apply-effects-and-animation-presets/list-of-effects/color-correction-effects.html
-Auto Levels｜AE內建｜builtin｜color｜逐通道自動調整黑白點與色階，適合快速修正曝光並平衡 RGB 通道。｜https://helpx.adobe.com/after-effects/desktop/apply-effects-and-animation-presets/list-of-effects/color-correction-effects.html
-Brightness & Contrast｜AE內建｜builtin｜color｜直接調整整體亮度與對比，適合快速修正明暗、加強反差或柔化平淡畫面。｜https://helpx.adobe.com/after-effects/desktop/apply-effects-and-animation-presets/list-of-effects/color-correction-effects.html
-Broadcast Colors｜AE內建｜builtin｜color｜限制過亮或過飽和的訊號至廣播安全範圍，適合電視交付前檢查與修正非法色彩。｜https://helpx.adobe.com/after-effects/desktop/apply-effects-and-animation-presets/list-of-effects/color-correction-effects.html
-Change Color｜AE內建｜builtin｜color｜選取特定顏色並調整其色相、亮度與飽和度，適合替物件換色或修正局部色彩。｜https://helpx.adobe.com/after-effects/desktop/apply-effects-and-animation-presets/list-of-effects/color-correction-effects.html
-Channel Mixer｜AE內建｜builtin｜color｜重新混合紅綠藍通道的比例，適合修正色偏、製作客製黑白影像與特殊色彩映射。｜https://helpx.adobe.com/after-effects/desktop/apply-effects-and-animation-presets/list-of-effects/color-correction-effects.html
-Color Balance｜AE內建｜builtin｜color｜分別調整陰影、中間調與高光的 RGB 平衡，適合修正偏色或建立冷暖分離調色。｜https://helpx.adobe.com/after-effects/desktop/apply-effects-and-animation-presets/list-of-effects/color-correction-effects.html
-Color Balance (HLS)｜AE內建｜builtin｜color｜以色相、亮度與飽和度三項控制整體色彩，適合快速改色、降彩度或調整明暗。｜https://helpx.adobe.com/after-effects/desktop/apply-effects-and-animation-presets/list-of-effects/color-correction-effects.html
-Color Link｜AE內建｜builtin｜color｜從另一圖層或區域取樣平均顏色套用至目前圖層，適合讓圖形隨畫面配色同步變化。｜https://helpx.adobe.com/after-effects/desktop/apply-effects-and-animation-presets/list-of-effects/color-correction-effects.html
-Color Stabilizer｜AE內建｜builtin｜color｜追蹤取樣點以補償逐幀亮度或色彩變化，適合穩定縮時、掃描與閃爍素材。｜https://helpx.adobe.com/after-effects/desktop/apply-effects-and-animation-presets/list-of-effects/color-correction-effects.html
-Equalize｜AE內建｜builtin｜color｜重新分布亮度或 RGB 直方圖以擴展對比，適合改善灰霧畫面與明暗分布不均。｜https://helpx.adobe.com/after-effects/desktop/apply-effects-and-animation-presets/list-of-effects/color-correction-effects.html
-Gamma/Pedestal/Gain｜AE內建｜builtin｜color｜分別控制黑位、伽瑪與增益，適合精確修正陰影、中間調與高光的明暗關係。｜https://helpx.adobe.com/after-effects/desktop/apply-effects-and-animation-presets/list-of-effects/color-correction-effects.html
-Leave Color｜AE內建｜builtin｜color｜保留指定顏色並降低其他顏色飽和度，適合製作局部彩色、主體突顯與抽色效果。｜https://helpx.adobe.com/after-effects/desktop/apply-effects-and-animation-presets/list-of-effects/color-correction-effects.html
-Levels (Individual Controls)｜AE內建｜builtin｜color｜以可獨立動畫的控制項調整整體與 RGB 色階，適合關鍵影格調色及精細通道校正。｜https://helpx.adobe.com/after-effects/desktop/apply-effects-and-animation-presets/list-of-effects/color-correction-effects.html
-PS Arbitrary Map｜AE內建｜builtin｜color｜載入 Photoshop 任意映射曲線重新分配色調，適合套用既有曲線預設與特殊明暗反轉。｜https://helpx.adobe.com/after-effects/desktop/apply-effects-and-animation-presets/list-of-effects/color-correction-effects.html
-Selective Color｜AE內建｜builtin｜color｜依紅、黃、綠等色彩範圍調整 CMYK 比例，適合精修膚色、天空與特定物件顏色。｜https://helpx.adobe.com/after-effects/desktop/apply-effects-and-animation-presets/list-of-effects/color-correction-effects.html
-Shadow/Highlight｜AE內建｜builtin｜color｜分別恢復過暗陰影與過亮高光細節，適合修正逆光、曝光不均與高反差素材。｜https://helpx.adobe.com/after-effects/desktop/apply-effects-and-animation-presets/list-of-effects/color-correction-effects.html
-Tint｜AE內建｜builtin｜color｜把黑色與白色映射成兩個指定顏色，適合製作黑白、雙色調與品牌配色影像。｜https://helpx.adobe.com/after-effects/desktop/apply-effects-and-animation-presets/list-of-effects/color-correction-effects.html
-Tritone｜AE內建｜builtin｜color｜分別為陰影、中間調與高光指定顏色，適合建立三色調海報、復古與品牌化風格。｜https://helpx.adobe.com/after-effects/desktop/apply-effects-and-animation-presets/list-of-effects/color-correction-effects.html
+Auto Color｜AE內建｜builtin｜color｜自動分析高光、中間調與陰影來中和偏色，適合快速修正色溫不均與整體色偏。｜https://helpx.adobe.com/after-effects/desktop/adjust-colors/work-with-color-correction-effects/color-correction-effects.html
+Auto Contrast｜AE內建｜builtin｜color｜自動設定黑白點以擴展明暗範圍，適合快速改善灰霧、低反差或曝光平淡的素材。｜https://helpx.adobe.com/after-effects/desktop/adjust-colors/work-with-color-correction-effects/color-correction-effects.html
+Auto Levels｜AE內建｜builtin｜color｜逐通道自動調整黑白點與色階，適合快速修正曝光並平衡 RGB 通道。｜https://helpx.adobe.com/after-effects/desktop/adjust-colors/work-with-color-correction-effects/color-correction-effects.html
+Brightness & Contrast｜AE內建｜builtin｜color｜直接調整整體亮度與對比，適合快速修正明暗、加強反差或柔化平淡畫面。｜https://helpx.adobe.com/after-effects/desktop/adjust-colors/work-with-color-correction-effects/color-correction-effects.html
+Broadcast Colors｜AE內建｜builtin｜color｜限制過亮或過飽和的訊號至廣播安全範圍，適合電視交付前檢查與修正非法色彩。｜https://helpx.adobe.com/after-effects/desktop/adjust-colors/work-with-color-correction-effects/color-correction-effects.html
+Change Color｜AE內建｜builtin｜color｜選取特定顏色並調整其色相、亮度與飽和度，適合替物件換色或修正局部色彩。｜https://helpx.adobe.com/after-effects/desktop/adjust-colors/work-with-color-correction-effects/color-correction-effects.html
+Channel Mixer｜AE內建｜builtin｜color｜重新混合紅綠藍通道的比例，適合修正色偏、製作客製黑白影像與特殊色彩映射。｜https://helpx.adobe.com/after-effects/desktop/adjust-colors/work-with-color-correction-effects/color-correction-effects.html
+Color Balance｜AE內建｜builtin｜color｜分別調整陰影、中間調與高光的 RGB 平衡，適合修正偏色或建立冷暖分離調色。｜https://helpx.adobe.com/after-effects/desktop/adjust-colors/work-with-color-correction-effects/color-correction-effects.html
+Color Balance (HLS)｜AE內建｜builtin｜color｜以色相、亮度與飽和度三項控制整體色彩，適合快速改色、降彩度或調整明暗。｜https://helpx.adobe.com/after-effects/desktop/adjust-colors/work-with-color-correction-effects/color-correction-effects.html
+Color Link｜AE內建｜builtin｜color｜從另一圖層或區域取樣平均顏色套用至目前圖層，適合讓圖形隨畫面配色同步變化。｜https://helpx.adobe.com/after-effects/desktop/adjust-colors/work-with-color-correction-effects/color-correction-effects.html
+Color Stabilizer｜AE內建｜builtin｜color｜追蹤取樣點以補償逐幀亮度或色彩變化，適合穩定縮時、掃描與閃爍素材。｜https://helpx.adobe.com/after-effects/desktop/adjust-colors/work-with-color-correction-effects/color-correction-effects.html
+Equalize｜AE內建｜builtin｜color｜重新分布亮度或 RGB 直方圖以擴展對比，適合改善灰霧畫面與明暗分布不均。｜https://helpx.adobe.com/after-effects/desktop/adjust-colors/work-with-color-correction-effects/color-correction-effects.html
+Gamma/Pedestal/Gain｜AE內建｜builtin｜color｜分別控制黑位、伽瑪與增益，適合精確修正陰影、中間調與高光的明暗關係。｜https://helpx.adobe.com/after-effects/desktop/adjust-colors/work-with-color-correction-effects/color-correction-effects.html
+Leave Color｜AE內建｜builtin｜color｜保留指定顏色並降低其他顏色飽和度，適合製作局部彩色、主體突顯與抽色效果。｜https://helpx.adobe.com/after-effects/desktop/adjust-colors/work-with-color-correction-effects/color-correction-effects.html
+Levels (Individual Controls)｜AE內建｜builtin｜color｜以可獨立動畫的控制項調整整體與 RGB 色階，適合關鍵影格調色及精細通道校正。｜https://helpx.adobe.com/after-effects/desktop/adjust-colors/work-with-color-correction-effects/color-correction-effects.html
+PS Arbitrary Map｜AE內建｜builtin｜color｜載入 Photoshop 任意映射曲線重新分配色調，適合套用既有曲線預設與特殊明暗反轉。｜https://helpx.adobe.com/after-effects/desktop/adjust-colors/work-with-color-correction-effects/color-correction-effects.html
+Selective Color｜AE內建｜builtin｜color｜依紅、黃、綠等色彩範圍調整 CMYK 比例，適合精修膚色、天空與特定物件顏色。｜https://helpx.adobe.com/after-effects/desktop/adjust-colors/work-with-color-correction-effects/color-correction-effects.html
+Shadow/Highlight｜AE內建｜builtin｜color｜分別恢復過暗陰影與過亮高光細節，適合修正逆光、曝光不均與高反差素材。｜https://helpx.adobe.com/after-effects/desktop/adjust-colors/work-with-color-correction-effects/color-correction-effects.html
+Tint｜AE內建｜builtin｜color｜把黑色與白色映射成兩個指定顏色，適合製作黑白、雙色調與品牌配色影像。｜https://helpx.adobe.com/after-effects/desktop/adjust-colors/work-with-color-correction-effects/color-correction-effects.html
+Tritone｜AE內建｜builtin｜color｜分別為陰影、中間調與高光指定顏色，適合建立三色調海報、復古與品牌化風格。｜https://helpx.adobe.com/after-effects/desktop/adjust-colors/work-with-color-correction-effects/color-correction-effects.html
 4-Color Gradient｜AE內建｜builtin｜generate｜以四個可移動色點生成平滑多色漸層，適合動態背景、柔和光影與品牌配色。｜https://helpx.adobe.com/after-effects/desktop/apply-effects-and-animation-presets/list-of-effects/generate-effects.html
 Checkerboard｜AE內建｜builtin｜generate｜生成可調大小、位置與顏色的棋盤格，適合幾何背景、網格遮罩與測試圖案。｜https://helpx.adobe.com/after-effects/desktop/apply-effects-and-animation-presets/list-of-effects/generate-effects.html
 Circle｜AE內建｜builtin｜generate｜生成可調半徑、邊緣與填色的圓形或圓環，適合波紋、標記點與簡單圖形動畫。｜https://helpx.adobe.com/after-effects/desktop/apply-effects-and-animation-presets/list-of-effects/generate-effects.html
@@ -1593,19 +1593,19 @@ CC Radial Scale Wipe｜AE內建｜builtin｜transition｜以從中心或邊緣�
 CC Scale Wipe｜AE內建｜builtin｜transition｜結合滑動與縮放切換兩個畫面，適合製作快速推拉、圖卡換頁與動態鏡頭轉場。｜https://helpx.adobe.com/after-effects/desktop/apply-effects-and-animation-presets/list-of-effects/cycore-plugins.html
 CC Slant｜AE內建｜builtin｜distort｜沿指定方向斜切整個圖層，適合製作傾斜文字、速度感圖卡與平行四邊形變形。｜https://helpx.adobe.com/after-effects/desktop/apply-effects-and-animation-presets/list-of-effects/cycore-plugins.html
 CC Split｜AE內建｜builtin｜distort｜從中央切開圖層並讓兩半向不同方向移動，適合畫面裂開、雙向揭露與分割轉場。｜https://helpx.adobe.com/after-effects/desktop/apply-effects-and-animation-presets/list-of-effects/cycore-plugins.html
-Color Range｜AE內建｜builtin｜keying｜以滴管選取一段顏色範圍並建立透明區域，適合處理多色背景、綠幕與局部色彩去背。｜https://helpx.adobe.com/after-effects/desktop/apply-effects-and-animation-presets/list-of-effects/keying-effects.html
-Difference Matte｜AE內建｜builtin｜keying｜比較目前畫面與乾淨背景的差異建立遮罩，適合固定鏡頭中移除靜態背景並保留移動主體。｜https://helpx.adobe.com/after-effects/desktop/apply-effects-and-animation-presets/list-of-effects/keying-effects.html
+Color Range｜AE內建｜builtin｜keying｜以滴管選取一段顏色範圍並建立透明區域，適合處理多色背景、綠幕與局部色彩去背。｜https://helpx.adobe.com/after-effects/desktop/animate-in-after-effects/work-with-keying-effects/keying-effects.html
+Difference Matte｜AE內建｜builtin｜keying｜比較目前畫面與乾淨背景的差異建立遮罩，適合固定鏡頭中移除靜態背景並保留移動主體。｜https://helpx.adobe.com/after-effects/desktop/animate-in-after-effects/work-with-keying-effects/keying-effects.html
 Matte Choker｜AE內建｜builtin｜matte｜分階段收縮、擴張與柔化 Alpha 邊緣，適合清理去背毛邊、細洞與不穩定遮罩。｜https://helpx.adobe.com/after-effects/desktop/apply-effects-and-animation-presets/list-of-effects/matte-effects.html
 Refine Hard Matte｜AE內建｜builtin｜matte｜針對輪廓清楚的硬邊遮罩降低抖動並修整邊緣，適合產品、建築與硬質物件去背。｜https://helpx.adobe.com/after-effects/desktop/apply-effects-and-animation-presets/list-of-effects/matte-effects.html
 Refine Soft Matte｜AE內建｜builtin｜matte｜保留髮絲、動態模糊與半透明細節來修整柔邊遮罩，適合人物與煙霧等複雜去背。｜https://helpx.adobe.com/after-effects/desktop/apply-effects-and-animation-presets/list-of-effects/matte-effects.html
 Simple Choker｜AE內建｜builtin｜matte｜以單一數值快速收縮或擴張遮罩邊緣，適合去除白邊、補足 Alpha 或微調去背輪廓。｜https://helpx.adobe.com/after-effects/desktop/apply-effects-and-animation-presets/list-of-effects/matte-effects.html
-Dust & Scratches｜AE內建｜builtin｜restore｜以半徑與門檻平滑孤立灰塵和刮痕，適合修復老膠片、掃描照片與固定小雜點。｜https://helpx.adobe.com/after-effects/desktop/apply-effects-and-animation-presets/list-of-effects/noise-and-grain-effects.html
-Color Difference Key｜AE內建｜builtin｜keying｜利用前景與指定背景色的色差產生透明度，適合傳統藍幕、綠幕與高反差色幕去背。｜https://helpx.adobe.com/after-effects/desktop/apply-effects-and-animation-presets/list-of-effects/keying-effects.html
-Inner/Outer Key｜AE內建｜builtin｜keying｜以內外兩個遮罩界定確定前景與背景，再計算邊緣透明度，適合輔助複雜輪廓去背。｜https://helpx.adobe.com/after-effects/desktop/apply-effects-and-animation-presets/list-of-effects/keying-effects.html
-Extract｜AE內建｜builtin｜keying｜依亮度直方圖與黑白點建立透明度，適合抽出高光、煙霧、火焰或黑底光效素材。｜https://helpx.adobe.com/after-effects/desktop/apply-effects-and-animation-presets/list-of-effects/keying-effects.html
-Noise Alpha｜AE內建｜builtin｜texture｜只在 Alpha 通道加入雜訊，適合製作顆粒溶解、不規則透明邊緣與紋理化遮罩。｜https://helpx.adobe.com/after-effects/desktop/apply-effects-and-animation-presets/list-of-effects/noise-and-grain-effects.html
-Noise HLS Auto｜AE內建｜builtin｜texture｜自動隨時間改變色相、亮度與飽和度雜訊，適合快速加入動態底片顆粒與彩色閃動質感。｜https://helpx.adobe.com/after-effects/desktop/apply-effects-and-animation-presets/list-of-effects/noise-and-grain-effects.html
-Noise HLS｜AE內建｜builtin｜texture｜分別在色相、亮度與飽和度加入可控制的雜訊，適合製作彩色顆粒、類比干擾與粗糙色彩質感。｜https://helpx.adobe.com/after-effects/desktop/apply-effects-and-animation-presets/list-of-effects/noise-and-grain-effects.html
+Dust & Scratches｜AE內建｜builtin｜restore｜以半徑與門檻平滑孤立灰塵和刮痕，適合修復老膠片、掃描照片與固定小雜點。｜https://helpx.adobe.com/after-effects/desktop/apply-effects-and-animation-presets/list-of-effects/noise-grain-effects.html
+Color Difference Key｜AE內建｜builtin｜keying｜利用前景與指定背景色的色差產生透明度，適合傳統藍幕、綠幕與高反差色幕去背。｜https://helpx.adobe.com/after-effects/desktop/animate-in-after-effects/work-with-keying-effects/keying-effects.html
+Inner/Outer Key｜AE內建｜builtin｜keying｜以內外兩個遮罩界定確定前景與背景，再計算邊緣透明度，適合輔助複雜輪廓去背。｜https://helpx.adobe.com/after-effects/desktop/animate-in-after-effects/work-with-keying-effects/keying-effects.html
+Extract｜AE內建｜builtin｜keying｜依亮度直方圖與黑白點建立透明度，適合抽出高光、煙霧、火焰或黑底光效素材。｜https://helpx.adobe.com/after-effects/desktop/animate-in-after-effects/work-with-keying-effects/keying-effects.html
+Noise Alpha｜AE內建｜builtin｜texture｜只在 Alpha 通道加入雜訊，適合製作顆粒溶解、不規則透明邊緣與紋理化遮罩。｜https://helpx.adobe.com/after-effects/desktop/apply-effects-and-animation-presets/list-of-effects/noise-grain-effects.html
+Noise HLS Auto｜AE內建｜builtin｜texture｜自動隨時間改變色相、亮度與飽和度雜訊，適合快速加入動態底片顆粒與彩色閃動質感。｜https://helpx.adobe.com/after-effects/desktop/apply-effects-and-animation-presets/list-of-effects/noise-grain-effects.html
+Noise HLS｜AE內建｜builtin｜texture｜分別在色相、亮度與飽和度加入可控制的雜訊，適合製作彩色顆粒、類比干擾與粗糙色彩質感。｜https://helpx.adobe.com/after-effects/desktop/apply-effects-and-animation-presets/list-of-effects/noise-grain-effects.html
 Time Difference｜AE內建｜builtin｜time｜比較目前影格與前後時間影格的像素差異，適合偵測移動區域、建立動態遮罩與抽象殘影。｜https://helpx.adobe.com/after-effects/desktop/apply-effects-and-animation-presets/list-of-effects/time-effects.html
 Iris Wipe｜AE內建｜builtin｜transition｜以可調形狀像鏡頭光圈般向內或向外揭露畫面，適合復古片尾、聚焦與幾何開合轉場。｜https://helpx.adobe.com/after-effects/desktop/apply-effects-and-animation-presets/list-of-effects/transition-effects.html
 Radial Wipe｜AE內建｜builtin｜transition｜讓擦除邊緣繞中心旋轉掃過畫面，適合時鐘、圓餅進度、雷達與扇形轉場。｜https://helpx.adobe.com/after-effects/desktop/apply-effects-and-animation-presets/list-of-effects/transition-effects.html
@@ -1631,7 +1631,7 @@ Slider Control｜AE內建｜builtin｜expression｜提供可關鍵影格化的�
 VR De-Noise｜AE內建｜builtin｜vr｜針對等距柱狀 360 畫面降低雜訊並處理接縫，適合清理低光全景與沉浸式影片。｜https://helpx.adobe.com/after-effects/desktop/apply-effects-and-animation-presets/effects-and-animation-presets/effect-list.html
 VR Projection｜AE內建｜builtin｜vr｜在等距柱狀、立方體等 360 投影格式間轉換並調整視角，適合全景合成與 VR 輸出。｜https://helpx.adobe.com/after-effects/desktop/apply-effects-and-animation-presets/effects-and-animation-presets/effect-list.html
 Smear｜AE內建｜builtin｜distort｜沿指定路徑拉伸並塗抹局部像素，適合修形、延長物體、速度拖痕與液化動畫。｜https://helpx.adobe.com/after-effects/desktop/apply-effects-and-animation-presets/list-of-effects/distort-effects.html
-Keylight (1.2)｜AE內建｜builtin｜keying｜以業界常用 Keylight 引擎進行綠幕與藍幕去背，適合精修邊緣、溢色與半透明細節。｜https://helpx.adobe.com/after-effects/desktop/apply-effects-and-animation-presets/list-of-effects/keying-effects.html
+Keylight (1.2)｜AE內建｜builtin｜keying｜以業界常用 Keylight 引擎進行綠幕與藍幕去背，適合精修邊緣、溢色與半透明細節。｜https://helpx.adobe.com/after-effects/desktop/animate-in-after-effects/work-with-keying-effects/keying-effects.html
 Camera-Shake Deblur｜AE內建｜builtin｜restore｜利用前後較清晰的影格與光流重建因相機晃動而模糊的影格，可調模糊持續時間、光流品質、修復強度與晃動敏感度；Adobe 建議先用 Warp Stabilizer VFX 穩定畫面，再套用此效果減少殘留的動態模糊。｜https://helpx.adobe.com/after-effects/using/blur-sharpen-effects.html#camera-shake-deblur
 Smart Mask Interpolation｜AE內建｜builtin｜workflow｜在兩個相鄰的遮罩路徑關鍵幀之間建立中間關鍵幀，可控制關鍵幀速率、頂點路徑、彎曲阻力、配對品質與新增頂點方式，讓形狀差異較大的遮罩也能平順過渡；從「視窗 > Mask Interpolation」開啟。｜https://helpx.adobe.com/after-effects/desktop/animate-in-after-effects/animate-shape-paths-and-masks/animating-shape-paths-masks.html#animate-a-mask-path-with-smart-mask-interpolation
 CC Mr. Smoothie｜AE內建｜builtin｜color｜AE 內建的 Cycore 效果，依畫面亮度把顏色重新對映成平滑漸層，做迷幻流動的變色質感。｜https://helpx.adobe.com/after-effects/using/stylize-effects.html

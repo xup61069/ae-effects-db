@@ -92,17 +92,17 @@
     "released": {
       "type": "string",
       "format": "date",
-      "description": "官方可查證的首次發行日期（與 updated 至少填其一），ISO 8601 YYYY-MM-DD。"
+      "description": "官方可查證的首次發行日期（產品級：初版公開日），與 updated 至少填其一，ISO 8601 YYYY-MM-DD。"
     },
     "updated": {
       "type": "string",
       "format": "date",
-      "description": "官方可查證的最近重大更新日期（與 released 至少填其一），ISO 8601 YYYY-MM-DD。"
+      "description": "官方可查證的最近更新日期，與 released 至少填其一，ISO 8601 YYYY-MM-DD。產品級（版本更新）或頁面級（原廠官方頁「Last updated on」這類頁面最後更新時間，如 helpx 效果頁）皆可。"
     },
     "date_url": {
       "type": "string",
       "pattern": "^https?://",
-      "description": "填 released 或 updated 時必填，連到能直接支持日期的官方頁。"
+      "description": "填 released 或 updated 時必填，連到能直接支持該日期的官方頁。"
     },
     "unverified": {
       "type": "boolean",
