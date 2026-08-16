@@ -1,5 +1,5 @@
 # After Effects 特效／外掛索引（繁體中文）
-# 共 2995 筆　格式：名稱｜來源｜型態｜分類｜說明｜官方連結
+# 共 2994 筆　格式：名稱｜來源｜型態｜分類｜說明｜官方連結
 # 完整資料（含中英搜尋標籤、外觀描述）：dist/all.jsonl
 # 線上搜尋：https://xup61069.github.io/ae-effects-db/
 Deep Glow 2｜aescripts｜plugin｜glow｜從高光產生自然的指數衰減電影級輝光；第二代加入影像式輝光、RGB 半徑、鏡頭污漬紋理、多色染色與電影色調映射。｜https://aescripts.com/deep-glow/
@@ -702,7 +702,7 @@ Orient World｜aescripts｜script｜3d｜一鍵把選定圖層設為 3D 攝影�
 Packer｜aescripts｜script｜workflow｜以一鍵操作減少專案與圖層雜亂，依可自訂的打包及資料夾結構整理 After Effects 素材，讓專案面板與時間軸更容易維護。｜https://aescripts.com/packer/
 Origami｜aescripts｜script｜generate｜從形狀路徑、遮罩或圖層邊界程序化生成 Voronoi、Delaunay、三角形與方形網格，並以自動動畫圖控制碎片的旋轉、縮放、位置、不透明度及 Trim Paths。｜https://aescripts.com/origami/
 Paint Link｜aescripts｜plugin｜paint｜在 After Effects 與 Photoshop 間建立動態 PSD 連線，讓逐格繪製內容即時同步回時間軸；提供可自訂洋蔥皮、逐關鍵影格檔案管理與團隊協作流程。｜https://aescripts.com/paint-link/
-Paragraph on a Path｜aescripts｜script｜text｜讓段落的每一行沿運動路徑自動定向，可關閉或反轉路徑、動畫化左右對齊與行距、縮放文字行，並將選取遮罩轉成運動路徑。｜https://aescripts.com/after-effects/text/paragraph-on-a-path/
+Paragraph on a Path｜aescripts｜script｜text｜讓段落的每一行沿運動路徑自動定向，可關閉或反轉路徑、動畫化左右對齊與行距、縮放文字行，並將選取遮罩轉成運動路徑。｜https://aescripts.com/paragraph-on-a-path/
 Parental Controls｜aescripts｜script｜rigging｜把子圖層附著到父圖層的實際路徑、形狀或文字內容，設定水平與垂直約束後，父層尺寸、路徑或來源文字變動時會自動調整子層位置。｜https://aescripts.com/parental-controls/
 Parenter｜aescripts｜script｜rigging｜以暫時的 Parenter 空物件群組並重新定位多個圖層，不改動既有動畫；可切換連結、加入或移除子層、複製貼上父層關係並支援 3D 空物件。｜https://aescripts.com/parenter/
 Parrot｜aescripts｜script｜animation｜將主圖層的動作、效果、遮罩、形狀與圖層樣式動態連結到多個目標圖層，透過具名標記觸發不同動作並調整時間錯開，後續只需修改來源動畫。｜https://aescripts.com/parrot/
@@ -1151,7 +1151,6 @@ WANI 16mm Film｜BOOTH｜plugin｜stylize｜模擬 16mm 底片拍攝質感的外
 KANTA Morph & Spiral & Distort｜BOOTH｜plugin｜stylize｜內含三支外掛的組合：物件間平滑變形的 Morph、螺旋卷曲的 Spiral 與高品質扭曲的 Distort，適合變形、卷動與故障演出。Windows 限定。｜https://booth.pm/ja/items/8488628
 A_Flutter｜BOOTH｜plugin｜warp｜把任意圖層變形成像風中紙張般飄動的循環效果，可分別調整折痕、搖曳、波紋與陰影，並替紙張背面套用不同紋理，適合卡片、海報與圖層轉場。｜https://booth.pm/ja/items/8654824
 NGS_EaseCraft｜BOOTH｜script｜animation｜以可編輯的曲線編輯器為關鍵影格套用 Bezier、Elastic 或 Bounce 緩動，支援預設管理、快速選取、曲線匯入與未分割 Position 的自動分軸，適合細調動畫節奏。｜https://booth.pm/ja/items/7726008
-RenderDrop｜BOOTH｜script｜render｜在 After Effects、Premiere Pro 與 Media Encoder 算圖開始、完成或出錯時即時通知 Discord，並可透過官方 OAuth 將輸出自動上傳 Dropbox 或 Google Drive，適合遠端監看與交付流程。｜https://booth.pm/ja/items/7979020
 sbtr_project_cleaner｜BOOTH｜script｜workflow｜批次整理 After Effects 專案面板，可合併同尺寸同色的平面、Null 與調整圖層，並檢查後刪除未使用的素材，適合精簡大型專案與交付前清理。｜https://booth.pm/ja/items/8583336
 Clarix｜BOOTH｜script｜workflow｜用四種可勾選模式批次清除所選圖層的效果、表達式、屬性關鍵影格或文字動畫器，並保存面板設定，適合快速重置圖層與整理複雜動畫。｜https://booth.pm/ja/items/7266089
 quick_jimaku｜BOOTH｜script｜text｜讀取字幕 JSON 與音訊資料，自動在新合成建立文字圖層並配置對應音檔，也附文字轉 JSON 工具，適合旁白、字幕與逐段配音的快速排版。｜https://booth.pm/ja/items/7150288

@@ -1,5 +1,5 @@
 {
-  "version": "36fee91d32cc06bf",
+  "version": "2547bee0af860604",
   "data": [
     "dist/web/catalog.json",
     "dist/web/locales/zh.json",
@@ -26,10 +26,10 @@
     "curation/search-aliases.ja.json"
   ],
   "integrity": {
-    "dist/web/catalog.json": "78e58187024b9cc1ff00646d1290c00afe9f6d9b10668855f2bba69d79632ae1",
-    "dist/web/locales/zh.json": "6077c01d93123f20bdbd48bf191ee7612bdf1698a3773912a48bd3b8dfa9dc51",
-    "dist/web/locales/en.json": "ac768b88bafe594e10f6906a06db966e598a682420da5775639547633ed1682f",
-    "dist/web/locales/ja.json": "834e414d3da7232f74d804a76d39e2f23304e410405e6eb3214c4e306dc0860b",
+    "dist/web/catalog.json": "46a7f7c1b70d3ca3913e33babad63e81147eeb7621d6aec8bd71df55f16d3011",
+    "dist/web/locales/zh.json": "eb07e7593b74d1e1ca957028ea166c236d121cb953dfcfa9f2302c5e3a315da2",
+    "dist/web/locales/en.json": "bd7066c92ab105d3a67f704ab797ae0408617bed6bde56892910db510c3858fe",
+    "dist/web/locales/ja.json": "8cc7e70973f8cc9a4432c8b9a78b9fd07821f0e780b61ed7e82a80c283e0cacf",
     "./": "726df77e17735ca5cba16fa85b6117ba01093b551f86b955142708bdd78c4c95",
     "index.html": "726df77e17735ca5cba16fa85b6117ba01093b551f86b955142708bdd78c4c95",
     "i18n.js": "0cde1b1be573ccef483dd8400cd7a33677578926fd7600b60be27fbd021be305",
@@ -42,7 +42,7 @@
     "assets/pwa.js": "a7c4ba6e74f142c0af2e335ebfcf3b4fc67f25cfb42193cba848ef3d71fb5748",
     "assets/icon.svg": "899c02ea2c31bf1151dcd3cf598926e9eeadfa33f3e9b1cbf32683e960bd598e",
     "manifest.webmanifest": "d444e66a092aafe6985bd8b67e15296707c45cbb50b95963b1dc38ed52014102",
-    "service-worker.js": "d8a7a05ee1c8a73fa8c96ad6a1ef778211ad65133a465cc9043ae1a467bb3607",
+    "service-worker.js": "f081c319e0379a538d4d3e4235ededbe0294419617ba1bb3112df6d9b4f65991",
     "curation/popularity.json": "e0f24e6c2871aa360712425ee9d7e0420bcaae67b24bdca50f568906b37e4f56",
     "curation/localization.json": "e0363a541030999b53ddaf05023e80e18bcc767c55e909c9247782af4fabb684",
     "curation/search.json": "ce8c74d113836f1aeff0535891382ff51c3a376c8aeecda50d63a460ace7e7d8",
