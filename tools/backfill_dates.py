@@ -18,6 +18,9 @@
               date_url＝商品頁本身。
     github    GitHub 官方 Releases API；released＝最早釋出日、updated＝最新釋出日。
               date_url＝repo 頁本身；只處理 repo 根目錄 URL。
+    helpx     Adobe helpx 效果頁的 lastModifiedDate meta（頁面「Last updated on」）；
+              填 updated＝頁面最後更新時間、不填 released（頁面出版日≠效果發行日），
+              date_url＝效果頁本身。
     gumroad   Gumroad 商品頁（預留，尚未實作）
 """
 
@@ -57,6 +60,9 @@ AE_VERSION_RE = re.compile(
 AE_DATE_FMT = "%b %d, %Y"
 GITHUB_RE = re.compile(r"github\.com/([^/?#]+)/([^/?#]+)")
 GITHUB_API = "https://api.github.com/repos/{owner}/{repo}/releases?per_page=100"
+HELPX_LASTMOD_RE = re.compile(r'<meta name="lastModifiedDate" content="(\d{4}-\d{2}-\d{2})')
+HELPX_PUBLISH_RE = re.compile(r'<meta name="publishDate" content="(\d{4}-\d{2}-\d{2})')
+HELPX_HEAD_BYTES = 400_000
 
 
 def fetch(url: str) -> str:
@@ -68,6 +74,32 @@ def fetch(url: str) -> str:
 
             body = gzip.decompress(body)
         return body.decode("utf-8", "ignore")
+
+
+def fetch_head(url: str, max_bytes: int = HELPX_HEAD_BYTES) -> str:
+    """只抓頁面開頭（不要求 gzip），找到標頭區就提早結束。
+
+    helpx 頁面動輒數百 KB，meta 標籤都在 <head>，不用整頁抓完。
+    """
+    req = urllib.request.Request(
+        url,
+        headers={
+            "User-Agent": UA,
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+        },
+    )
+    with urllib.request.urlopen(req, timeout=45) as response:
+        chunks = []
+        total = 0
+        while total < max_bytes:
+            chunk = response.read(64 * 1024)
+            if not chunk:
+                break
+            chunks.append(chunk)
+            total += len(chunk)
+            if b"</head>" in chunk:
+                break
+        return b"".join(chunks).decode("utf-8", "ignore")
 
 
 def booth_dates(item_id: str) -> dict[str, str]:
@@ -106,6 +138,30 @@ def aescripts_dates(html: str) -> dict[str, str] | None:
     if not dates:
         return None
     return {"released": min(dates), "updated": max(dates)}
+
+
+def helpx_dates(url: str) -> dict[str, str] | None:
+    """helpx：頁面級日期。updated＝lastModifiedDate（頁面的 Last updated on）。
+
+    頁面出版日不是效果的發行日，因此 released 一律不填。
+    helpx 偶發假 404／逾時（連續請求時更明顯），重試 5 次並逐步退避。
+    """
+    last_exc = None
+    for attempt in range(5):
+        try:
+            html = fetch_head(url)
+            break
+        except Exception as exc:
+            last_exc = exc
+            time.sleep(2 + attempt * 3)
+    else:
+        raise last_exc
+    match = HELPX_LASTMOD_RE.search(html)
+    if not match:
+        match = HELPX_PUBLISH_RE.search(html)
+    if not match:
+        return None
+    return {"updated": match.group(1)}
 
 
 def github_dates(url: str) -> dict[str, str] | None:
@@ -160,13 +216,18 @@ def collect_entries(source: str, file_filter: str | None) -> list[tuple[str, int
                     continue
                 if source == "github" and "github.com" not in url:
                     continue
+                if source == "helpx" and "helpx.adobe.com/after-effects" not in url:
+                    continue
+                if source == "helpx" and os.path.basename(path) == "recipes.jsonl":
+                    # 配方是自訂效果堆疊，日期應隨配方本身，不能用參考頁的日期
+                    continue
                 out.append((path, line_no, item, url))
     return out
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--source", choices=["booth", "aescripts", "github", "gumroad"], default="booth")
+    parser.add_argument("--source", choices=["booth", "aescripts", "github", "helpx", "gumroad"], default="booth")
     parser.add_argument("--limit", type=int, default=0, help="最多處理幾筆（0＝全部）")
     parser.add_argument("--file", help="只處理指定資料檔（例：booth）")
     parser.add_argument("--dry", action="store_true", help="只預覽，不寫入")
@@ -181,6 +242,9 @@ def main() -> None:
     elif args.source == "github":
         parse = github_dates
         label = lambda item: f"發行 {item['released']}・更新 {item['updated']}"
+    elif args.source == "helpx":
+        parse = helpx_dates
+        label = lambda item: f"更新 {item['updated']}"
     else:
         print(f"--source {args.source} 尚未實作；目前只有 booth、aescripts")
         raise SystemExit(1)
@@ -205,10 +269,11 @@ def main() -> None:
         if not dates:
             skipped.append(f"{name}（頁面無版本／更新日期）")
             continue
-        item["released"] = dates["released"]
-        item["date_url"] = canonical_url(url)
+        if dates.get("released"):
+            item["released"] = dates["released"]
         if dates.get("updated"):
             item["updated"] = dates["updated"]
+        item["date_url"] = canonical_url(url)
         by_file.setdefault(path, {})[line_no] = item
         updated.append(f"{name} → {label(item)}")
         print(f"  [{index}/{len(entries)}] ✓ {name} → {label(item)}")
