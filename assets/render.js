@@ -38,10 +38,12 @@ export function cardMarkup(item, context) {
   const original = item._original ? `<small class="original-label">${escapeHtml(t("descriptionOriginal"))}</small>` : "";
   const stack = item.stack ? `<ul class="stack">${item.stack.map(value => `<li>▸ ${highlight(value, terms)}</li>`).join("")}${item.builtin ? `<li class="builtin-alt">${escapeHtml(t("builtinAlternative"))} ${highlight(item.builtin, terms)}</li>` : ""}</ul>` : "";
   const variants = item.variants ? `<div class="variants">${Object.entries(item.variants).map(([name, label]) => `<span>${escapeHtml(name)} · ${escapeHtml(label)}</span>`).join("")}</div>` : "";
+  const kindActive = context.activeKinds?.has(kind) ? " on" : "";
+  const catActive = context.activeCats?.has(item.cat) ? " on" : "";
   return `<article class="card kind-${escapeHtml(kind)}" data-id="${escapeHtml(item.id)}"><div class="top">
     <a class="name namelink" href="${escapeHtml(officialUrl(item.url))}" target="_blank" rel="noopener">${highlight(item.name, terms)}<span class="ext">↗</span></a>
-    <span class="kindbadge kind-${escapeHtml(kind)}">${escapeHtml(kindLabels[kind] || kind)}</span>
-    <span class="catbadge">${escapeHtml(category)}</span>${adobeBadge}
+    <button type="button" class="kindbadge kind-${escapeHtml(kind)}${kindActive}" data-kind-filter="${escapeHtml(kind)}" aria-pressed="${context.activeKinds?.has(kind) ? "true" : "false"}">${escapeHtml(kindLabels[kind] || kind)}</button>
+    <button type="button" class="catbadge${catActive}" data-cat-filter="${escapeHtml(item.cat)}" aria-pressed="${context.activeCats?.has(item.cat) ? "true" : "false"}">${escapeHtml(category)}</button>${adobeBadge}
     ${date ? `<span class="datebadge">${escapeHtml(item.updated ? t("updated") : t("released"))} ${escapeHtml(date)}</span>` : ""}
     <span class="popscore" title="${escapeHtml(t("popularityTitle", {...pop, order:pop.curatedOrder}))}">${escapeHtml(t("popularity", {score:pop.total}))}</span>
     ${match}<span class="src">${escapeHtml(origin)}</span>
