@@ -1,13 +1,14 @@
 const MANIFEST_URL = "dist/web/asset-manifest.json";
 const CACHE_PREFIX = "ae-effects-db-";
-const BUILD_VERSION = "3ac688d3db839137";
+const BUILD_VERSION = "746f4d7bb03e7b78";
+const currentCacheName = () => `${CACHE_PREFIX}${BUILD_VERSION}`;
 
 async function installVersion() {
   const manifestResponse = await fetch(MANIFEST_URL, {cache:"no-store"});
   if (!manifestResponse.ok) throw new Error(`asset manifest: ${manifestResponse.status}`);
   const manifest = await manifestResponse.clone().json();
   if (manifest.version !== BUILD_VERSION) throw new Error(`asset version mismatch: ${manifest.version}`);
-  const cache = await caches.open(`${CACHE_PREFIX}${manifest.version}`);
+  const cache = await caches.open(currentCacheName());
   const base = self.registration.scope;
   const urls = [...new Set(["./", MANIFEST_URL, ...(manifest.shell || []), ...(manifest.data || [])])]
     .map(path => new URL(path, base).href);
@@ -24,7 +25,7 @@ self.addEventListener("message", event => {
 self.addEventListener("activate", event => {
   event.waitUntil((async () => {
     const names = await caches.keys();
-    const currentName = `${CACHE_PREFIX}${BUILD_VERSION}`;
+    const currentName = currentCacheName();
     await Promise.all(names.filter(name => name.startsWith(CACHE_PREFIX) && name !== currentName).map(name => caches.delete(name)));
     await self.clients.claim();
   })());
@@ -36,17 +37,15 @@ self.addEventListener("fetch", event => {
   const url = new URL(request.url);
   if (url.origin !== self.location.origin) return;
   event.respondWith((async () => {
-    const cached = await caches.match(request, {ignoreSearch:true});
+    const cache = await caches.open(currentCacheName());
+    const cached = await cache.match(request, {ignoreSearch:true});
     if (cached) return cached;
     try {
       const response = await fetch(request);
-      if (response.ok) {
-        const currentName = `${CACHE_PREFIX}${BUILD_VERSION}`;
-        if ((await caches.has(currentName))) (await caches.open(currentName)).put(request, response.clone());
-      }
+      if (response.ok) await cache.put(request, response.clone());
       return response;
     } catch (error) {
-      if (request.mode === "navigate") return (await caches.match(new URL("./", self.registration.scope))) || Response.error();
+      if (request.mode === "navigate") return (await cache.match(new URL("./", self.registration.scope))) || Response.error();
       throw error;
     }
   })());
