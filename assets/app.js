@@ -1,6 +1,5 @@
 import {
-  autocomplete, configureSearch, correctTerms, correctionSuggestions, normalizeText,
-  parseTerms, rankedMatches, segmentTerms,
+  autocomplete, configureSearch, normalizeText, parseTerms, searchWithFallback,
 } from "./search.js";
 import {readUrlState, resolveKey, restoreResolvedState, writeUrlState} from "./state.js";
 import {downloadFavorites, importFavorites, loadFavorites, saveFavorites} from "./favorites.js";
@@ -192,18 +191,12 @@ function syncFilterCounts(queryMatches) {
 
 function searchResults() {
   const terms = parseTerms(state.query);
-  let matches = terms.length ? rankedMatches(DATA, terms, {requireAll:true}) : DATA.map(item => ({item, score:0, reasons:[]}));
-  let note = "", usedTerms = [...terms], corrections = [];
-  if (!matches.length && terms.length > 1) { matches = rankedMatches(DATA, terms, {requireAll:false}); if (matches.length) note = t("noAnd"); }
-  if (!matches.length) {
-    const segmented = segmentTerms(terms);
-    if (segmented.length) { matches = rankedMatches(DATA, segmented, {requireAll:false}); if (matches.length) { usedTerms = segmented; note = t("segmented", {query:state.query, terms:segmented.join("、")}); } }
-  }
-  if (!matches.length) {
-    corrections = terms.flatMap(term => correctionSuggestions(DATA, term)).filter((value, index, all) => all.indexOf(value) === index);
-    const corrected = correctTerms(DATA, terms);
-    if (corrected.length) { matches = rankedMatches(DATA, corrected, {requireAll:true}); if (matches.length) { usedTerms = corrected; note = t("corrected", {query:state.query, terms:corrected.join("、")}); } }
-  }
+  const outcome = searchWithFallback(DATA, terms, {requireAll:true});
+  let {matches, usedTerms} = outcome;
+  const corrections = [...new Set(Object.values(outcome.suggestions).flat())];
+  const note = outcome.fallback === "or" ? t("noAnd")
+    : outcome.fallback === "segmented" ? t("segmented", {query:state.query, terms:usedTerms.join("、")})
+    : outcome.fallback === "corrected" ? t("corrected", {query:state.query, terms:usedTerms.join("、")}) : "";
   const queryMatches = matches;
   syncFilterCounts(queryMatches);
   matches = matches.filter(match => selectedBy(match.item));

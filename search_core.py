@@ -234,3 +234,34 @@ def correct_terms(rows: Iterable[dict], terms: Iterable[str]) -> list[str]:
         corrected.append(best)
         changed = changed or best != term
     return corrected if changed else []
+
+
+def search_with_fallback(rows: Iterable[dict], terms: Iterable[str], require_all: bool = True, lang: str = "zh") -> dict:
+    """Run the shared AND → OR → CJK segmentation → typo correction flow."""
+    rows = list(rows)
+    used_terms = [normalize_text(term) for term in terms if normalize_text(term)]
+    matches = ranked(rows, used_terms, require_all=require_all, lang=lang)
+    fallback = None
+    if not matches and len(used_terms) > 1 and require_all:
+        matches = ranked(rows, used_terms, require_all=False, lang=lang)
+        if matches:
+            fallback = "or"
+    if not matches:
+        segmented = segment(used_terms)
+        if segmented:
+            matches = ranked(rows, segmented, require_all=False, lang=lang)
+            if matches:
+                fallback, used_terms = "segmented", segmented
+    suggestions: dict[str, list[str]] = {}
+    if not matches:
+        suggestions = {
+            term: values
+            for term in used_terms
+            if (values := correction_suggestions(rows, term))
+        }
+        corrected = correct_terms(rows, used_terms)
+        if corrected:
+            matches = ranked(rows, corrected, require_all=require_all, lang=lang)
+            if matches:
+                fallback, used_terms = "corrected", corrected
+    return {"matches": matches, "fallback": fallback, "used_terms": used_terms, "suggestions": suggestions}

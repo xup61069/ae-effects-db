@@ -162,6 +162,36 @@ export function correctTerms(items, terms) {
   return changed ? output : [];
 }
 
+export function searchWithFallback(items, terms, {requireAll = true} = {}) {
+  let usedTerms = terms.map(normalizeText).filter(Boolean);
+  let matches = rankedMatches(items, usedTerms, {requireAll});
+  let fallback = null;
+  if (!matches.length && usedTerms.length > 1 && requireAll) {
+    matches = rankedMatches(items, usedTerms, {requireAll:false});
+    if (matches.length) fallback = "or";
+  }
+  if (!matches.length) {
+    const segmented = segmentTerms(usedTerms);
+    if (segmented.length) {
+      matches = rankedMatches(items, segmented, {requireAll:false});
+      if (matches.length) { fallback = "segmented"; usedTerms = segmented; }
+    }
+  }
+  const suggestions = {};
+  if (!matches.length) {
+    for (const term of usedTerms) {
+      const values = correctionSuggestions(items, term);
+      if (values.length) suggestions[term] = values;
+    }
+    const corrected = correctTerms(items, usedTerms);
+    if (corrected.length) {
+      matches = rankedMatches(items, corrected, {requireAll});
+      if (matches.length) { fallback = "corrected"; usedTerms = corrected; }
+    }
+  }
+  return {matches, fallback, usedTerms, suggestions};
+}
+
 export function autocomplete(items, raw, labels = {}, limit = 8) {
   const query = normalizeText(raw);
   if (!query) return [];
