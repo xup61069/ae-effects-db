@@ -513,6 +513,28 @@ test("PWA isolates the current catalog version and reloads offline", async ({pag
   await expect(page.locator(`article:has([data-detail="${FIRST.id}"]) .desc`)).toHaveText(LOCALES.ja[FIRST.id][0]);
 });
 
+test("site title, count header and summary kind chips are clickable", async ({page}) => {
+  await ready(page);
+  const pluginChip = page.locator('.summary .kindchip[data-kind-filter="plugin"]');
+  await expect(pluginChip).toBeVisible();
+  await pluginChip.click();
+  await expect(page).toHaveURL(/kind=plugin/);
+  await expect(pluginChip).toHaveAttribute("aria-pressed", "true");
+  await expect(page.locator('#activeFilters [data-filter="kind"][data-value="plugin"]')).toBeVisible();
+
+  const countBrowse = page.locator(".countbrowse");
+  await expect(countBrowse).toBeVisible();
+  await countBrowse.click();
+  await expect(page).not.toHaveURL(/kind=plugin/);
+  await expect(pluginChip).toHaveAttribute("aria-pressed", "false");
+
+  await page.locator("#q").fill("glow");
+  await expect(page.locator("#count")).toContainText("結果");
+  await page.locator("#siteTitle").click();
+  await expect(page.locator("#q")).toHaveValue("");
+  await expect(page.locator(".countbrowse")).toContainText("瀏覽全部");
+});
+
 test("PWA update waits for explicit activation and reloads", async ({page}) => {
   await ready(page);
   await page.evaluate(() => navigator.serviceWorker.ready);

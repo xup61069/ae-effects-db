@@ -245,8 +245,13 @@ function render(preserveLimit = false) {
   const {matches, note, usedTerms, corrections} = searchResults();
   currentResults = matches;
   const summaryCounts = matches.reduce((output, match) => ({...output, [match.item.kind]:(output[match.item.kind] || 0) + 1}), {});
-  const summary = Object.entries(summaryCounts).map(([kind, count]) => `<i>${escapeHtml(localeData().kinds[kind] || kind)} ${count}</i>`).join("");
-  document.getElementById("count").innerHTML = `${escapeHtml(state.query || state.categories.size || state.sources.size || state.kinds.size || state.favoritesOnly ? t("results", {count:matches.length}) : t("browsingAll", {count:matches.length}))}${note ? ` <span>· ${escapeHtml(note)}</span>` : ""}<span class="summary">${summary}</span>`;
+  const browsing = !(state.query || state.categories.size || state.sources.size || state.kinds.size || state.favoritesOnly);
+  const summary = Object.entries(summaryCounts).map(([kind, count]) => {
+    const on = state.kinds.has(kind);
+    return `<button type="button" class="kindchip kind-${escapeHtml(kind)}${on ? " on" : ""}" data-kind-filter="${escapeHtml(kind)}" aria-pressed="${on ? "true" : "false"}">${escapeHtml(localeData().kinds[kind] || kind)} ${count}</button>`;
+  }).join("");
+  const lead = `<button type="button" class="countbrowse${browsing ? " on" : ""}" data-clear-all="1" aria-pressed="${browsing ? "true" : "false"}">${escapeHtml(browsing ? t("browsingAll", {count:matches.length}) : t("results", {count:matches.length}))}</button>`;
+  document.getElementById("count").innerHTML = `${lead}${note ? ` <span>· ${escapeHtml(note)}</span>` : ""}<span class="summary">${summary}</span>`;
   renderActiveFilters(); syncFavoriteButton(); syncCompareTray(); syncInputs(); writeUrlState(state);
   const box = document.getElementById("results");
   box.setAttribute("aria-busy", "false");
@@ -449,7 +454,7 @@ function delegatedClick(event) {
   const suggestion = event.target.closest?.("[data-suggestion]"); if (suggestion) { selectSuggestion(suggestion); return; }
   const discovery = event.target.closest?.("[data-discovery-query]"); if (discovery) { state.query = discovery.dataset.discoveryQuery; state.categories.clear(); if (discovery.dataset.discoveryCat) state.categories.add(discovery.dataset.discoveryCat); if (discovery.dataset.discoveryCat && !searchResults().matches.length) state.query = ""; commitState(); render(); scrollToPageTop(); return; }
   const active = event.target.closest?.("[data-filter]"); if (active) { if (active.dataset.filter === "fav") state.favoritesOnly = false; else filters[active.dataset.filter]?.set.delete(active.dataset.value); commitState(); render(); return; }
-  if (event.target.closest?.("[data-clear-all]")) { clearAll(); return; }
+  if (event.target.closest?.("[data-clear-all]")) { event.preventDefault(); clearAll(); scrollToPageTop(); return; }
   if (!event.target.closest?.(".dd")) closePanels();
 }
 
