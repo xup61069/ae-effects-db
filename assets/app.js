@@ -340,7 +340,7 @@ function applyLanguage() {
 function renderSuggestions(input) {
   const list = document.getElementById(input.id === "mq" ? "mobileSuggestions" : "suggestions");
   const values = autocomplete(DATA, input.value, localeData().categories);
-  list.innerHTML = values.map(value => `<button type="button" role="option" tabindex="-1" aria-selected="false" data-suggestion="${escapeHtml(value.value)}"><span>${escapeHtml(value.label)}</span><small>${escapeHtml(t(`suggestion_${value.type}`))}</small></button>`).join("");
+  list.innerHTML = values.map(value => `<button type="button" role="option" tabindex="-1" aria-selected="false" data-suggestion="${escapeHtml(value.value)}" data-suggestion-type="${escapeHtml(value.type)}"><span>${escapeHtml(value.label)}</span><small>${escapeHtml(t(`suggestion_${value.type}`))}</small></button>`).join("");
   list.hidden = !values.length; input.setAttribute("aria-expanded", String(values.length > 0));
 }
 function focusSuggestion(list, index) {
@@ -352,7 +352,10 @@ function focusSuggestion(list, index) {
 }
 function selectSuggestion(suggestion) {
   const input = document.getElementById(suggestion.closest("#mobileSuggestions") ? "mq" : "q");
-  state.query = suggestion.dataset.suggestion; hideSuggestions(); commitState(); render(); input.focus();
+  if (suggestion.dataset.suggestionType === "category") {
+    state.query = ""; state.categories.clear(); state.categories.add(suggestion.dataset.suggestion);
+  } else state.query = suggestion.dataset.suggestion;
+  hideSuggestions(); commitState(); render(); input.focus();
 }
 function bindSuggestionKeyboard(input, list) {
   input.addEventListener("keydown", event => {

@@ -207,7 +207,7 @@ export function autocomplete(items, raw, labels = {}, limit = 8) {
     return aPrefix - bPrefix || a.name.localeCompare(b.name);
   }).slice(0, 5).forEach(item => add(item.name, "item"));
   Object.entries(labels).filter(([key, label]) => normalizeText(`${key} ${label}`).includes(query))
-    .slice(0, 3).forEach(([key, label]) => add(label, "category", label));
+    .slice(0, 3).forEach(([key, label]) => add(key, "category", label));
   correctionSuggestions(items, query).forEach(value => add(value, "correction"));
   return output.slice(0, limit);
 }
