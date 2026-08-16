@@ -136,10 +136,13 @@ export function correctionSuggestions(items, raw, limitResults = 3) {
   const words = vocabulary(items);
   if (words.has(term)) return [];
   const limit = term.length >= 7 ? 2 : 1;
-  return [...words.entries()].filter(([word]) => Math.abs(word.length - term.length) <= limit)
+  const candidates = [...words.entries()].filter(([word]) => Math.abs(word.length - term.length) <= limit)
     .map(([word, frequency]) => [damerauLevenshtein(term, word), Math.abs(word.length - term.length), -frequency, word])
     .filter(([distance]) => distance <= limit)
-    .sort((a, b) => a[0] - b[0] || a[1] - b[1] || a[2] - b[2] || a[3].localeCompare(b[3]))
+    .sort((a, b) => a[0] - b[0] || a[1] - b[1] || a[2] - b[2] || a[3].localeCompare(b[3]));
+  if (!candidates.length) return [];
+  const [bestDistance, bestLengthDelta] = candidates[0];
+  return candidates.filter(([distance, lengthDelta]) => distance === bestDistance && lengthDelta === bestLengthDelta)
     .slice(0, limitResults).map(item => item[3]);
 }
 

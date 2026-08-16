@@ -72,6 +72,8 @@ class CrossRuntimeSearchTests(unittest.TestCase):
                 self.assertTrue(any(expected.casefold() in name.casefold() for name in names), case["query"])
         self.assertEqual(["glow"], self.javascript["corrections"]["glwo"])
         self.assertEqual(["particular"], self.javascript["corrections"]["particlar"])
+        self.assertEqual(["glow"], self.javascript["suggestions"]["glwo"])
+        self.assertEqual(["particular"], self.javascript["suggestions"]["particlar"])
 
 
 if __name__ == "__main__":

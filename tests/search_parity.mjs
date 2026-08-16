@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import {fileURLToPath} from "node:url";
-import {configureSearch, correctTerms, parseTerms, rankedMatches} from "../assets/search.js";
+import {configureSearch, correctionSuggestions, correctTerms, parseTerms, rankedMatches} from "../assets/search.js";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const readJson = relative => JSON.parse(fs.readFileSync(path.join(root, relative), "utf8"));
@@ -23,5 +23,9 @@ for (const test of cases) {
 output.corrections = {
   glwo:correctTerms(catalog, ["glwo"]),
   particlar:correctTerms(catalog, ["particlar"]),
+};
+output.suggestions = {
+  glwo:correctionSuggestions(catalog, "glwo"),
+  particlar:correctionSuggestions(catalog, "particlar"),
 };
 process.stdout.write(JSON.stringify(output));
