@@ -72,6 +72,8 @@ class WebUiContractTests(unittest.TestCase):
             self.assertIn(f".kindbadge.kind-{kind}", CSS)
         self.assertIn(":focus-visible", CSS)
         self.assertIn("prefers-reduced-motion:reduce", CSS)
+        self.assertIn('matchMedia("(prefers-reduced-motion: reduce)")', APP)
+        self.assertNotIn('behavior:"smooth"}));', APP)
         self.assertIn("min-height:44px", CSS)
 
     def test_complete_shareable_locales(self):

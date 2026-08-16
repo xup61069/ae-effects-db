@@ -286,6 +286,7 @@ function syncCompareTray() {
   document.getElementById("compareTrayText").textContent = t("compareTray", {count:state.compare.size}); document.getElementById("compareOpen").disabled = state.compare.size < 2;
 }
 function commitState() { writeUrlState(state, {push:true}); }
+function scrollToPageTop() { scrollTo({top:0, behavior:matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth"}); }
 function adoptHistoryState(next) {
   for (const key of ["categories", "sources", "kinds"]) {
     const current = state[key];
@@ -424,7 +425,7 @@ function bindEvents(version) {
   document.getElementById("favClearAll").addEventListener("click", () => { if (FAVORITES.size && confirm(t("clearConfirm", {count:FAVORITES.size}))) { FAVORITES.clear(); saveFavorites(FAVORITES); state.favoritesOnly = false; document.getElementById("favManageMsg").textContent = t("cleared"); render(); } });
   document.getElementById("languageSwitch").addEventListener("click", event => { const button = event.target.closest("[data-lang]"); if (button) switchLanguage(button.dataset.lang, version); });
   document.getElementById("compareOpen").addEventListener("click", openCompare); document.getElementById("compareClear").addEventListener("click", () => { state.compare.clear(); commitState(); render(true); });
-  document.getElementById("backTop").addEventListener("click", () => scrollTo({top:0, behavior:"smooth"})); window.addEventListener("scroll", () => { document.getElementById("backTop").hidden = scrollY < 700; }, {passive:true});
+  document.getElementById("backTop").addEventListener("click", scrollToPageTop); window.addEventListener("scroll", () => { document.getElementById("backTop").hidden = scrollY < 700; }, {passive:true});
   document.getElementById("detailDialog").addEventListener("close", () => { if (state.item) { state.item = ""; writeUrlState(state); } });
   document.getElementById("mobileFilterToggle").addEventListener("click", () => document.getElementById("filterDialog").showModal()); document.getElementById("filterClose").addEventListener("click", () => document.getElementById("filterDialog").close());
   document.getElementById("aiBtn").addEventListener("click", () => document.getElementById("visualDialog").showModal());
@@ -439,9 +440,9 @@ function delegatedClick(event) {
   const compare = event.target.closest?.("[data-compare]"); if (compare) { toggleCompare(compare.dataset.compare); return; }
   const favorite = event.target.closest?.("[data-favorite]"); if (favorite) { const id = favorite.dataset.favorite; FAVORITES.has(id) ? FAVORITES.delete(id) : FAVORITES.add(id); saveFavorites(FAVORITES); render(true); if (state.item) openDetail(id, {write:false}); return; }
   const share = event.target.closest?.("[data-share-detail]"); if (share) { const url = new URL(location.href); url.searchParams.set("item", share.dataset.shareDetail); navigator.clipboard?.writeText(String(url)).then(() => { share.textContent = t("copied"); }).catch(() => prompt(t("copyUrl"), url)); return; }
-  const query = event.target.closest?.("[data-q]"); if (query) { state.query = query.dataset.q; commitState(); render(); scrollTo({top:0, behavior:"smooth"}); return; }
+  const query = event.target.closest?.("[data-q]"); if (query) { state.query = query.dataset.q; commitState(); render(); scrollToPageTop(); return; }
   const suggestion = event.target.closest?.("[data-suggestion]"); if (suggestion) { selectSuggestion(suggestion); return; }
-  const discovery = event.target.closest?.("[data-discovery-query]"); if (discovery) { state.query = discovery.dataset.discoveryQuery; state.categories.clear(); if (discovery.dataset.discoveryCat) state.categories.add(discovery.dataset.discoveryCat); commitState(); render(); scrollTo({top:0, behavior:"smooth"}); return; }
+  const discovery = event.target.closest?.("[data-discovery-query]"); if (discovery) { state.query = discovery.dataset.discoveryQuery; state.categories.clear(); if (discovery.dataset.discoveryCat) state.categories.add(discovery.dataset.discoveryCat); commitState(); render(); scrollToPageTop(); return; }
   const active = event.target.closest?.("[data-filter]"); if (active) { if (active.dataset.filter === "fav") state.favoritesOnly = false; else filters[active.dataset.filter]?.set.delete(active.dataset.value); commitState(); render(); return; }
   if (event.target.closest?.("[data-clear-all]")) { clearAll(); return; }
   if (!event.target.closest?.(".dd")) closePanels();
@@ -473,7 +474,7 @@ function bindVisualFinder() {
   drop.addEventListener("drop", event => { event.preventDefault(); drop.classList.remove("dragging"); accept(event.dataTransfer.files[0]); });
   window.addEventListener("paste", event => { if (!document.getElementById("visualDialog").open) return; const file = [...event.clipboardData.files].find(value => value.type.startsWith("image/")); if (file) accept(file); });
   document.getElementById("visualFeatures").addEventListener("click", event => { const button = event.target.closest("[data-visual]"); if (!button) return; visualSelection.has(button.dataset.visual) ? visualSelection.delete(button.dataset.visual) : visualSelection.add(button.dataset.visual); button.setAttribute("aria-pressed", String(visualSelection.has(button.dataset.visual))); button.classList.toggle("on", visualSelection.has(button.dataset.visual)); });
-  document.getElementById("visualSearch").addEventListener("click", () => { if (!visualSelection.size) { document.getElementById("visualMsg").textContent = t("visualChooseFeature"); return; } state.query = [...visualSelection].map(key => VISUAL_FEATURES[key]).join(" "); document.getElementById("visualDialog").close(); commitState(); render(); scrollTo({top:0, behavior:"smooth"}); });
+  document.getElementById("visualSearch").addEventListener("click", () => { if (!visualSelection.size) { document.getElementById("visualMsg").textContent = t("visualChooseFeature"); return; } state.query = [...visualSelection].map(key => VISUAL_FEATURES[key]).join(" "); document.getElementById("visualDialog").close(); commitState(); render(); scrollToPageTop(); });
   document.getElementById("visualCopy").addEventListener("click", async () => { const features = [...visualSelection].map(key => t(`visual_${key}`)).join("、"); const prompt = `${localeData().aiPrompt}\n\n${t("visualPrompt", {features:features || t("visualNone")})}`; try { await navigator.clipboard.writeText(prompt); document.getElementById("visualMsg").textContent = t("copied"); } catch (_) { promptFallback(prompt); } });
   document.getElementById("visualDialog").addEventListener("close", () => { visualLoadToken += 1; if (visualUrl) { URL.revokeObjectURL(visualUrl); visualUrl = null; } const image = document.getElementById("visualPreview"); image.removeAttribute("src"); image.hidden = true; input.value = ""; });
 }
