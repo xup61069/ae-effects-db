@@ -30,6 +30,8 @@ let searchTimer = null;
 let currentResults = [];
 let localeCache = new Map();
 let localeLoads = new Map();
+let appliedLang = "zh";
+let localeLoadError = null;
 let POPULARITY = {featured:[], source_weights:{}, maximum_points:{featured:56, source:20, quality:10, recency:4, curated_order:10}};
 let LOCALIZATION = {localized_urls:{}, official_categories:{}, official_category_rules:[], official_effect_categories:{}};
 let POPULAR_INDEX = new Map();
@@ -143,13 +145,21 @@ async function boot() {
   BY_ID = new Map(DATA.map(item => [item.id, item]));
   LEGACY = new Map(DATA.map(item => [item._legacy, item.id]));
   state = restoreResolvedState(rawState, BY_ID, LEGACY);
-  await loadLocale(state.lang, manifest.version);
+  try {
+    await loadLocale(state.lang, manifest.version);
+  } catch (error) {
+    localeLoadError = error;
+    state.lang = "zh";
+    await loadLocale("zh", manifest.version);
+  }
   FAVORITES = loadFavorites(resolveLegacy);
   POPULAR_INDEX = new Map((POPULARITY.featured || []).map((key, index) => [LEGACY.get(key) || key, index]));
   buildFilters();
   applyLanguage();
+  appliedLang = state.lang;
   bindEvents(manifest.version);
   render();
+  if (localeLoadError) showToast(t("loadLocaleError", {error:localeLoadError.message}));
   if (state.item) openDetail(state.item, {write:false});
   setupResponsiveFilters();
   registerPwa({onUpdate:activate => showUpdate(activate), onOfflineReady:() => showToast(t("offlineReady"))}).catch(() => {});
@@ -362,6 +372,25 @@ function setupResponsiveFilters() {
   media.addEventListener("change", sync); sync();
 }
 
+async function switchLanguage(lang, version) {
+  if (lang === state.lang) return;
+  state.lang = lang;
+  try {
+    if (!await loadLocale(lang, version)) return;
+  } catch (error) {
+    if (state.lang === lang) {
+      state.lang = appliedLang;
+      showToast(t("loadLocaleError", {error:error.message}));
+    }
+    return;
+  }
+  applyLanguage();
+  appliedLang = lang;
+  commitState();
+  render();
+  if (state.item) openDetail(state.item, {write:false});
+}
+
 function bindEvents(version) {
   for (const id of ["q", "mq"]) {
     const input = document.getElementById(id), list = document.getElementById(id === "mq" ? "mobileSuggestions" : "suggestions");
@@ -377,7 +406,7 @@ function bindEvents(version) {
   document.getElementById("favImport").addEventListener("click", () => document.getElementById("favImportFile").click());
   document.getElementById("favImportFile").addEventListener("change", async event => { if (!event.target.files[0]) return; try { const added = await importFavorites(event.target.files[0], resolveLegacy, FAVORITES); document.getElementById("favManageMsg").textContent = t("imported", {added, count:FAVORITES.size}); render(true); } catch (error) { document.getElementById("favManageMsg").textContent = t("importFailed", {error:error.message}); } event.target.value = ""; });
   document.getElementById("favClearAll").addEventListener("click", () => { if (FAVORITES.size && confirm(t("clearConfirm", {count:FAVORITES.size}))) { FAVORITES.clear(); saveFavorites(FAVORITES); state.favoritesOnly = false; document.getElementById("favManageMsg").textContent = t("cleared"); render(); } });
-  document.getElementById("languageSwitch").addEventListener("click", async event => { const button = event.target.closest("[data-lang]"); if (!button || button.dataset.lang === state.lang) return; const lang = button.dataset.lang; state.lang = lang; if (!await loadLocale(lang, version)) return; applyLanguage(); commitState(); render(); if (state.item) openDetail(state.item, {write:false}); });
+  document.getElementById("languageSwitch").addEventListener("click", event => { const button = event.target.closest("[data-lang]"); if (button) switchLanguage(button.dataset.lang, version); });
   document.getElementById("compareOpen").addEventListener("click", openCompare); document.getElementById("compareClear").addEventListener("click", () => { state.compare.clear(); commitState(); render(true); });
   document.getElementById("backTop").addEventListener("click", () => scrollTo({top:0, behavior:"smooth"})); window.addEventListener("scroll", () => { document.getElementById("backTop").hidden = scrollY < 700; }, {passive:true});
   document.getElementById("detailDialog").addEventListener("close", () => { if (state.item) { state.item = ""; writeUrlState(state); } });
@@ -385,7 +414,7 @@ function bindEvents(version) {
   document.getElementById("aiBtn").addEventListener("click", () => document.getElementById("visualDialog").showModal());
   bindVisualFinder();
   document.addEventListener("click", delegatedClick); document.addEventListener("keydown", event => { if (event.key === "/" && !/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)) { event.preventDefault(); document.getElementById(matchMedia("(max-width:640px)").matches ? "mq" : "q").focus(); } else if (event.key === "Escape") closePanels(); });
-  window.addEventListener("popstate", () => { const restored = restoreResolvedState(readUrlState(), BY_ID, LEGACY); state = restored; const lang = state.lang; loadLocale(lang, version).then(applied => { if (!applied) return; applyLanguage(); render(); if (state.item) openDetail(state.item, {write:false}); else closeDetail({write:false}); }); });
+  window.addEventListener("popstate", () => { const restored = restoreResolvedState(readUrlState(), BY_ID, LEGACY); state = restored; const lang = state.lang; loadLocale(lang, version).then(applied => { if (!applied) return; applyLanguage(); appliedLang = lang; render(); if (state.item) openDetail(state.item, {write:false}); else closeDetail({write:false}); }).catch(error => { if (state.lang === lang) { state.lang = appliedLang; writeUrlState(state); showToast(t("loadLocaleError", {error:error.message})); } }); });
 }
 
 function delegatedClick(event) {
