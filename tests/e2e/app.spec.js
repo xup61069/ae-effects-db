@@ -26,6 +26,41 @@ async function ready(page, url = "/") {
   await expect(page.locator(".card").first()).toBeVisible();
 }
 
+async function verifySuggestionKeyboard(page, inputSelector, listSelector) {
+  const input = page.locator(inputSelector);
+  const list = page.locator(listSelector);
+  const options = list.locator('[role="option"]');
+  await input.fill("gl");
+  await expect(list).toBeVisible();
+  expect(await options.count()).toBeGreaterThan(1);
+  const touchTarget = await options.first().boundingBox();
+  expect(touchTarget).not.toBeNull();
+  expect(touchTarget.height).toBeGreaterThanOrEqual(44);
+  await input.press("ArrowDown");
+  await expect(options.nth(0)).toBeFocused();
+  await expect(options.nth(0)).toHaveAttribute("aria-selected", "true");
+  await page.keyboard.press("ArrowDown");
+  await expect(options.nth(1)).toBeFocused();
+  await expect(options.nth(0)).toHaveAttribute("aria-selected", "false");
+  await expect(options.nth(1)).toHaveAttribute("aria-selected", "true");
+  await page.keyboard.press("End");
+  await expect(options.last()).toBeFocused();
+  await page.keyboard.press("Home");
+  await expect(options.nth(0)).toBeFocused();
+  await page.keyboard.press("ArrowUp");
+  await expect(input).toBeFocused();
+  await input.press("ArrowDown");
+  await page.keyboard.press("Escape");
+  await expect(list).toBeHidden();
+  await expect(input).toBeFocused();
+  await expect(options.nth(0)).toHaveAttribute("aria-selected", "false");
+  await input.press("ArrowDown");
+  await expect(list).toBeVisible();
+  await expect(options.nth(0)).toBeFocused();
+  await page.keyboard.press("Escape");
+  await expect(input).toBeFocused();
+}
+
 test("search suggestions, dynamic facets, history, detail and compare", async ({page}) => {
   await ready(page);
   await page.locator("#q").fill("glwo");
@@ -65,6 +100,26 @@ test("search suggestions, dynamic facets, history, detail and compare", async ({
   await expect(page.locator("#compareOpen")).toBeEnabled();
   await page.locator("#compareOpen").click();
   await expect(page.locator("#compareDialog .comparetable")).toBeVisible();
+});
+
+test("desktop and mobile suggestions support arrow navigation and focus recovery", async ({page}) => {
+  await ready(page);
+  await verifySuggestionKeyboard(page, "#q", "#suggestions");
+  await page.locator("#q").fill("gl");
+  await expect(page.locator("#suggestions")).toBeVisible();
+  const accessibility = await new AxeBuilder({page}).analyze();
+  expect(accessibility.violations.filter(result => ["critical", "serious"].includes(result.impact))).toEqual([]);
+  await page.keyboard.press("Escape");
+  await page.locator("#q").fill("glwo");
+  await page.locator("#q").press("ArrowDown");
+  await page.keyboard.press("Enter");
+  await expect(page.locator("#q")).toHaveValue("glow");
+  await expect(page.locator("#q")).toBeFocused();
+  await expect(page.locator("#suggestions")).toBeHidden();
+  await expect(page).toHaveURL(/q=glow/);
+
+  await page.setViewportSize({width:390, height:844});
+  await verifySuggestionKeyboard(page, "#mq", "#mobileSuggestions");
 });
 
 test("legacy URLs and v1 favorites migrate to stable IDs", async ({page}) => {
