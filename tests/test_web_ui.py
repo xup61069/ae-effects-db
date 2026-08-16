@@ -113,6 +113,14 @@ class WebUiContractTests(unittest.TestCase):
         self.assertNotIn("await caches.match(request", SW)
         self.assertNotIn("await caches.match(new URL", SW)
         self.assertIn("SKIP_WAITING", SW)
+
+    def test_category_autocomplete_uses_stable_facet_keys(self):
+        app = (ROOT / "assets" / "app.js").read_text(encoding="utf-8")
+        search = (ROOT / "assets" / "search.js").read_text(encoding="utf-8")
+        self.assertIn('data-suggestion-type="${escapeHtml(value.type)}"', app)
+        self.assertIn('suggestion.dataset.suggestionType === "category"', app)
+        self.assertIn('state.categories.add(suggestion.dataset.suggestion)', app)
+        self.assertIn('add(key, "category", label)', search)
         self.assertNotIn("skipWaiting();\nself.addEventListener(\"install\"", SW)
         self.assertIn("onUpdate", (ROOT / "assets" / "pwa.js").read_text(encoding="utf-8"))
 

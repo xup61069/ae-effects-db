@@ -144,6 +144,20 @@ test("desktop and mobile suggestions support arrow navigation and focus recovery
   await verifySuggestionKeyboard(page, "#mq", "#mobileSuggestions");
 });
 
+test("localized category suggestions apply a facet instead of a fragile text query", async ({page}) => {
+  await ready(page, "/?lang=ja");
+  await expect(page.locator("html")).toHaveAttribute("lang", "ja");
+  await page.locator("#q").fill("ブラー／グロー");
+  const suggestion = page.locator('#suggestions [data-suggestion-type="category"][data-suggestion="blur-glow"]');
+  await expect(suggestion).toBeVisible();
+  await suggestion.click();
+  await expect(page.locator("#q")).toHaveValue("");
+  await expect(page.locator('#activeFilters [data-filter="cat"][data-value="blur-glow"]')).toBeVisible();
+  await expect(page.locator(".card").first()).toBeVisible();
+  await expect(page).toHaveURL(/cat=blur-glow/);
+  await expect(page).not.toHaveURL(/q=/);
+});
+
 test("programmatic result scrolling honors reduced-motion changes", async ({page}) => {
   await page.emulateMedia({reducedMotion:"reduce"});
   await ready(page);
