@@ -88,15 +88,18 @@ class WebUiContractTests(unittest.TestCase):
         self.assertIn('AE エフェクトデータベース', I18N)
         self.assertIn('AE Effects Database', I18N)
 
-    def test_visual_finder_is_local_only_and_bounded(self):
-        self.assertIn('accept="image/png,image/jpeg,image/webp"', HTML)
-        self.assertIn("20 * 1024 * 1024", APP)
-        self.assertIn("URL.createObjectURL(file)", APP)
-        self.assertIn("URL.revokeObjectURL", APP)
-        self.assertIn('t("visualInvalidImage")', APP)
-        self.assertIn("visualLoadToken", APP)
+    def test_ask_ai_is_local_only_and_composes_prompt(self):
+        self.assertIn('id="askAiInput"', HTML)
+        self.assertIn("navigator.clipboard.writeText(prompt)", APP)
+        self.assertIn("aiPrompt", APP)
+        self.assertIn('t("askAiEmpty")', APP)
+        self.assertIn("askAiPrompt", APP)
+        self.assertIn("promptFallback(prompt)", APP)
         self.assertNotIn("FormData", APP)
-        self.assertNotIn("fetch(visual", APP)
+        self.assertNotIn("fetch(ai", APP)
+        self.assertNotIn("URL.createObjectURL", APP)
+        self.assertNotIn("visualDialog", APP)
+        self.assertNotIn("VISUAL_FEATURES", APP)
 
     def test_pwa_version_is_atomic_and_user_activated(self):
         manifest = json.loads((ROOT / "manifest.webmanifest").read_text(encoding="utf-8"))

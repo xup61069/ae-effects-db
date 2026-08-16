@@ -76,7 +76,7 @@
         </select>
         <button id="favBtn" type="button" aria-pressed="false">☆ 只看收藏</button>
         <button id="favManageBtn" type="button">收藏管理</button>
-        <button id="aiBtn" type="button">畫面拆解器</button>
+        <button id="aiBtn" type="button">問AI</button>
       </div>
       <div id="kindLegend" class="kindlegend" aria-label="工具型態"></div>
     </dialog>
@@ -134,20 +134,14 @@
     </div>
   </dialog>
 
-  <dialog id="visualDialog" class="modal" aria-labelledby="visualTitle">
-    <div class="modalhead"><h2 id="visualTitle">畫面拆解器</h2><button class="close" type="button" data-close="visualDialog">×</button></div>
-    <div class="modalbody visualBody">
-      <p id="visualHelp"></p>
-      <button id="visualDrop" class="visualdrop" type="button">
-        <img id="visualPreview" alt="" hidden>
-        <span id="visualDropText">選擇或拖入圖片</span>
-      </button>
-      <input id="visualFile" type="file" accept="image/png,image/jpeg,image/webp" hidden>
-      <div id="visualFeatures" class="visualfeatures" aria-label="畫面特徵"></div>
-      <p id="visualMsg" role="status"></p>
+  <dialog id="askAiDialog" class="modal" aria-labelledby="askAiTitle">
+    <div class="modalhead"><h2 id="askAiTitle">問AI</h2><button class="close" type="button" data-close="askAiDialog">×</button></div>
+    <div class="modalbody">
+      <p id="askAiHelp"></p>
+      <textarea id="askAiInput" rows="6" spellcheck="false" class="askaiinput"></textarea>
+      <p id="askAiMsg" role="status"></p>
       <div class="visualactions">
-        <button id="visualSearch" type="button">直接搜尋</button>
-        <button id="visualCopy" type="button">複製 AI 提示詞</button>
+        <button id="askAiCopy" class="primary" type="button">複製 AI 提示詞</button>
       </div>
     </div>
   </dialog>
