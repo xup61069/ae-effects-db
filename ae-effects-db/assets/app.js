@@ -256,7 +256,7 @@ function render(preserveLimit = false) {
     box.innerHTML = `<div class="empty"><p>${escapeHtml(t(filtered ? "emptyFiltered" : "emptySearch"))}</p>${suggestionButtons ? `<div class="emptySuggestions"><span>${escapeHtml(t("didYouMean"))}</span>${suggestionButtons}</div>` : ""}<button type="button" data-clear-all="1">${escapeHtml(t("clearAll"))}</button></div>`;
     return;
   }
-  const context = {t, kindLabels:localeData().kinds, categoryLabels:localeData().categories, sourceLabels:localeData().sources, favoriteIds:FAVORITES, compareIds:state.compare, terms:usedTerms, officialUrl, officialCategory, popularity, reasonLabel};
+  const context = {t, kindLabels:localeData().kinds, categoryLabels:localeData().categories, sourceLabels:localeData().sources, favoriteIds:FAVORITES, compareIds:state.compare, terms:usedTerms, officialUrl, officialCategory, popularity, reasonLabel, activeKinds:state.kinds, activeCats:state.categories};
   box.innerHTML = matches.slice(0, visibleLimit).map(match => cardMarkup(match.item, {...context, reasons:match.reasons})).join("") + (matches.length > visibleLimit ? `<button id="loadMore" class="more" type="button">${escapeHtml(t("showMore", {count:matches.length - visibleLimit}))}</button>` : "");
   const more = document.getElementById("loadMore");
   more?.addEventListener("click", () => { visibleLimit += 60; render(true); });
@@ -444,6 +444,8 @@ function delegatedClick(event) {
   const favorite = event.target.closest?.("[data-favorite]"); if (favorite) { const id = favorite.dataset.favorite; FAVORITES.has(id) ? FAVORITES.delete(id) : FAVORITES.add(id); saveFavorites(FAVORITES); render(true); if (state.item) openDetail(id, {write:false}); return; }
   const share = event.target.closest?.("[data-share-detail]"); if (share) { const url = new URL(location.href); url.searchParams.set("item", share.dataset.shareDetail); navigator.clipboard?.writeText(String(url)).then(() => { share.textContent = t("copied"); }).catch(() => prompt(t("copyUrl"), url)); return; }
   const query = event.target.closest?.("[data-q]"); if (query) { state.query = query.dataset.q; commitState(); render(); scrollToPageTop(); return; }
+  const kindFilter = event.target.closest?.("[data-kind-filter]"); if (kindFilter) { state.kinds.has(kindFilter.dataset.kindFilter) ? state.kinds.delete(kindFilter.dataset.kindFilter) : state.kinds.add(kindFilter.dataset.kindFilter); commitState(); render(); scrollToPageTop(); return; }
+  const catFilter = event.target.closest?.("[data-cat-filter]"); if (catFilter) { state.categories.has(catFilter.dataset.catFilter) ? state.categories.delete(catFilter.dataset.catFilter) : state.categories.add(catFilter.dataset.catFilter); commitState(); render(); scrollToPageTop(); return; }
   const suggestion = event.target.closest?.("[data-suggestion]"); if (suggestion) { selectSuggestion(suggestion); return; }
   const discovery = event.target.closest?.("[data-discovery-query]"); if (discovery) { state.query = discovery.dataset.discoveryQuery; state.categories.clear(); if (discovery.dataset.discoveryCat) state.categories.add(discovery.dataset.discoveryCat); commitState(); render(); scrollToPageTop(); return; }
   const active = event.target.closest?.("[data-filter]"); if (active) { if (active.dataset.filter === "fav") state.favoritesOnly = false; else filters[active.dataset.filter]?.set.delete(active.dataset.value); commitState(); render(); return; }
