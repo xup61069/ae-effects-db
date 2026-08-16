@@ -153,7 +153,7 @@ def related_indexes(rows: list[dict]) -> dict[str, dict[str, list[str]]]:
         same_category = by_category[item.get("cat", "")]
         builtin_pool = same_category if item.get("cat") != "recipe" else builtins
         output[item["id"]] = {
-            "similar": top(item, same_category, 6),
+            "similar": top(item, same_category, 6, require_overlap=True),
             "builtin": [] if item.get("kind") == "builtin" else top(
                 item, [row for row in builtin_pool if row.get("kind") == "builtin"], 3, require_overlap=True
             ),
