@@ -36,6 +36,32 @@ class CliSearchContractTests(unittest.TestCase):
         self.assertIn("match_reasons", payload["results"][0])
         self.assertTrue(payload["results"][0]["description"])
 
+    def test_suite_filter_matches_the_source_name_shown_to_users(self):
+        payload = run_json("supercomp", "--suite", "VFX Suite")
+        self.assertEqual(1, payload["total"])
+        self.assertEqual("red-giant-supercomp", payload["results"][0]["id"])
+        self.assertEqual("VFX Suite", payload["results"][0]["source"])
+
+    def test_category_listing_honors_filters(self):
+        payload = run_json("--list-cats", "--kind", "script")
+        self.assertEqual(1014, payload["total"])
+        self.assertEqual(payload["total"], sum(payload["categories"].values()))
+
+    def test_json_reports_limit_and_rejects_non_positive_top(self):
+        payload = run_json("glow", "--top", "2")
+        self.assertEqual(2, payload["limit"])
+        self.assertEqual(2, payload["returned"])
+        self.assertEqual(2, len(payload["results"]))
+        self.assertGreater(payload["total"], payload["returned"])
+
+        result = subprocess.run(
+            [sys.executable, "search.py", "glow", "--top", "-1", "--json"], cwd=ROOT,
+            capture_output=True, text=True, encoding="utf-8",
+        )
+        self.assertEqual(2, result.returncode)
+        self.assertIn("positive integer", result.stderr)
+        self.assertEqual("", result.stdout)
+
 
 if __name__ == "__main__":
     unittest.main()
