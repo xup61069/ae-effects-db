@@ -46,9 +46,13 @@ python search.py --any glow bloom   # 強制 OR
 python search.py --kind script 字幕
 python search.py --cat transition 甩鏡
 python search.py --suite sapphire glow
+python search.py --suite "VFX Suite" supercomp  # 可使用結果中顯示的套件／廠商名稱
 python search.py --lang ja --json --explain グリッチ
 python search.py --list-cats
+python search.py --list-cats --kind script       # 分類統計會套用來源／分類／型態篩選
 ```
+
+`--top` 必須是正整數。JSON 搜尋結果中的 `total` 是全部命中數，`limit` 是要求的上限，`returned` 是本次實際回傳數；既有欄位保持不變。
 
 本機預覽網頁不能直接使用 `file://`，請在 repo 根目錄啟動 HTTP server：
 

@@ -100,6 +100,31 @@ def _search(rows: list[dict], terms: list[str], require_all: bool, lang: str):
     return outcome["matches"], outcome["fallback"], outcome["used_terms"], outcome["suggestions"]
 
 
+def _positive_int(value: str) -> int:
+    try:
+        parsed = int(value)
+    except ValueError as error:
+        raise argparse.ArgumentTypeError("must be a positive integer") from error
+    if parsed < 1:
+        raise argparse.ArgumentTypeError("must be a positive integer")
+    return parsed
+
+
+def _filter_rows(rows: list[dict], *, suite=None, cat=None, kind=None) -> list[dict]:
+    pool = rows
+    if suite:
+        needle = suite.casefold()
+        pool = [
+            row for row in pool
+            if any(needle in str(row.get(field, "")).casefold() for field in ("_src", "suite", "vendor"))
+        ]
+    if cat:
+        pool = [row for row in pool if row.get("cat", "").casefold() == cat.casefold()]
+    if kind:
+        pool = [row for row in pool if row.get("kind") == kind]
+    return pool
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("terms", nargs="*", help="關鍵字（中英日皆可，多個預設為 AND）")
@@ -107,7 +132,7 @@ def main() -> None:
     parser.add_argument("--cat", help="限定分類")
     parser.add_argument("--kind", choices=("plugin", "script", "builtin", "recipe"), help="限定工具型態")
     parser.add_argument("--suite", help="限定來源")
-    parser.add_argument("--top", type=int, default=15, help="顯示前 N 筆")
+    parser.add_argument("--top", type=_positive_int, default=15, help="顯示前 N 筆（正整數）")
     parser.add_argument("--list-cats", action="store_true", help="列出分類與筆數")
     parser.add_argument("--json", action="store_true", help="輸出機器可讀 JSON")
     parser.add_argument("--explain", action="store_true", help="顯示分數與命中原因")
@@ -115,28 +140,21 @@ def main() -> None:
     args = parser.parse_args()
 
     rows = load()
+    pool = _filter_rows(rows, suite=args.suite, cat=args.cat, kind=args.kind)
     if args.list_cats:
         from collections import Counter
 
-        counts = Counter(row.get("cat", "?") for row in rows)
+        counts = Counter(row.get("cat", "?") for row in pool)
         if args.json:
-            print(json.dumps({"total": len(rows), "categories": dict(counts.most_common())}, ensure_ascii=False, indent=2))
+            print(json.dumps({"total": len(pool), "categories": dict(counts.most_common())}, ensure_ascii=False, indent=2))
         else:
             for category, count in counts.most_common():
                 print(f"{count:4d}  {category}")
-            print(f"\n總計 {len(rows)} 筆 / {len(set(row['_src'] for row in rows))} 個來源檔")
+            print(f"\n總計 {len(pool)} 筆 / {len(set(row['_src'] for row in pool))} 個來源檔")
         return
     if not args.terms:
         parser.print_help()
         return
-
-    pool = rows
-    if args.suite:
-        pool = [row for row in pool if args.suite.casefold() in row["_src"].casefold()]
-    if args.cat:
-        pool = [row for row in pool if row.get("cat", "").casefold() == args.cat.casefold()]
-    if args.kind:
-        pool = [row for row in pool if row.get("kind") == args.kind]
 
     parsed_terms = list(dict.fromkeys(term for raw in args.terms for term in parse_terms(raw)))
     results, fallback, used_terms, suggestions = _search(pool, parsed_terms, not args.any, args.lang)
@@ -147,6 +165,8 @@ def main() -> None:
             "fallback": fallback,
             "suggestions": suggestions,
             "total": len(results),
+            "limit": args.top,
+            "returned": min(len(results), args.top),
             "results": [
                 _result_payload(value, row, reasons, args.lang, args.explain)
                 for value, row, reasons in results[:args.top]
