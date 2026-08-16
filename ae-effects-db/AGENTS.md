@@ -50,7 +50,7 @@
 
 完整機器規格是 [`schema/effect.schema.json`](schema/effect.schema.json)。JSONL 必須為 UTF-8、一行一個物件、不能用陣列、不能有行尾逗號。
 
-必填：`name`、`kind`、`cat`、`tags`、`desc`、`url`。正式資料也必須有全域唯一的 stable `id`；舊格式交給 `tools/add.py` 產生，不要因改名而更換既有 ID。
+必填：`name`、`kind`、`cat`、`tags`、`desc`、`url`，且 `released`／`updated` 至少其一（見下表）。正式資料也必須有全域唯一的 stable `id`；舊格式交給 `tools/add.py` 產生，不要因改名而更換既有 ID。
 
 ```json
 {"name":"S_Glow","suite":"Sapphire","kind":"plugin","cat":"glow","tags":["glow","bloom","發光","輝光","柔光","光暈"],"desc":"讓亮部往外柔順發光，適合霓虹、標題與高光強化。","look":"亮部往外柔和溢光","url":"https://borisfx.com/documentation/sapphire/ae/glow/"}
@@ -67,7 +67,7 @@
 | `look` | 建議填寫可見外觀，不重複 `desc` |
 | `desc_en`／`desc_ja`／`look_en`／`look_ja` | 選填的英／日文翻譯；逐筆人工審核，不得塞未審核的機器翻譯。英文、日文介面有對應語系時顯示它，缺漏時回退顯示中文並標「原文」 |
 | `url` | 原廠產品／效果頁；必須實際得到 HTTP 200 或出現在原廠索引，不能猜 slug |
-| `released`／`updated` | 只填原廠可證明的 `YYYY-MM-DD` 日期，並同時填直接支持日期的 `date_url` |
+| `released`／`updated` | 必填（至少其一）：只填原廠可證明的 `YYYY-MM-DD` 日期，並同時填直接支持日期的 `date_url`。新條目由 `tools/add.py` 強制；既有缺日期條目由 `tools/backfill_dates.py` 分批回補，完成前驗證器僅列為回補待辦、不阻擋 strict |
 | `variants` | 只用於功能高度相近、同頁說明的同族變體；判重時必須一起搜尋 |
 | `stack`／`builtin` | 僅 `recipe` 使用，分別描述外掛堆疊與純內建替代流程 |
 
