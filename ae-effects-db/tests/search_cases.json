@@ -1,0 +1,8 @@
+[
+  {"query":"glow", "lang":"zh", "require_all":true, "expected_first":"Glow"},
+  {"query":"fx console", "lang":"en", "require_all":true, "expected_first":"FX Console"},
+  {"query":"发光", "lang":"zh", "require_all":true, "expected_contains":"Glow"},
+  {"query":"グリッチ", "lang":"ja", "require_all":true, "expected_contains":"glitch"},
+  {"query":"slowmo", "lang":"en", "require_all":true, "expected_contains":"Twixtor"},
+  {"query":"particle glow", "lang":"en", "require_all":false}
+]

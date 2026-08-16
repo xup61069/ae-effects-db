@@ -1,0 +1,38 @@
+name: build-index
+
+# 資料變動後自動重建 dist/（給 AI 讀的合併檔與精簡索引），貢獻者不用自己記得跑
+on:
+  push:
+    branches: [main]
+    paths: ["data/**"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: build-index-main
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: actions/setup-python@v7.0.0
+        with:
+          python-version: "3.12"
+      - name: Rebuild dist/
+        run: python tools/build_index.py
+      - name: Commit if changed
+        run: |
+          if [[ -n "$(git status --porcelain dist)" ]]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add dist
+            git commit -m "chore: rebuild dist/ index [skip ci]"
+            git push
+          else
+            echo "dist/ 已是最新，無需變更"
+          fi
