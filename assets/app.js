@@ -313,10 +313,39 @@ function applyLanguage() {
 function renderSuggestions(input) {
   const list = document.getElementById(input.id === "mq" ? "mobileSuggestions" : "suggestions");
   const values = autocomplete(DATA, input.value, localeData().categories);
-  list.innerHTML = values.map(value => `<button type="button" role="option" data-suggestion="${escapeHtml(value.value)}"><span>${escapeHtml(value.label)}</span><small>${escapeHtml(t(`suggestion_${value.type}`))}</small></button>`).join("");
+  list.innerHTML = values.map(value => `<button type="button" role="option" tabindex="-1" aria-selected="false" data-suggestion="${escapeHtml(value.value)}"><span>${escapeHtml(value.label)}</span><small>${escapeHtml(t(`suggestion_${value.type}`))}</small></button>`).join("");
   list.hidden = !values.length; input.setAttribute("aria-expanded", String(values.length > 0));
 }
-function hideSuggestions() { for (const id of ["suggestions", "mobileSuggestions"]) document.getElementById(id).hidden = true; for (const id of ["q", "mq"]) document.getElementById(id).setAttribute("aria-expanded", "false"); }
+function focusSuggestion(list, index) {
+  const options = [...list.querySelectorAll('[role="option"]')];
+  if (!options.length) return false;
+  const target = options[Math.max(0, Math.min(index, options.length - 1))];
+  options.forEach(option => option.setAttribute("aria-selected", String(option === target)));
+  target.focus(); return true;
+}
+function bindSuggestionKeyboard(input, list) {
+  input.addEventListener("keydown", event => {
+    if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+      if (list.hidden) renderSuggestions(input);
+      const options = list.querySelectorAll('[role="option"]');
+      if (options.length) { event.preventDefault(); focusSuggestion(list, event.key === "ArrowDown" ? 0 : options.length - 1); }
+    } else if (event.key === "Escape") hideSuggestions();
+  });
+  list.addEventListener("focusin", event => {
+    const option = event.target.closest?.('[role="option"]');
+    if (option) list.querySelectorAll('[role="option"]').forEach(value => value.setAttribute("aria-selected", String(value === option)));
+  });
+  list.addEventListener("keydown", event => {
+    const option = event.target.closest?.('[role="option"]'); if (!option) return;
+    const options = [...list.querySelectorAll('[role="option"]')], index = options.indexOf(option);
+    if (event.key === "ArrowDown") { event.preventDefault(); focusSuggestion(list, index === options.length - 1 ? 0 : index + 1); }
+    else if (event.key === "ArrowUp") { event.preventDefault(); if (index === 0) { option.setAttribute("aria-selected", "false"); input.focus(); } else focusSuggestion(list, index - 1); }
+    else if (event.key === "Home") { event.preventDefault(); focusSuggestion(list, 0); }
+    else if (event.key === "End") { event.preventDefault(); focusSuggestion(list, options.length - 1); }
+    else if (event.key === "Escape") { event.preventDefault(); hideSuggestions(); input.focus(); }
+  });
+}
+function hideSuggestions() { for (const id of ["suggestions", "mobileSuggestions"]) { const list = document.getElementById(id); list.hidden = true; list.querySelectorAll('[role="option"]').forEach(option => option.setAttribute("aria-selected", "false")); } for (const id of ["q", "mq"]) document.getElementById(id).setAttribute("aria-expanded", "false"); }
 function scheduleSearch(value) { state.query = value; clearTimeout(searchTimer); searchTimer = setTimeout(() => render(), 70); }
 
 function setupResponsiveFilters() {
@@ -330,9 +359,9 @@ function setupResponsiveFilters() {
 
 function bindEvents(version) {
   for (const id of ["q", "mq"]) {
-    const input = document.getElementById(id);
+    const input = document.getElementById(id), list = document.getElementById(id === "mq" ? "mobileSuggestions" : "suggestions");
     input.addEventListener("input", event => { scheduleSearch(event.target.value); renderSuggestions(input); });
-    input.addEventListener("keydown", event => { if (event.key === "ArrowDown") { event.preventDefault(); document.getElementById(id === "mq" ? "mobileSuggestions" : "suggestions").querySelector("button")?.focus(); } else if (event.key === "Escape") hideSuggestions(); });
+    bindSuggestionKeyboard(input, list);
   }
   document.getElementById("clearQ").addEventListener("click", () => { scheduleSearch(""); document.getElementById("q").focus(); });
   document.getElementById("clearMq").addEventListener("click", () => { scheduleSearch(""); document.getElementById("mq").focus(); });
@@ -361,7 +390,7 @@ function delegatedClick(event) {
   const favorite = event.target.closest?.("[data-favorite]"); if (favorite) { const id = favorite.dataset.favorite; FAVORITES.has(id) ? FAVORITES.delete(id) : FAVORITES.add(id); saveFavorites(FAVORITES); render(true); if (state.item) openDetail(id, {write:false}); return; }
   const share = event.target.closest?.("[data-share-detail]"); if (share) { const url = new URL(location.href); url.searchParams.set("item", share.dataset.shareDetail); navigator.clipboard?.writeText(String(url)).then(() => { share.textContent = t("copied"); }).catch(() => prompt(t("copyUrl"), url)); return; }
   const query = event.target.closest?.("[data-q]"); if (query) { state.query = query.dataset.q; commitState(); render(); scrollTo({top:0, behavior:"smooth"}); return; }
-  const suggestion = event.target.closest?.("[data-suggestion]"); if (suggestion) { state.query = suggestion.dataset.suggestion; hideSuggestions(); commitState(); render(); return; }
+  const suggestion = event.target.closest?.("[data-suggestion]"); if (suggestion) { const input = document.getElementById(suggestion.closest("#mobileSuggestions") ? "mq" : "q"); state.query = suggestion.dataset.suggestion; hideSuggestions(); commitState(); render(); input.focus(); return; }
   const discovery = event.target.closest?.("[data-discovery-query]"); if (discovery) { state.query = discovery.dataset.discoveryQuery; state.categories.clear(); if (discovery.dataset.discoveryCat) state.categories.add(discovery.dataset.discoveryCat); commitState(); render(); scrollTo({top:0, behavior:"smooth"}); return; }
   const active = event.target.closest?.("[data-filter]"); if (active) { if (active.dataset.filter === "fav") state.favoritesOnly = false; else filters[active.dataset.filter]?.set.delete(active.dataset.value); commitState(); render(); return; }
   if (event.target.closest?.("[data-clear-all]")) { clearAll(); return; }

@@ -162,14 +162,14 @@
   .filterdialog:not([open]){display:none}.filterhead,.mobile-filter-toggle{display:none}
   .suggestions{position:absolute;z-index:60;top:calc(100% + 5px);left:0;right:0;display:grid;max-height:320px;overflow:auto;
     border:1px solid var(--border);border-radius:12px;background:var(--panel);box-shadow:0 14px 38px rgba(0,0,0,.4)}
-  .suggestions[hidden]{display:none}.suggestions button{display:flex;justify-content:space-between;gap:12px;width:100%;min-height:42px;
+  .suggestions[hidden]{display:none}.suggestions button{display:flex;justify-content:space-between;gap:12px;width:100%;min-height:44px;
     padding:8px 12px;border:0;border-bottom:1px solid var(--border);background:transparent;color:var(--text);text-align:left;cursor:pointer}
   .suggestions button:hover,.suggestions button:focus{background:var(--panel2)}.suggestions small{color:var(--muted)}
   .discovery{margin-top:10px}.discovery summary{color:var(--accent);cursor:pointer;font-size:12.5px}.discoverygrid{display:grid;
     grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-top:8px}.discoverygrid button{min-height:58px;padding:8px 10px;
     border:1px solid var(--border);border-radius:10px;background:var(--panel);color:var(--text);text-align:left;cursor:pointer}
   .discoverygrid button:hover{border-color:var(--accent)}.discoverygrid b,.discoverygrid span{display:block}.discoverygrid span{margin-top:2px;color:var(--muted);font-size:11px}
-  .matchreason{font-size:10.5px;padding:2px 7px;border-radius:12px;background:color-mix(in srgb,var(--accent) 15%,transparent);color:var(--accent)}
+  .matchreason{font-size:10.5px;padding:2px 7px;border-radius:12px;background:color-mix(in srgb,var(--accent) 15%,transparent);color:var(--text)}
   .builtin-alt{color:var(--accent)!important}.emptySuggestions{display:flex;justify-content:center;align-items:center;gap:6px;flex-wrap:wrap;margin:12px 0}
   .empty button{min-height:40px;padding:7px 11px;border:1px solid var(--border);border-radius:8px;background:var(--panel);color:var(--accent);cursor:pointer}
   .recommendations{margin-top:20px}.recommendgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.recommendcard{min-height:64px;
