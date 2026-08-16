@@ -126,7 +126,14 @@ test("search suggestions, dynamic facets, history, detail and compare", async ({
   await expect(page).toHaveURL(/kind=plugin/);
 
   await page.locator("[data-clear-all]").last().click();
-  await page.locator("[data-detail]").first().click();
+  for (let i = 0; i < 60; i++) {
+    const detail = page.locator("[data-detail]").nth(i);
+    if (!(await detail.isVisible().catch(() => false))) break;
+    await detail.click();
+    if (await page.locator("#detailDialog .recommendations").first().isVisible().catch(() => false)) break;
+    await page.keyboard.press("Escape");
+  }
+  await expect(page.locator("#detailDialog .recommendations").first()).toBeVisible();
   await expect(page.locator("#detailDialog")).toBeVisible();
   await expect(page).toHaveURL(/item=[a-z0-9-]+/);
   await expect(page.locator(".recommendations").first()).toBeVisible();
@@ -196,6 +203,28 @@ test("programmatic result scrolling honors reduced-motion changes", async ({page
   await expect.poll(() => page.evaluate(() => window.__scrollOptions.at(-1)?.behavior)).toBe("smooth");
 });
 
+test("discovery buttons never land on an empty category (query falls back to category-only)", async ({page}) => {
+  await ready(page);
+  for (const cat of ["mograph", "film"]) {
+    await page.locator(`[data-discovery-query][data-discovery-cat="${cat}"]`).click();
+    await expect(page.locator(`#activeFilters [data-filter="cat"][data-value="${cat}"]`)).toBeVisible();
+    await expect(page.locator(".card").first()).toBeVisible();
+    await expect(page).toHaveURL(new RegExp(`cat=${cat}`));
+    await expect(page.locator("#count")).toContainText("筆結果");
+  }
+});
+
+test("every card shows a last-updated badge, with a dash fallback for undated entries", async ({page}) => {
+  await ready(page);
+  const cards = page.locator(".card");
+  expect(await cards.count()).toBeGreaterThan(0);
+  const badges = page.locator(".card .datebadge");
+  expect(await badges.count()).toBe(await cards.count());
+  for (const text of await badges.allTextContents()) {
+    expect(text).toMatch(/(更新|發行)/);
+  }
+});
+
 test("legacy URLs and v1 favorites migrate to stable IDs", async ({page}) => {
   await page.addInitScript(legacy => localStorage.setItem("ae-effects-db:favorites:v1", JSON.stringify([legacy])), FIRST._legacy);
   await ready(page, `/?item=${encodeURIComponent(FIRST._legacy)}`);
@@ -218,7 +247,7 @@ test("stale URL filters and sort modes are canonicalized on load and popstate", 
   });
   await ready(page, `/?${params}`);
   await expect(page.locator(`[data-detail="${FIRST.id}"]`)).toBeVisible();
-  await expect(page.locator("#sort")).toHaveValue("popular");
+  await expect(page.locator("#sort")).toHaveValue("latest");
   await expect(page.locator("#activeFilters .a")).toHaveCount(3);
   await expect.poll(() => page.evaluate(() => Object.fromEntries(new URL(location.href).searchParams))).toEqual({
     q:FIRST.name, cat:FIRST.cat, src:FIRST._src, kind:FIRST.kind, compare:JSON.stringify([FIRST.id]),
@@ -231,7 +260,7 @@ test("stale URL filters and sort modes are canonicalized on load and popstate", 
   await page.goForward();
   await expect.poll(() => page.evaluate(() => location.search)).toBe("");
   await expect(page.locator("#activeFilters .a")).toHaveCount(0);
-  await expect(page.locator("#sort")).toHaveValue("popular");
+  await expect(page.locator("#sort")).toHaveValue("latest");
   await page.locator("#catBtn").click();
   await page.locator(`#catPanel [data-k="${FIRST.cat}"]`).click();
   await expect(page.locator("#activeFilters .a")).toHaveCount(1);

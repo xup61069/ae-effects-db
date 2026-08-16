@@ -5,6 +5,10 @@
   "description": "一筆特效/外掛條目。data/*.jsonl 每一行都是一個符合此 schema 的 JSON 物件（JSONL：一行一物件，無逗號、無陣列外框）。",
   "type": "object",
   "required": ["name", "kind", "cat", "tags", "desc", "url"],
+  "anyOf": [
+    { "required": ["released"] },
+    { "required": ["updated"] }
+  ],
   "additionalProperties": false,
   "properties": {
     "id": {
@@ -88,12 +92,12 @@
     "released": {
       "type": "string",
       "format": "date",
-      "description": "（選填）官方可查證的首次發行日期，ISO 8601 YYYY-MM-DD。"
+      "description": "官方可查證的首次發行日期（與 updated 至少填其一），ISO 8601 YYYY-MM-DD。"
     },
     "updated": {
       "type": "string",
       "format": "date",
-      "description": "（選填）官方可查證的最近重大更新日期，ISO 8601 YYYY-MM-DD。"
+      "description": "官方可查證的最近重大更新日期（與 released 至少填其一），ISO 8601 YYYY-MM-DD。"
     },
     "date_url": {
       "type": "string",

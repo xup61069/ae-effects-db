@@ -98,7 +98,7 @@
 
 規則：
 - 只輸出一行 JSON，不要美化、不要多餘標點。
-- 必填：name, kind, cat, tags, desc, url。
+- 必填：name, kind, cat, tags, desc, url，以及 released 或 updated 至少其一＋date_url。
 - kind：從 `plugin`（外掛／效果）、`script`（腳本／面板）、`builtin`（AE 內建）、`recipe`（效果配方）擇一。
 - name：效果原名（Sapphire 前綴 S_、Continuum 前綴 BCC/BCC+）。
 - cat：從這清單挑一個最貼切（小寫）：glow blur-glow light flare particles stylize film color blur warp
@@ -112,6 +112,7 @@
   自我檢查：把效果名遮掉，這句話還能不能分辨是哪個效果？不能就重寫。
   資料要來自該效果**自己的**官方說明頁，不是它所屬的分類。
 - url：**必填**，官方產品頁連結（aescripts 為 https://aescripts.com/<slug>/、BOOTH 為 https://booth.pm/ja/items/<id>/、Gumroad 為 https://<author>.gumroad.com/l/<slug>/）。
+- released／updated：**必填（至少其一）**，原廠頁可查證的 YYYY-MM-DD，並附 date_url（支援該日期的原廠頁）。查不到原廠日期就不要收。
 - 選填：look（畫面外觀一句）、vendor（廠商/作者，BOOTH／Gumroad 必須填作者名，不確定就寫 aescripts 或 未知/免費）、suite、aex（.aex 檔名）。
 - 若查不到可靠的原廠功能說明：不要輸出 JSON，改為「略過：官方頁無具體功能說明」。
 - 新候選不得以 `unverified:true` 湊數；此旗標只供維護者處理使用者明確要求保留的本機檔案證據。
@@ -160,7 +161,7 @@ BOOTH（booth.pm）→booth.jsonl（判重連同日文原名與作者名）；Gu
     **功能與既有條目重疊不是略過理由**：先查熱門度（BOOTH wish_lists_count、Gumroad 評價數）與品質，
     實作不同、品質較好或知名作者的招牌工具都要收，vendor 標正確作者名。
 4) 決定收錄的，輸出「一行」壓縮 JSON，欄位規則：
-     必填 name, kind, cat, tags, desc, url
+     必填 name, kind, cat, tags, desc, url，以及 released 或 updated 至少其一＋date_url
      - kind 從 plugin / script / builtin / recipe 擇一
      - cat 從此清單挑（小寫）：glow blur-glow light flare particles stylize film color blur warp keying
        tracking restore time transition text generate 3d draw paint art texture audio physics rigging
@@ -172,6 +173,7 @@ BOOTH（booth.pm）→booth.jsonl（判重連同日文原名與作者名）；Gu
      - **不准套版**：同一批裡不可以出現「只有名字不同」的 desc 或 tags。
        每筆都要讀該產品自己的頁面再寫；讀不到就別收，不要用分類名硬湊。
      - url：該產品在 aescripts 的官方頁 https://aescripts.com/<slug>/（務必是真實存在的頁面，不要杜撰）。
+     - released／updated：至少其一，原廠頁可查證的 YYYY-MM-DD，並附 date_url；查不到原廠日期就別收。
      - vendor：作者名（頁面上的 author），不確定就寫 "aescripts"。
      - 事實要準；查不到說明就別硬收。
      - 不得使用或提及盜版／破解資源站；任何候選線索都要回原廠頁查證。
@@ -225,6 +227,7 @@ git commit -am "add: XXX 外掛"
 - [ ] BOOTH／Gumroad 條目：`vendor` 填作者名、日文原名有進 `tags`、URL 實際存在。
 - [ ] 因重疊之外的理由略過的候選已記到 `curation/skipped.tsv`（原因具體）；重疊不再自動略過，除非已查過熱門度與品質。
 - [ ] `url` 有實際開過確認存在，不是照 slug 規則猜的。
+- [ ] `released` 或 `updated` 至少其一，日期原廠可查證，且附 `date_url`。
 - [ ] 放對資料檔、`cat` 用既有分類。
 - [ ] 作者／功能／AE host 屬實；查不到原廠具體說明就不收。
 - [ ] 產品仍在販售或維護，不是 discontinued、obsolete 或 legacy-only。
