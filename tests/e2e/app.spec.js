@@ -223,3 +223,23 @@ test("PWA isolates the current catalog version and reloads offline", async ({pag
   await page.locator("#q").fill("glow");
   await expect(page.locator("#count")).toContainText(/結果|results|件/);
 });
+
+test("PWA update waits for explicit activation and reloads", async ({page}) => {
+  await ready(page);
+  await page.evaluate(() => navigator.serviceWorker.ready);
+  if (!(await page.evaluate(() => Boolean(navigator.serviceWorker.controller)))) {
+    await page.reload();
+    await expect(page.locator(".card").first()).toBeVisible();
+  }
+  const originalController = await page.evaluate(() => navigator.serviceWorker.controller.scriptURL);
+  await page.evaluate(() => navigator.serviceWorker.register("service-worker.js?e2e-update=1", {scope:"./", updateViaCache:"none"}));
+  const updateButton = page.locator("#updateBanner button");
+  await expect(updateButton).toBeVisible();
+  await expect.poll(() => page.evaluate(() => navigator.serviceWorker.controller.scriptURL)).toBe(originalController);
+  await Promise.all([
+    page.waitForNavigation({waitUntil:"domcontentloaded"}),
+    updateButton.click(),
+  ]);
+  await expect(page.locator(".card").first()).toBeVisible();
+  await expect.poll(() => page.evaluate(() => navigator.serviceWorker.controller.scriptURL)).toContain("e2e-update=1");
+});
