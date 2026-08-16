@@ -57,7 +57,7 @@
       visual_glow:"發光／光暈",visual_particles:"粒子",visual_color:"調色",visual_texture:"顆粒／材質",visual_glitch:"故障／色差",
       visual_motion:"運動／拖尾",visual_distortion:"扭曲／變形",visual_composite:"合成／去背",visual_retro:"復古／底片",visual_text:"文字／字幕",
       suggestion_item:"工具",suggestion_category:"分類",suggestion_correction:"錯字建議",visualInvalidType:"只接受 PNG、JPEG 或 WebP 圖片。",
-      visualTooLarge:"圖片超過 20 MB 上限。",visualLocalOnly:"圖片已在本機預覽，不會上傳。",visualChooseFeature:"請至少勾選一項畫面特徵。",
+      visualTooLarge:"圖片超過 20 MB 上限。",visualInvalidImage:"無法讀取圖片，請確認檔案未損壞。",visualLocalOnly:"圖片已在本機預覽，不會上傳。",visualChooseFeature:"請至少勾選一項畫面特徵。",
       visualPrompt:"參考畫面的特徵：{features}。請依這些特徵建議工具與 AE 內建替代。",visualNone:"尚未選擇",
       updateAvailable:"有新資料可用；可在準備好時重新載入。",updateNow:"立即更新"
     },
@@ -115,7 +115,7 @@
       visual_glow:"Glow / bloom",visual_particles:"Particles",visual_color:"Color grading",visual_texture:"Grain / texture",visual_glitch:"Glitch / chromatic aberration",
       visual_motion:"Motion / trails",visual_distortion:"Warp / distortion",visual_composite:"Composite / keying",visual_retro:"Retro / film",visual_text:"Text / titles",
       suggestion_item:"Tool",suggestion_category:"Category",suggestion_correction:"Spelling suggestion",visualInvalidType:"Use a PNG, JPEG, or WebP image.",
-      visualTooLarge:"The image exceeds the 20 MB limit.",visualLocalOnly:"Previewed locally; this image is not uploaded.",visualChooseFeature:"Select at least one visual trait.",
+      visualTooLarge:"The image exceeds the 20 MB limit.",visualInvalidImage:"This image could not be decoded. Check that the file is not damaged.",visualLocalOnly:"Previewed locally; this image is not uploaded.",visualChooseFeature:"Select at least one visual trait.",
       visualPrompt:"Reference-image traits: {features}. Recommend tools and AE built-in alternatives for these traits.",visualNone:"none selected",
       updateAvailable:"New data is ready. Reload when convenient.",updateNow:"Reload now"
     },
@@ -171,7 +171,7 @@
       visual_glow:"グロー／ブルーム",visual_particles:"パーティクル",visual_color:"カラーグレーディング",visual_texture:"グレイン／質感",visual_glitch:"グリッチ／色収差",
       visual_motion:"動き／軌跡",visual_distortion:"ワープ／歪み",visual_composite:"合成／キーイング",visual_retro:"レトロ／フィルム",visual_text:"テキスト／タイトル",
       suggestion_item:"ツール",suggestion_category:"カテゴリ",suggestion_correction:"入力候補",visualInvalidType:"PNG、JPEG、WebP 画像を使用してください。",
-      visualTooLarge:"画像が 20 MB の上限を超えています。",visualLocalOnly:"画像はローカルでプレビュー中です。アップロードされません。",visualChooseFeature:"特徴を1つ以上選択してください。",
+      visualTooLarge:"画像が 20 MB の上限を超えています。",visualInvalidImage:"画像を読み込めません。ファイルが破損していないか確認してください。",visualLocalOnly:"画像はローカルでプレビュー中です。アップロードされません。",visualChooseFeature:"特徴を1つ以上選択してください。",
       visualPrompt:"参考画像の特徴：{features}。これらに合うツールと AE 標準の代替を提案してください。",visualNone:"未選択",
       updateAvailable:"新しいデータを利用できます。準備ができたら再読み込みしてください。",updateNow:"今すぐ更新"
     },

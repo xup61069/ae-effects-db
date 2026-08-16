@@ -37,6 +37,7 @@ let LOCALIZATION = {localized_urls:{}, official_categories:{}, official_category
 let POPULAR_INDEX = new Map();
 let filters = {};
 let visualUrl = null;
+let visualLoadToken = 0;
 const visualSelection = new Set();
 
 const localeData = () => globalThis.AE_I18N.locales[state?.lang || "zh"] || globalThis.AE_I18N.locales.zh;
@@ -433,21 +434,33 @@ function delegatedClick(event) {
 
 function bindVisualFinder() {
   const input = document.getElementById("visualFile"), drop = document.getElementById("visualDrop");
-  const accept = file => {
+  const accept = async file => {
+    const token = ++visualLoadToken;
     const msg = document.getElementById("visualMsg");
     if (!file || !["image/png", "image/jpeg", "image/webp"].includes(file.type)) { msg.textContent = t("visualInvalidType"); return; }
     if (file.size > 20 * 1024 * 1024) { msg.textContent = t("visualTooLarge"); return; }
-    if (visualUrl) URL.revokeObjectURL(visualUrl); visualUrl = URL.createObjectURL(file);
+    const nextUrl = URL.createObjectURL(file);
+    const probe = new Image();
+    try {
+      await new Promise((resolve, reject) => { probe.onload = resolve; probe.onerror = reject; probe.src = nextUrl; });
+    } catch (_) {
+      URL.revokeObjectURL(nextUrl);
+      if (token === visualLoadToken) msg.textContent = t("visualInvalidImage");
+      return;
+    }
+    if (token !== visualLoadToken) { URL.revokeObjectURL(nextUrl); return; }
+    if (visualUrl) URL.revokeObjectURL(visualUrl);
+    visualUrl = nextUrl;
     const image = document.getElementById("visualPreview"); image.src = visualUrl; image.hidden = false; msg.textContent = t("visualLocalOnly");
   };
-  input.addEventListener("change", () => accept(input.files[0])); drop.addEventListener("click", () => input.click());
+  input.addEventListener("change", () => { const file = input.files[0]; input.value = ""; accept(file); }); drop.addEventListener("click", () => input.click());
   drop.addEventListener("dragover", event => { event.preventDefault(); drop.classList.add("dragging"); }); drop.addEventListener("dragleave", () => drop.classList.remove("dragging"));
   drop.addEventListener("drop", event => { event.preventDefault(); drop.classList.remove("dragging"); accept(event.dataTransfer.files[0]); });
   window.addEventListener("paste", event => { if (!document.getElementById("visualDialog").open) return; const file = [...event.clipboardData.files].find(value => value.type.startsWith("image/")); if (file) accept(file); });
   document.getElementById("visualFeatures").addEventListener("click", event => { const button = event.target.closest("[data-visual]"); if (!button) return; visualSelection.has(button.dataset.visual) ? visualSelection.delete(button.dataset.visual) : visualSelection.add(button.dataset.visual); button.setAttribute("aria-pressed", String(visualSelection.has(button.dataset.visual))); button.classList.toggle("on", visualSelection.has(button.dataset.visual)); });
   document.getElementById("visualSearch").addEventListener("click", () => { if (!visualSelection.size) { document.getElementById("visualMsg").textContent = t("visualChooseFeature"); return; } state.query = [...visualSelection].map(key => VISUAL_FEATURES[key]).join(" "); document.getElementById("visualDialog").close(); commitState(); render(); scrollTo({top:0, behavior:"smooth"}); });
   document.getElementById("visualCopy").addEventListener("click", async () => { const features = [...visualSelection].map(key => t(`visual_${key}`)).join("、"); const prompt = `${localeData().aiPrompt}\n\n${t("visualPrompt", {features:features || t("visualNone")})}`; try { await navigator.clipboard.writeText(prompt); document.getElementById("visualMsg").textContent = t("copied"); } catch (_) { promptFallback(prompt); } });
-  document.getElementById("visualDialog").addEventListener("close", () => { if (visualUrl) { URL.revokeObjectURL(visualUrl); visualUrl = null; } const image = document.getElementById("visualPreview"); image.removeAttribute("src"); image.hidden = true; input.value = ""; });
+  document.getElementById("visualDialog").addEventListener("close", () => { visualLoadToken += 1; if (visualUrl) { URL.revokeObjectURL(visualUrl); visualUrl = null; } const image = document.getElementById("visualPreview"); image.removeAttribute("src"); image.hidden = true; input.value = ""; });
 }
 
 function promptFallback(value) { const box = document.getElementById("visualMsg"); box.textContent = t("copyFallback"); const textarea = document.createElement("textarea"); textarea.value = value; textarea.rows = 6; box.appendChild(textarea); textarea.focus(); textarea.select(); }
