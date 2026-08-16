@@ -78,14 +78,11 @@
 
 ## 搜尋同義詞（查得到才算數）
 
-搜尋是子字串比對，所以「真人會怎麼打」比「官方怎麼寫」重要。跨語言的同義詞統一放在兩處，**改一處就要同步另一處**：
-
-- `search.py` 的 `ALIASES`（CLI 用）
-- `index.html` 的 `SEARCH_ALIASES`（網站用）
+搜尋採名稱、標籤、變體與描述的明確權重，所以「真人會怎麼打」比「官方怎麼寫」重要。跨語言同義詞統一放在 [`curation/search.json`](curation/search.json)，CLI 與網站共同載入；日文策展詞另放在 [`curation/search-aliases.ja.json`](curation/search-aliases.ja.json)。只改共用設定，不要在 Python 或 JavaScript 內另建一份。
 
 例如「講話」的群組涵蓋 語音／voice／speech／配音／旁白／口白／朗讀 等，所以查「講話」也會找到叫「語音」的工具。
 
-- 發現查某個詞找不到已知工具（例：查「講話」找不到語音工具）→ 不是資料缺，是別名缺詞，把詞加進上面兩個清單。
+- 發現查某個詞找不到已知工具（例：查「講話」找不到語音工具）→ 不是資料缺，是別名缺詞，把詞加進共用策展設定。
 - 別名只收**幾乎可互換**的詞；用途不同的近義詞不要硬塞，避免一次噴出一堆不相關結果。
 - `tags` 一樣要寫真實用語，別名只是補齊其它說法。
 
@@ -194,10 +191,10 @@ BOOTH（booth.pm）→booth.jsonl（判重連同日文原名與作者名）；Gu
 
 ## 資料長怎樣
 
-一個特效一行 JSON，搜尋主要靠 `tags`（所以中英同義詞塞好塞滿）：
+一個特效一行 JSON，搜尋主要靠名稱與 `tags`，並以描述、外觀和同族變體補充：
 
 ```json
-{"name":"S_Rays","suite":"Sapphire","kind":"plugin","cat":"light","tags":["god rays","light shafts","volumetric","丁達爾","體積光","上帝光","放射光線","雲隙光"],"desc":"從亮部放射的體積光/上帝光，做雲隙光、窗光、神聖光束。","look":"從亮處放射的可見光柱"}
+{"id":"sapphire-s-rays","name":"S_Rays","suite":"Sapphire","kind":"plugin","cat":"light","tags":["god rays","light shafts","volumetric","丁達爾","體積光","上帝光","放射光線","雲隙光"],"desc":"從亮部放射的體積光/上帝光，做雲隙光、窗光、神聖光束。","look":"從亮處放射的可見光柱"}
 ```
 
 欄位與分類完整說明見 [AGENTS.md](AGENTS.md)。
@@ -224,7 +221,7 @@ git commit -am "add: XXX 外掛"
 - [ ] `desc` 用繁體中文、一句話、講清楚**做什麼＋典型用途**。
 - [ ] **把效果名遮掉後，desc 還能分辨是哪個效果**（不是只有名字不同的樣板句）。
 - [ ] `tags` 中英雙語（一定要有中文），且去掉效果名後不與同系列其他條目雷同。
-- [ ] 加了新的多語同義詞時，`search.py` 的 `ALIASES` 與 `index.html` 的 `SEARCH_ALIASES` 已同步（例：查「講話」也找得到語音工具）。
+- [ ] 加了新的多語同義詞時，只更新共用的 `curation/search.json`（日文策展詞則更新 `curation/search-aliases.ja.json`），並跑跨 runtime 搜尋測試。
 - [ ] BOOTH／Gumroad 條目：`vendor` 填作者名、日文原名有進 `tags`、URL 實際存在。
 - [ ] 因重疊之外的理由略過的候選已記到 `curation/skipped.tsv`（原因具體）；重疊不再自動略過，除非已查過熱門度與品質。
 - [ ] `url` 有實際開過確認存在，不是照 slug 規則猜的。

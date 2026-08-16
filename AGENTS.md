@@ -50,7 +50,7 @@
 
 完整機器規格是 [`schema/effect.schema.json`](schema/effect.schema.json)。JSONL 必須為 UTF-8、一行一個物件、不能用陣列、不能有行尾逗號。
 
-必填：`name`、`kind`、`cat`、`tags`、`desc`、`url`。
+必填：`name`、`kind`、`cat`、`tags`、`desc`、`url`。正式資料也必須有全域唯一的 stable `id`；舊格式交給 `tools/add.py` 產生，不要因改名而更換既有 ID。
 
 ```json
 {"name":"S_Glow","suite":"Sapphire","kind":"plugin","cat":"glow","tags":["glow","bloom","發光","輝光","柔光","光暈"],"desc":"讓亮部往外柔順發光，適合霓虹、標題與高光強化。","look":"亮部往外柔和溢光","url":"https://borisfx.com/documentation/sapphire/ae/glow/"}
@@ -58,6 +58,7 @@
 
 | 欄位 | 規則 |
 |---|---|
+| `id` | 小寫 URL-safe slug、全域唯一且永久穩定；既有 ID 不因名稱或分類變更而重建 |
 | `name` | 使用原廠正式拼法；Sapphire 保留 `S_`，Continuum 保留 `BCC`／`BCC+` |
 | `kind` | `plugin` 原生外掛／Effect、`script` ScriptUI／CEP／UXP 面板或腳本、`builtin` AE 內建、`recipe` 效果配方 |
 | `cat` | 只用 schema／`validate.py` 已存在的分類；不要自行發明近義分類 |
@@ -102,14 +103,11 @@
 
 ## 搜尋同義關鍵字（ALIASES）
 
-搜尋是子字串比對，不是語意搜尋。跨語言同義詞集中在兩處，**改一處必須同步另一處**：
-
-- `search.py` 的 `ALIASES`（CLI）；
-- `index.html` 的 `SEARCH_ALIASES`（網站）。
+搜尋採可解釋的字串權重，不是向量語意搜尋。跨 Python／JavaScript 的正規化與同義詞集中在 `curation/search.json`；日文策展詞位於 `curation/search-aliases.ja.json`。兩端只載入共用設定，不得各自複製常數。
 
 例如「講話」群組涵蓋 語音／voice／speech／配音／旁白／口白／朗讀 等，所以查「講話」能找到叫「語音」的工具。
 
-- 發現「查某個詞找不到已知工具」（例：查「講話」找不到語音工具）時，是別名群組缺詞，把該詞加進 `ALIASES`／`SEARCH_ALIASES`，而不是只補單筆 `tags`。
+- 發現「查某個詞找不到已知工具」（例：查「講話」找不到語音工具）時，是別名群組缺詞，把該詞加進共用設定，而不是只補單筆 `tags`。
 - 別名只放「幾乎可互換」的詞；近義但用途不同的詞不要硬塞進同一群組，避免搜尋噪音。
 - 寫 `tags` 仍要用該工具真實的用語，別名負責補齊其它說法。
 
@@ -121,12 +119,12 @@
 
 ## 產生檔與策展設定
 
-- `dist/all.jsonl`、`dist/index.txt`、`dist/web-index.json` 由 `python tools/build_index.py` 產生，不直接手改。
+- `dist/all.jsonl`、`dist/index.txt`、`dist/web-index.json` 與 `dist/web/**` 由 `python tools/build_index.py` 產生，不直接手改。
 - `curation/skipped.tsv` 是不收錄的決策記憶；理由要具體到日後不必重查。
 - `curation/popularity.json` 定義網站預設的可解釋熱門排序；它不是銷量榜。
 - `curation/localization.json` 只放實際驗證過的官方在地化頁與 Adobe 官方分類；不要自行翻譯產品名或猜 locale URL。
 - `curation/search-aliases.ja.json` 是人工審查過的日文搜尋別名。
-- 前端載入資料的查詢版本在 `index.html` 的 `ASSET_VERSION`；資料／策展檔部署後若需要強制使用者刷新，應同步遞增。
+- 前端與資料版本由 `dist/web/asset-manifest.json` 的內容雜湊自動產生；不要手動維護版本號。
 
 ## 完成前檢查
 
@@ -138,6 +136,7 @@ python tools/audit.py --strict
 python tools/classify_kind.py
 python -m unittest discover -s tests -v
 node tests/check_web_js.js
+npm run test:e2e                    # 網站／PWA 變更時必跑
 node tools/build_localization.js --check   # 只有多語／官方網址相關變更時必跑
 python tools/build_index.py
 git diff --check

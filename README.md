@@ -16,8 +16,11 @@
 網頁另提供：
 
 - 外掛、腳本、AE 內建與配方的獨立底色及型態篩選；
-- 42 種功能分類、來源篩選、錯字修正與繁簡中文搜尋；
-- 收藏匯出／匯入、2～4 筆並排比較與可分享網址；
+- 42 種功能分類、即時 facet 數量、鍵盤搜尋建議、錯字修正與繁簡中文搜尋；
+- 用途導覽、命中原因，以及詳情中的相似工具、AE 內建替代與相關配方；
+- 收藏 v2 匯出／匯入、2～4 筆並排比較與 stable-ID 分享網址（舊網址仍可用）；
+- 本機畫面拆解器：圖片不離開瀏覽器，勾選畫面特徵後可直接搜尋或複製 AI 提示詞；
+- 可安裝 PWA 與完整離線搜尋；新資料準備好後由使用者決定何時重新載入；
 - 經驗證的日文官方頁，以及 Adobe 內建效果的英文／日文官方分類。
 
 ## 選一個入口
@@ -42,6 +45,7 @@ python search.py --any glow bloom   # 強制 OR
 python search.py --kind script 字幕
 python search.py --cat transition 甩鏡
 python search.py --suite sapphire glow
+python search.py --lang ja --json --explain グリッチ
 python search.py --list-cats
 ```
 
@@ -58,6 +62,8 @@ python -m http.server 8000
 - [`dist/index.txt`](dist/index.txt)：精簡索引，包含名稱、來源、型態、分類、說明與官方連結；檔頭會顯示即時總筆數。
 - [`dist/all.jsonl`](dist/all.jsonl)：完整合併資料，保留 tags、look、variants、日期等欄位。
 - [`dist/web-index.json`](dist/web-index.json)：已預建搜尋字串與熱門順位的網頁索引。
+- [`dist/web/catalog.json`](dist/web/catalog.json)：網站使用的精簡共用 catalog；說明按 `zh/en/ja` 分片載入。
+- [`dist/web/asset-manifest.json`](dist/web/asset-manifest.json)：PWA 使用的原子化資產版本與快取清單。
 - [`schema/effect.schema.json`](schema/effect.schema.json)：單筆 JSON 的機器可讀規格。
 
 `dist/` 由 `python tools/build_index.py` 產生，不是第二份資料來源；真正的來源是 `data/*.jsonl`。
@@ -85,10 +91,10 @@ python tools/audit.py --strict
 
 ## 單筆格式
 
-JSONL 一行一筆；必填欄位為 `name`、`kind`、`cat`、`tags`、`desc`、`url`。
+JSONL 一行一筆；必填欄位為 `name`、`kind`、`cat`、`tags`、`desc`、`url`。每筆正式資料另有全域唯一、改名也不變的 URL-safe `id`；舊格式不必手填，`tools/add.py` 會自動產生。
 
 ```json
-{"name":"S_Glow","suite":"Sapphire","kind":"plugin","cat":"glow","tags":["glow","bloom","發光","輝光","光暈"],"desc":"讓亮部自然向外溢光，適合霓虹、標題與高光強化。","url":"https://borisfx.com/documentation/sapphire/ae/glow/"}
+{"id":"sapphire-s-glow","name":"S_Glow","suite":"Sapphire","kind":"plugin","cat":"glow","tags":["glow","bloom","發光","輝光","光暈"],"desc":"讓亮部自然向外溢光，適合霓虹、標題與高光強化。","url":"https://borisfx.com/documentation/sapphire/ae/glow/"}
 ```
 
 新增資料請使用安全匯入器，讓它先做 schema 檢查、判重與選檔：
