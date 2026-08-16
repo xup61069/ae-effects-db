@@ -25,6 +25,9 @@ async function ready(page, url = "/") {
 
 test("search suggestions, dynamic facets, history, detail and compare", async ({page}) => {
   await ready(page);
+  await page.locator("#q").fill("glwo");
+  await expect(page.locator('#suggestions [role="option"]')).toHaveCount(1);
+  await expect(page.locator('#suggestions [role="option"]')).toContainText("glow");
   await page.locator("#q").fill("deep glo");
   await expect(page.locator("#suggestions")).toBeVisible();
   await page.locator("#q").fill("glow");

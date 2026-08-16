@@ -206,7 +206,10 @@ def correction_suggestions(rows: Iterable[dict], term: str, limit_results: int =
         if distance <= limit:
             candidates.append((distance, abs(len(word) - len(normalized)), -frequency, word))
     candidates.sort()
-    return [item[3] for item in candidates[:limit_results]]
+    if not candidates:
+        return []
+    best_key = candidates[0][:2]
+    return [item[3] for item in candidates if item[:2] == best_key][:limit_results]
 
 
 def correct_terms(rows: Iterable[dict], terms: Iterable[str]) -> list[str]:
