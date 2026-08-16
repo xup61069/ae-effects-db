@@ -19,6 +19,11 @@ import sys
 from urllib.parse import urlparse
 
 try:
+    from tools.common import ID_PATTERN, derive_src, make_stable_id
+except ModuleNotFoundError:  # python tools/add.py
+    from common import ID_PATTERN, derive_src, make_stable_id
+
+try:
     sys.stdout.reconfigure(encoding="utf-8")
 except Exception:
     pass
@@ -27,7 +32,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA = os.path.join(ROOT, "data")
 REQUIRED = ("name", "kind", "cat", "tags", "desc", "url")
 ORDER = [
-    "name", "suite", "vendor", "kind", "cat", "tags", "desc", "look",
+    "id", "name", "suite", "vendor", "kind", "cat", "tags", "desc", "look",
     "variants", "stack", "builtin", "url", "released", "updated", "date_url",
     "unverified", "aex",
 ]
@@ -72,14 +77,17 @@ def guess_file(item: dict) -> str:
     return "third-party"
 
 
-def load_existing() -> tuple[dict[str, list[dict[str, str]]], dict[str, str]]:
+def load_existing() -> tuple[dict[str, list[dict[str, str]]], dict[str, str], set[str]]:
     names: dict[str, list[dict[str, str]]] = {}
     aescripts_urls: dict[str, str] = {}
+    ids: set[str] = set()
     for path in glob.glob(os.path.join(DATA, "*.jsonl")):
         with open(path, encoding="utf-8") as handle:
             for line_no, raw in enumerate(handle, 1):
                 if raw.strip():
                     item = json.loads(raw)
+                    if item.get("id"):
+                        ids.add(item["id"])
                     loc = f"{os.path.basename(path)}:{line_no}"
                     names.setdefault(item["name"].strip().casefold(), []).append({
                         "loc": loc,
@@ -89,7 +97,7 @@ def load_existing() -> tuple[dict[str, list[dict[str, str]]], dict[str, str]]:
                     url = item.get("url", "")
                     if isinstance(url, str) and is_aescripts_url(url):
                         aescripts_urls[canonical_url(url)] = loc
-    return names, aescripts_urls
+    return names, aescripts_urls, ids
 
 
 def duplicate_name_location(item: dict, entries: list[dict[str, str]]) -> str | None:
@@ -128,7 +136,7 @@ def main() -> None:
         if args.src == "-"
         else open(args.src, encoding="utf-8-sig").read()
     )
-    existing, existing_aescripts_urls = load_existing()
+    existing, existing_aescripts_urls, existing_ids = load_existing()
     buckets: dict[str, list[dict]] = {}
     added: list[str] = []
     skipped: list[str] = []
@@ -163,6 +171,17 @@ def main() -> None:
             errors.append(f"第 {line_no} 行「{item.get('name', '?')}」缺少有效官方 URL")
             continue
 
+        target = args.file or guess_file(item)
+        if item.get("id"):
+            if not isinstance(item["id"], str) or not ID_PATTERN.fullmatch(item["id"]):
+                errors.append(f"第 {line_no} 行「{item.get('name', '?')}」id 格式無效")
+                continue
+            if item["id"] in existing_ids:
+                errors.append(f"第 {line_no} 行「{item.get('name', '?')}」id 已存在：{item['id']}")
+                continue
+        else:
+            item["id"] = make_stable_id(item, derive_src(target, item["url"]), existing_ids)
+
         key = str(item["name"]).strip().casefold()
         duplicate_loc = duplicate_name_location(item, existing.get(key, []))
         if duplicate_loc:
@@ -176,7 +195,7 @@ def main() -> None:
             )
             continue
 
-        target = args.file or guess_file(item)
+        existing_ids.add(item["id"])
         buckets.setdefault(target, []).append(reorder(item))
         existing.setdefault(key, []).append({
             "loc": f"{target}.jsonl:new",

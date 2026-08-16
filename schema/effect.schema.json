@@ -7,6 +7,11 @@
   "required": ["name", "kind", "cat", "tags", "desc", "url"],
   "additionalProperties": false,
   "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{2,63}$",
+      "description": "（選填輸入；repo 內必填）穩定且全域唯一的 URL-safe ID。產品改名、移檔或更換官方網址時不得變更。"
+    },
     "name": {
       "type": "string",
       "minLength": 1,
