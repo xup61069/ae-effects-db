@@ -1,6 +1,7 @@
 import {
   autocomplete, configureSearch, normalizeText, parseTerms, searchWithFallback,
 } from "./search.js";
+import {sortMatches} from "./sort.js";
 import {readUrlState, resolveKey, restoreResolvedState, writeUrlState} from "./state.js";
 import {downloadFavorites, importFavorites, loadFavorites, saveFavorites} from "./favorites.js";
 import {cardMarkup, compareMarkup, detailMarkup, escapeHtml} from "./render.js";
@@ -58,26 +59,6 @@ function popularity(item) {
   const recency = Number.isFinite(age) ? Math.max(0, Math.round((max.recency || 4) - age)) : 0;
   const curatedOrder = Math.max(0, (max.curated_order || 10) - Math.floor(Math.min(item._rank ?? 500, 500) / 50));
   return {featured:featuredScore, source, quality, recency, curatedOrder, total:Math.min(100, featuredScore + source + quality + recency + curatedOrder)};
-}
-
-function sourceCmp(a, b) {
-  const ai = SOURCE_ORDER.indexOf(a._src), bi = SOURCE_ORDER.indexOf(b._src);
-  return (ai < 0 ? 999 : ai) - (bi < 0 ? 999 : bi) || (a._rank ?? 9999) - (b._rank ?? 9999) || a.name.localeCompare(b.name);
-}
-function popularCmp(a, b) { return popularity(b).total - popularity(a).total || sourceCmp(a, b); }
-function sortMatches(matches, hasTerms) {
-  const mode = state.sort;
-  return matches.sort((a, b) => {
-    if (mode === "name") return a.item.name.localeCompare(b.item.name, localeData().locale);
-    if (mode === "category") return (localeData().categories[a.item.cat] || a.item.cat).localeCompare(localeData().categories[b.item.cat] || b.item.cat, localeData().locale) || a.item.name.localeCompare(b.item.name);
-    if (mode === "source") return sourceCmp(a.item, b.item);
-    if (mode === "latest") return (b.item.updated || b.item.released || "").localeCompare(a.item.updated || a.item.released || "") || popularCmp(a.item, b.item);
-    if (mode === "relevance" && hasTerms) {
-      const names = [a.item.name.toLocaleLowerCase(), b.item.name.toLocaleLowerCase()];
-      return b.score - a.score || (names[0] < names[1] ? -1 : names[0] > names[1] ? 1 : 0) || (a.item.id < b.item.id ? -1 : 1);
-    }
-    return popularCmp(a.item, b.item);
-  });
 }
 
 async function fetchJson(path, version = "") {
@@ -209,6 +190,14 @@ function searchResults() {
   const terms = parseTerms(state.query);
   const outcome = searchWithFallback(DATA, terms, {requireAll:true});
   let {matches, usedTerms} = outcome;
+  const sortOptions = {
+    mode:state.sort,
+    hasTerms:terms.length > 0,
+    locale:localeData().locale,
+    categoryLabels:localeData().categories,
+    sourceOrder:SOURCE_ORDER,
+    popularity,
+  };
   const corrections = [...new Set(Object.values(outcome.suggestions).flat())];
   const note = outcome.fallback === "or" ? t("noAnd")
     : outcome.fallback === "segmented" ? t("segmented", {query:state.query, terms:usedTerms.join("、")})
@@ -216,7 +205,7 @@ function searchResults() {
   const queryMatches = matches;
   syncFilterCounts(queryMatches);
   matches = matches.filter(match => selectedBy(match.item));
-  return {matches:sortMatches(matches, terms.length > 0), note, usedTerms, corrections, queryMatches};
+  return {matches:sortMatches(matches, sortOptions), note, usedTerms, corrections, queryMatches};
 }
 
 function reasonLabel(reason = "") {
@@ -325,8 +314,11 @@ function applyLanguage() {
   attrs("kindLegend", {"aria-label":messages.kindLegend});
   document.querySelectorAll("#languageSwitch [data-lang]").forEach(button => { const active = button.dataset.lang === state.lang; button.classList.toggle("on", active); button.setAttribute("aria-pressed", String(active)); });
   document.querySelectorAll("[data-close]").forEach(button => button.setAttribute("aria-label", messages.close));
-  const sort = document.getElementById("sort"), sortLabels = ["sortPopular", "sortRelevance", "sortName", "sortCategory", "sortSource", "sortLatest"];
-  [...sort.options].forEach((option, index) => option.textContent = messages[sortLabels[index]]);
+  const sort = document.getElementById("sort"), sortLabelByMode = {
+    latest:"sortLatest", popular:"sortPopular", relevance:"sortRelevance",
+    name:"sortName", category:"sortCategory", source:"sortSource",
+  };
+  [...sort.options].forEach(option => { option.textContent = messages[sortLabelByMode[option.value]]; });
   document.getElementById("kindLegend").innerHTML = `<span><i class="plugin"></i>${escapeHtml(localeData().kinds.plugin)}</span><span><i class="script"></i>${escapeHtml(localeData().kinds.script)}</span><span><i class="builtin"></i>${escapeHtml(localeData().kinds.builtin)}</span><span><i class="recipe"></i>${escapeHtml(localeData().kinds.recipe)}</span>`;
   document.getElementById("hintBox").innerHTML = `${escapeHtml(messages.try)} ${localeData().hints.map(value => `<button type="button" data-q="${escapeHtml(value)}">${escapeHtml(value)}</button>`).join(" · ")}`;
   document.getElementById("footerSummary").innerHTML = `${escapeHtml(t("footerTotal", {count:DATA.length}))} · ${escapeHtml(messages.footerOfficial)} · ${escapeHtml(messages.footerImage)}`;

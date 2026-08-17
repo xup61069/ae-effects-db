@@ -226,6 +226,40 @@ test("dated cards show a last-updated badge and undated entries show none", asyn
   }
 });
 
+test("sort labels stay aligned with their values in every locale", async ({page}) => {
+  const labels = {
+    zh:{latest:"排序：最新", popular:"排序：精選熱門", relevance:"排序：搜尋相關度", name:"排序：名稱 A–Z", category:"排序：分類", source:"排序：來源"},
+    en:{latest:"Sort: Latest", popular:"Sort: Curated popularity", relevance:"Sort: Search relevance", name:"Sort: Name A–Z", category:"Sort: Category", source:"Sort: Source"},
+    ja:{latest:"並び順：最新", popular:"並び順：厳選人気", relevance:"並び順：検索関連度", name:"並び順：名前 A–Z", category:"並び順：カテゴリー", source:"並び順：提供元"},
+  };
+  await ready(page);
+  for (const lang of ["zh", "en", "ja"]) {
+    if (lang !== "zh") await page.locator(`[data-lang="${lang}"]`).click();
+    await expect.poll(() => page.locator("#sort option").evaluateAll(options => Object.fromEntries(options.map(option => [option.value, option.textContent])))).toEqual(labels[lang]);
+  }
+});
+
+test("sort modes reorder cards and persist in the URL", async ({page}) => {
+  await ready(page);
+  const firstName = async () => (await page.locator(".card .name").first().textContent()).trim();
+  const newest = CATALOG.filter(item => /^\d{4}-\d{2}-\d{2}$/.test(item.updated || item.released || ""))
+    .sort((a, b) => ((b.updated || b.released) < (a.updated || a.released) ? -1 : 1))[0];
+
+  await expect.poll(firstName).toContain(newest.name);
+  await page.locator("#sort").selectOption("popular");
+  await expect(page).toHaveURL(/sort=popular/);
+  await expect.poll(firstName).toContain("Deep Glow 2");
+  await page.locator("#sort").selectOption("name");
+  await expect.poll(firstName).toContain("1A2B");
+  await page.locator("#sort").selectOption("category");
+  await expect.poll(firstName).toContain("3D Channel Extract");
+  await page.locator("#sort").selectOption("source");
+  await expect.poll(firstName).toContain("Particular");
+  await page.locator("#sort").selectOption("latest");
+  await expect(page).not.toHaveURL(/sort=/);
+  await expect.poll(firstName).toContain(newest.name);
+});
+
 test("legacy URLs and v1 favorites migrate to stable IDs", async ({page}) => {
   await page.addInitScript(legacy => localStorage.setItem("ae-effects-db:favorites:v1", JSON.stringify([legacy])), FIRST._legacy);
   await ready(page, `/?item=${encodeURIComponent(FIRST._legacy)}`);

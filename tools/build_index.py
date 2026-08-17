@@ -261,7 +261,7 @@ def main() -> None:
     data_paths = [catalog_path, *locale_paths]
     data_assets = ["dist/web/catalog.json", *[f"dist/web/locales/{lang}.json" for lang in LOCALE_FIELDS]]
     shell = [
-        "./", "index.html", "i18n.js", "assets/styles.css", "assets/app.js", "assets/search.js",
+        "./", "index.html", "i18n.js", "assets/styles.css", "assets/app.js", "assets/sort.js", "assets/search.js",
         "assets/state.js", "assets/favorites.js", "assets/render.js", "assets/pwa.js", "assets/icon.svg",
         "manifest.webmanifest", "service-worker.js",
         "curation/popularity.json", "curation/localization.json", "curation/search.json", "curation/search-aliases.ja.json",
