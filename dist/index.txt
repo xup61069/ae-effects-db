@@ -1,5 +1,5 @@
 # After Effects 特效／外掛索引（繁體中文）
-# 共 2996 筆　格式：名稱｜來源｜型態｜分類｜說明｜官方連結
+# 共 2999 筆　格式：名稱｜來源｜型態｜分類｜說明｜官方連結
 # 完整資料（含中英搜尋標籤、外觀描述）：dist/all.jsonl
 # 線上搜尋：https://xup61069.github.io/ae-effects-db/
 Deep Glow 2｜aescripts｜plugin｜glow｜從高光產生自然的指數衰減電影級輝光；第二代加入影像式輝光、RGB 半徑、鏡頭污漬紋理、多色染色與電影色調映射。｜https://aescripts.com/deep-glow/
@@ -1380,6 +1380,9 @@ TextAnimator｜BOOTH｜script｜text｜After Effects 文字動畫腳本，可一
 StairTrim｜BOOTH｜script｜animation｜After Effects 動畫輔助腳本，自動將圖層做階梯式或隨機錯開配置，並協助複製與調整 Colorama 等色彩效果，縮短時間軸排列與演出調整流程。｜https://booth.pm/ja/items/6813075
 ColorFlow｜BOOTH｜plugin｜color｜Windows 專用的 After Effects 2026 原生調色外掛，將 Primary Grade、Tone Curve、Color Range、Bloom／Halation、可回編預設與 GPU 處理整合在 Live Edit 面板，適合在合成畫面中並排比較與精修色調、光暈及暗部氛圍。｜https://booth.pm/ja/items/8683443
 Layer Splitter｜BOOTH｜script｜workflow｜在 Illustrator 將向量物件自動拆成圖層、命名並套用 AE 標籤色，再以 Artboard、AI Layer 或可編輯 Shape Layer 三種方式送進 After Effects，適合角色、UI 與動態圖形素材的交接整理。｜https://booth.pm/ja/items/8369118
+Oops - Advanced Screen Shatter｜BOOTH｜plugin｜transition｜以關鍵影格控制玻璃裂痕從 0% 擴散到 100%，可對指定圖層套用並保留背景完整，各碎片還能投影不同畫面，適合遊戲風、標題或轉場的螢幕破碎效果。｜https://booth.pm/ja/items/8705527
+RainyDay｜BOOTH｜plugin｜particles｜以 GPU 加速模擬玻璃窗上的雨滴滑落與聚合，參數涵蓋豪雨到毛毛雨等強度，適合窗景、車內或懷舊氛圍的雨天畫面。｜https://booth.pm/ja/items/8700405
+CrossStreak｜BOOTH｜plugin｜light｜從畫面亮部延伸出十字形光芒，可調整長度、數量、方向與衰減，適合 Logo 反光、金屬高光或星光點綴等動態圖形效果。｜https://booth.pm/ja/items/8618241
 Glow｜AE內建｜builtin｜glow｜AE內建輝光，讓亮部往外柔和擴散。品質普通、容易死白，講究時用 Deep Glow / Optical Glow。｜https://helpx.adobe.com/after-effects/desktop/apply-effects-and-animation-presets/list-of-effects/stylize-effects.html
 CC Light Rays｜AE內建｜builtin｜light｜從指定一點放射出光線，快速做上帝光、掃光、能量放射。｜https://helpx.adobe.com/after-effects/desktop/apply-effects-and-animation-presets/list-of-effects/generate-effects.html
 CC Light Sweep｜AE內建｜builtin｜light｜一道光從文字/Logo表面掃過，做金屬反光或標題強調。｜https://helpx.adobe.com/after-effects/desktop/apply-effects-and-animation-presets/list-of-effects/generate-effects.html
