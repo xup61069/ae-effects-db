@@ -92,7 +92,6 @@ class WebUiContractTests(unittest.TestCase):
         self.assertIn('id="askAiInput"', HTML)
         self.assertIn("navigator.clipboard.writeText(prompt)", APP)
         self.assertIn("aiPrompt", APP)
-        self.assertIn('t("askAiEmpty")', APP)
         self.assertIn("askAiPrompt", APP)
         self.assertIn("promptFallback(prompt)", APP)
         self.assertNotIn("FormData", APP)

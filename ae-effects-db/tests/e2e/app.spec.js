@@ -309,8 +309,12 @@ test("three languages and local-only ask-AI prompt", async ({page}) => {
 
   await page.locator("#aiBtn").click();
   await expect(page.locator("#askAiDialog")).toBeVisible();
+  const inputBox = await page.locator("#askAiInput").boundingBox();
+  expect(inputBox).not.toBeNull();
+  expect(inputBox.height).toBeLessThanOrEqual(60);
   await page.locator("#askAiCopy").click();
-  await expect(page.locator("#askAiMsg")).toContainText("説明してください");
+  await expect(page.locator("#askAiMsg")).toContainText("コピー");
+  await expect(page.locator("#askAiMsg")).not.toContainText("説明してください");
   await page.locator("#askAiInput").fill("發光的霓虹文字標題");
   await page.locator("#askAiCopy").click();
   await expect(page.locator("#askAiMsg")).toContainText("コピー");

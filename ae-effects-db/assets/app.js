@@ -444,9 +444,11 @@ function delegatedClick(event) {
 
 function bindAskAi() {
   const input = document.getElementById("askAiInput"), msg = document.getElementById("askAiMsg");
-  const compose = () => `${localeData().aiPrompt}\n\n${t("askAiPrompt", {look:input.value.trim()})}`;
+  const compose = () => {
+    const look = input.value.trim();
+    return look ? `${localeData().aiPrompt}\n\n${t("askAiPrompt", {look})}` : localeData().aiPrompt;
+  };
   document.getElementById("askAiCopy").addEventListener("click", async () => {
-    if (!input.value.trim()) { msg.textContent = t("askAiEmpty"); return; }
     const prompt = compose();
     try { await navigator.clipboard.writeText(prompt); msg.textContent = t("aiCopied"); }
     catch (_) { promptFallback(prompt); }

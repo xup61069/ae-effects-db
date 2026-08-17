@@ -181,8 +181,8 @@
     padding:9px;border:1px solid var(--border);border-radius:10px;background:var(--panel2);color:var(--text);text-align:left;cursor:pointer}
   .recommendcard:hover{border-color:var(--accent)}.recommendcard b,.recommendcard span{display:block}.recommendcard span{margin-top:3px;color:var(--muted);font-size:11px;
     overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
-  .askaiinput{width:100%;min-height:130px;padding:10px 12px;border:1px solid var(--border);border-radius:9px;background:var(--panel2);color:var(--text);
-    font:inherit;resize:vertical;box-sizing:border-box}.askaiinput:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .askaiinput{width:100%;min-height:44px;padding:10px 12px;border:1px solid var(--border);border-radius:9px;background:var(--panel2);color:var(--text);
+    font:inherit;box-sizing:border-box}.askaiinput:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
   .visualactions{display:flex;gap:8px;flex-wrap:wrap}.visualactions button{min-height:44px;padding:8px 12px;border:1px solid var(--border);border-radius:9px;
     background:var(--panel2);color:var(--accent);cursor:pointer}.visualactions .primary{background:var(--accent);color:#fff}
   .updatebanner{position:fixed;z-index:90;top:12px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:10px;max-width:calc(100vw - 24px);
