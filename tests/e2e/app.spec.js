@@ -507,6 +507,15 @@ test("site title, count header and summary kind chips are clickable", async ({pa
   await expect(page.locator(".countbrowse")).toContainText("瀏覽全部");
 });
 
+test("site title always returns to the clean root URL", async ({page}) => {
+  const compare = JSON.stringify(["booth-colorflow-riesz", "aescripts-roundpro", "aescripts-grabdrop", "booth-cache-monitor"]);
+  await ready(page, `/?compare=${encodeURIComponent(compare)}#top`);
+  await expect(page.locator("#compareTray")).toBeVisible();
+  await page.locator("#siteTitle").click();
+  await expect.poll(() => page.evaluate(() => location.href)).toBe("http://127.0.0.1:4173/");
+  await expect(page.locator("#compareTray")).toBeHidden();
+});
+
 test("PWA update waits for explicit activation and reloads", async ({page}) => {
   await ready(page);
   await page.evaluate(() => navigator.serviceWorker.ready);

@@ -289,6 +289,12 @@ function adoptHistoryState(next) {
   state = next;
 }
 function clearAll() { state.categories.clear(); state.sources.clear(); state.kinds.clear(); state.favoritesOnly = false; state.query = ""; commitState(); render(); }
+function goHome() {
+  state.query = ""; state.categories.clear(); state.sources.clear(); state.kinds.clear(); state.favoritesOnly = false;
+  state.compare.clear(); state.item = ""; state.sort = "latest"; visibleLimit = 60;
+  writeUrlState(state);
+  render();
+}
 function closePanels() { document.querySelectorAll(".catpanel").forEach(panel => panel.hidden = true); document.querySelectorAll("[aria-expanded]").forEach(button => button.setAttribute("aria-expanded", "false")); hideSuggestions(); }
 let lastCardOpener = null;
 
@@ -409,6 +415,7 @@ function bindEvents(version) {
   }
   document.getElementById("clearQ").addEventListener("click", () => { scheduleSearch(""); document.getElementById("q").focus(); });
   document.getElementById("clearMq").addEventListener("click", () => { scheduleSearch(""); document.getElementById("mq").focus(); });
+  document.getElementById("siteTitle").addEventListener("click", event => { event.preventDefault(); goHome(); });
   document.getElementById("sort").addEventListener("change", event => { state.sort = event.target.value; commitState(); render(); });
   document.getElementById("favBtn").addEventListener("click", () => { state.favoritesOnly = !state.favoritesOnly; commitState(); render(); });
   document.getElementById("favManageBtn").addEventListener("click", () => document.getElementById("favoritesDialog").showModal());

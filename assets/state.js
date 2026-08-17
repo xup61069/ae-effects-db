@@ -16,6 +16,7 @@ export function readUrlState(url = new URL(location.href)) {
 
 export function writeUrlState(state, {push = false} = {}) {
   const url = new URL(location.href);
+  url.hash = "";
   const set = (key, value) => value ? url.searchParams.set(key, value) : url.searchParams.delete(key);
   set("q", state.query?.trim());
   set("cat", [...state.categories].join(","));
