@@ -1,5 +1,5 @@
 # After Effects 特效／外掛索引（繁體中文）
-# 共 3009 筆　格式：名稱｜來源｜型態｜分類｜說明｜官方連結
+# 共 3010 筆　格式：名稱｜來源｜型態｜分類｜說明｜官方連結
 # 完整資料（含中英搜尋標籤、外觀描述）：dist/all.jsonl
 # 線上搜尋：https://xup61069.github.io/ae-effects-db/
 Deep Glow 2｜aescripts｜plugin｜glow｜從高光產生自然的指數衰減電影級輝光；第二代加入影像式輝光、RGB 半徑、鏡頭污漬紋理、多色染色與電影色調映射。｜https://aescripts.com/deep-glow/
@@ -999,6 +999,7 @@ Fractal Volume｜aescripts｜plugin｜3d｜在 AE 中以 GPU 生成會回應攝�
 Dither Decay｜aescripts｜script｜stylize｜用多種抖色演算法與 11 組色盤把影片轉成復古遊戲機般的顆粒像素質感，適合低位元美術、類比降質與懷舊畫面。｜https://aescripts.com/dither-decay/
 Tracery 2｜aescripts｜plugin｜tracking｜以色彩或運動偵測追蹤區域，將畫面轉為可自訂的 FUI 資訊圖形，可建立框線、標記、座標網格、連接線與讀數標籤；支援 GPU 加速與 Adobe／OFX 主機。｜https://aescripts.com/tracery/
 Boundary Fill 3｜aescripts｜plugin｜text｜將紋理貼附於 AE 文字圖層的字形邊界，仍可配合文字動畫器運作；提供 Text Save、合併與吸附、逐字分割、時間取樣與 3D 控制，方便製作可動畫化的文字材質與圖形。｜https://aescripts.com/boundary-fill/
+Aurum｜aescripts｜plugin｜stylize｜以 PBR 材質、HDRI 環境反射與 Smart Edge 細節偵測，用 GPU 加速把文字或圖形轉成金屬質感，適合片頭標題、品牌 Logo 與金色／鉻色質感強化。｜https://aescripts.com/aurum/
 Japanese-effect-search｜BOOTH｜script｜workflow｜以日文、英文、平假名與片假名混合搜尋並直接套用 AE 效果、預設或執行腳本、擴充功能與常用命令，另含收藏、連續套用與隱藏舊效果選項，適合日文介面和輸入法工作流程。｜https://booth.pm/ja/items/7695646
 Layer Chicken｜BOOTH｜script｜workflow｜替已匯入 AE 的分層 Photoshop／Illustrator 文件找回後續在原檔新增的圖層，免去重新匯入整份 PSD／AI 再刪除多餘內容，適合設計稿反覆改版與補圖層的動態製作。｜https://booth.pm/ja/items/2728552
 SHIG Project Starter｜BOOTH｜script｜workflow｜依專案名、解析度、FPS、初始片長與色彩深度建立 MV 製作資料夾及 00_MAIN／00_RENDER 合成，並可把兩個合成、工作區和主合成圖層同步延長到 WAV 音樂長度，適合歌曲 MV 開案與統一專案結構。｜https://booth.pm/ja/items/8625638
