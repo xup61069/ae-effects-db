@@ -22,3 +22,6 @@ tools/.sitemap_cache.xml
 node_modules/
 test-results/
 playwright-report/
+
+# deprecated nested copy; the repository root is the single source of truth
+ae-effects-db/

@@ -10,6 +10,8 @@
 
 正式站：<https://xup61069.github.io/ae-effects-db/>
 
+**repo 根目錄是唯一正式來源。** `ae-effects-db/` 巢狀副本已停用：不要在裡面編輯或提交任何檔案，也不要把該目錄重新加回 git。
+
 ## 開始任何工作前
 
 1. 讀本檔；若是擴充任務，再完整讀 `EXPANSION.md`。

@@ -140,7 +140,7 @@ BOOTH 累計評估約 1,018 個商品 id（**收錄 199、略過 832**）；Gumr
 - 第一批先譯 `curation/popularity.json` 的 featured 46 筆（2026-08-15 完成並提交），第二批為 `builtin-ae` 全數（同日完成並提交），第三批為 `aescripts` 全數（同日完成並提交），第四批為 `third-party` 全數（同日完成並提交），第五批為 `sapphire` 全數（同日完成並提交），第六批為 `continuum` 全數（同日完成並提交），第七批為 `red-giant` 全數（同日完成並提交），第八批為 `universe` 全數（同日完成並提交），第九批為 `installed` 全數（同日完成並提交），第十批為 `recipes` 全數（同日完成並提交），第十一批為 `gumroad` 全數（同日完成並提交），第十二批為 `booth` 全數 359 筆（分六個批次注入，102 個 look 全部翻譯，同日完成並提交）。
 - 翻譯逐筆人工撰寫，不得以未審核的機器翻譯充數；譯文保留產品名、避免中國用語，日文以 AE 官方日文文件用語為準。
 - 每批完成後依「完整驗證」跑一輪，重建 `dist/` 並遞增 `index.html` 的 `ASSET_VERSION`。
-- 全部 11 個資料檔的英／日翻譯均已完成（2,995 筆，1,625 筆 look 亦全數翻譯），不再有待翻譯來源；後續 fork `gumroad-next` 新條目（Render Markers 等 7 筆）亦於合併時同步補齊英／日翻譯。
+- 全部 11 個資料檔的英／日翻譯均已完成，look 亦全數翻譯，不再有待翻譯來源；後續 fork `gumroad-next` 新條目（Render Markers 等 7 筆）亦於合併時同步補齊英／日翻譯。即時總筆數以 `python validate.py --strict` 為準。
 
 ## 官方來源技巧
 

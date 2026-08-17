@@ -53,6 +53,40 @@ DISCONTINUED = re.compile(
     r"(?:已停售|已下架|停止販售|discontinued|no longer available)", re.I
 )
 
+TEXT_EXTENSIONS = {
+    ".md", ".json", ".jsonl", ".py", ".js", ".mjs", ".tsv", ".yml", ".yaml",
+    ".html", ".css", ".webmanifest", ".txt",
+}
+IGNORED_DIRS = {
+    ".git", "node_modules", "test-results", "playwright-report",
+    "__pycache__", ".venv", "venv", "scratch",
+}
+
+
+def scan_text_hygiene(root: str) -> list[str]:
+    """回報 repo 文字檔中的 NUL 位元或非 UTF-8 內容。"""
+    problems: list[str] = []
+    for current, dirs, files in os.walk(root):
+        dirs[:] = sorted(d for d in dirs if d not in IGNORED_DIRS)
+        for filename in files:
+            if os.path.splitext(filename)[1].casefold() not in TEXT_EXTENSIONS:
+                continue
+            path = os.path.join(current, filename)
+            with open(path, "rb") as handle:
+                data = handle.read()
+            if b"\x00" in data:
+                problems.append(f"{os.path.relpath(path, root)} 含 NUL 位元")
+            else:
+                try:
+                    data.decode("utf-8")
+                except UnicodeDecodeError as exc:
+                    problems.append(f"{os.path.relpath(path, root)} 不是合法 UTF-8：{exc}")
+    return problems
+
+
+def text_hygiene_errors() -> list[str]:
+    return scan_text_hygiene(ROOT)
+
 
 def valid_url(value: object) -> bool:
     if not isinstance(value, str):
@@ -270,6 +304,7 @@ def main() -> None:
                 + ", ".join(loc for loc, _ in entries)
             )
 
+    errors.extend(text_hygiene_errors())
     warnings, soft = quality_checks(rows)
     if strict and warnings:
         errors.extend(warnings)
