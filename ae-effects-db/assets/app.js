@@ -311,12 +311,11 @@ function applyLanguage() {
   text("compareTitle", messages.compareTitle); text("compareOpen", messages.compare); text("compareClear", messages.clear);
   text("favoritesDialogTitle", messages.favoritesManage); text("favoritesHelp", messages.favoritesHelp);
   text("favExport", messages.exportFavorites); text("favImport", messages.importFavorites); text("favClearAll", messages.clearFavorites);
-  text("askAiTitle", messages.askAiTitle); text("askAiHelp", messages.askAiHelp); text("askAiCopy", messages.askAiCopy);
   text("reportMissingLink", messages.reportMissing); text("contributeLink", messages.contribute); text("githubLink", messages.github);
   const attrs = (id, values) => { const element = document.getElementById(id); if (element) Object.entries(values).forEach(([key, value]) => element.setAttribute(key, value)); };
   attrs("q", {placeholder:messages.searchPlaceholder, "aria-label":messages.searchAria}); attrs("mq", {placeholder:messages.mobileSearchPlaceholder, "aria-label":messages.searchAria});
   attrs("clearQ", {"aria-label":messages.clearSearch}); attrs("clearMq", {"aria-label":messages.clearSearch}); attrs("sort", {"aria-label":messages.sortTitle});
-  attrs("kindLegend", {"aria-label":messages.kindLegend}); attrs("askAiInput", {placeholder:messages.askAiPlaceholder});
+  attrs("kindLegend", {"aria-label":messages.kindLegend});
   document.querySelectorAll("#languageSwitch [data-lang]").forEach(button => { const active = button.dataset.lang === state.lang; button.classList.toggle("on", active); button.setAttribute("aria-pressed", String(active)); });
   document.querySelectorAll("[data-close]").forEach(button => button.setAttribute("aria-label", messages.close));
   const sort = document.getElementById("sort"), sortLabels = ["sortPopular", "sortRelevance", "sortName", "sortCategory", "sortSource", "sortLatest"];
@@ -421,8 +420,12 @@ function bindEvents(version) {
   document.getElementById("backTop").addEventListener("click", scrollToPageTop); window.addEventListener("scroll", () => { document.getElementById("backTop").hidden = scrollY < 700; }, {passive:true});
   document.getElementById("detailDialog").addEventListener("close", () => { if (state.item) { state.item = ""; writeUrlState(state); } });
   document.getElementById("mobileFilterToggle").addEventListener("click", () => document.getElementById("filterDialog").showModal()); document.getElementById("filterClose").addEventListener("click", () => document.getElementById("filterDialog").close());
-  document.getElementById("aiBtn").addEventListener("click", () => document.getElementById("askAiDialog").showModal());
-  bindAskAi();
+  document.getElementById("aiBtn").addEventListener("click", async () => {
+    const prompt = localeData().aiPrompt;
+    const dialog = document.getElementById("filterDialog");
+    if (dialog.matches(":modal")) dialog.close();
+    showToast((await copyText(prompt)) ? t("aiCopied") : t("aiCopyFailed"));
+  });
   document.addEventListener("click", delegatedClick); document.addEventListener("keydown", event => { if (event.key === "/" && !/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)) { event.preventDefault(); document.getElementById(matchMedia("(max-width:640px)").matches ? "mq" : "q").focus(); } else if (event.key === "Escape") closePanels(); });
   window.addEventListener("popstate", () => { const restored = restoreResolvedState(readUrlState(), BY_ID, LEGACY, allowedState); adoptHistoryState(restored); const lang = state.lang; loadLocale(lang, version).then(applied => { if (!applied) return; applyLanguage(); appliedLang = lang; render(); if (state.item) openDetail(state.item, {write:false}); else closeDetail({write:false}); }).catch(error => { if (state.lang === lang) { state.lang = appliedLang; writeUrlState(state); showToast(t("loadLocaleError", {error:error.message})); } }); });
 }
@@ -442,21 +445,20 @@ function delegatedClick(event) {
   if (!event.target.closest?.(".dd")) closePanels();
 }
 
-function bindAskAi() {
-  const input = document.getElementById("askAiInput"), msg = document.getElementById("askAiMsg");
-  const compose = () => {
-    const look = input.value.trim();
-    return look ? `${localeData().aiPrompt}\n\n${t("askAiPrompt", {look})}` : localeData().aiPrompt;
-  };
-  document.getElementById("askAiCopy").addEventListener("click", async () => {
-    const prompt = compose();
-    try { await navigator.clipboard.writeText(prompt); msg.textContent = t("aiCopied"); }
-    catch (_) { promptFallback(prompt); }
-  });
-  document.getElementById("askAiDialog").addEventListener("close", () => { msg.textContent = ""; });
+async function copyText(text) {
+  try { await navigator.clipboard.writeText(text); return true; } catch (_) {}
+  const area = document.createElement("textarea");
+  area.value = text;
+  area.setAttribute("readonly", "");
+  area.style.position = "fixed";
+  area.style.left = "-9999px";
+  document.body.appendChild(area);
+  area.focus(); area.select();
+  let copied = false;
+  try { copied = document.execCommand("copy"); } catch (_) {}
+  area.remove();
+  return copied;
 }
-
-function promptFallback(value) { const box = document.getElementById("askAiMsg"); box.textContent = t("copyFallback"); const textarea = document.createElement("textarea"); textarea.value = value; textarea.rows = 6; box.appendChild(textarea); textarea.focus(); textarea.select(); }
 function showToast(message) { const box = document.getElementById("toast"); box.textContent = message; box.hidden = false; clearTimeout(showToast.timer); showToast.timer = setTimeout(() => { box.hidden = true; }, 5000); }
 function showUpdate(activate) { const banner = document.getElementById("updateBanner"); banner.hidden = false; banner.querySelector("span").textContent = t("updateAvailable"); const button = banner.querySelector("button"); button.textContent = t("updateNow"); button.onclick = activate; }
 

@@ -297,9 +297,10 @@ test("favorites repair malformed storage and import only known stable IDs", asyn
   expect(await page.evaluate(() => JSON.parse(localStorage.getItem("ae-effects-db:favorites:v2")))).toEqual([FIRST.id]);
 });
 
-test("three languages and local-only ask-AI prompt", async ({page}) => {
+test("three languages and local-only one-click AI prompt copy", async ({page, context}) => {
   const requests = [];
   page.on("request", request => { if (request.method() !== "GET") requests.push(request.url()); });
+  await context.grantPermissions(["clipboard-read", "clipboard-write"], {origin:"http://127.0.0.1:4173"});
   await ready(page);
   await page.locator('[data-lang="en"]').click();
   await expect(page.locator("#siteSubtitle")).toContainText("Describe the look");
@@ -307,17 +308,11 @@ test("three languages and local-only ask-AI prompt", async ({page}) => {
   await page.locator('[data-lang="ja"]').click();
   await expect(page.locator("#siteSubtitle")).toContainText("After Effects");
 
+  const prompt = await page.evaluate(() => globalThis.AE_I18N.locales.ja.aiPrompt);
   await page.locator("#aiBtn").click();
-  await expect(page.locator("#askAiDialog")).toBeVisible();
-  const inputBox = await page.locator("#askAiInput").boundingBox();
-  expect(inputBox).not.toBeNull();
-  expect(inputBox.height).toBeLessThanOrEqual(60);
-  await page.locator("#askAiCopy").click();
-  await expect(page.locator("#askAiMsg")).toContainText("コピー");
-  await expect(page.locator("#askAiMsg")).not.toContainText("説明してください");
-  await page.locator("#askAiInput").fill("發光的霓虹文字標題");
-  await page.locator("#askAiCopy").click();
-  await expect(page.locator("#askAiMsg")).toContainText("コピー");
+  await expect(page.locator("#toast")).toContainText("コピー");
+  expect(await page.evaluate(async () => (await navigator.clipboard.readText()).replace(/\r\n/g, "\n"))).toBe(prompt);
+  await expect(page.locator("#askAiDialog")).toHaveCount(0);
   expect(requests).toEqual([]);
 });
 
@@ -447,11 +442,6 @@ test("mobile dialogs expose named 44px targets, pass axe, and restore focus", as
   await page.keyboard.press("Escape");
   await expect(favoritesOpener).toBeFocused();
 
-  const aiOpener = page.locator("#aiBtn");
-  await aiOpener.click();
-  await verifyDialogAccessibility(page, "#askAiDialog", ".close, #askAiInput, #askAiCopy");
-  await page.keyboard.press("Escape");
-  await expect(aiOpener).toBeFocused();
 });
 
 test("PWA isolates the current catalog version and reloads offline", async ({page, context}) => {

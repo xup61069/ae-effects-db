@@ -88,12 +88,14 @@ class WebUiContractTests(unittest.TestCase):
         self.assertIn('AE エフェクトデータベース', I18N)
         self.assertIn('AE Effects Database', I18N)
 
-    def test_ask_ai_is_local_only_and_composes_prompt(self):
-        self.assertIn('id="askAiInput"', HTML)
-        self.assertIn("navigator.clipboard.writeText(prompt)", APP)
-        self.assertIn("aiPrompt", APP)
-        self.assertIn("askAiPrompt", APP)
-        self.assertIn("promptFallback(prompt)", APP)
+    def test_ask_ai_copies_default_prompt_locally(self):
+        self.assertIn('id="aiBtn"', HTML)
+        self.assertNotIn('id="askAiInput"', HTML)
+        self.assertNotIn('id="askAiDialog"', HTML)
+        self.assertIn("navigator.clipboard.writeText(text)", APP)
+        self.assertIn("localeData().aiPrompt", APP)
+        self.assertIn('t("aiCopied")', APP)
+        self.assertIn("document.execCommand", APP)
         self.assertNotIn("FormData", APP)
         self.assertNotIn("fetch(ai", APP)
         self.assertNotIn("URL.createObjectURL", APP)

@@ -1,6 +1,6 @@
 const MANIFEST_URL = "dist/web/asset-manifest.json";
 const CACHE_PREFIX = "ae-effects-db-";
-const BUILD_VERSION = "5c3754f57424abab";
+const BUILD_VERSION = "69978f4616506201";
 const currentCacheName = () => `${CACHE_PREFIX}${BUILD_VERSION}`;
 
 async function sha256(response) {
