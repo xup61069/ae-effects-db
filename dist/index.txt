@@ -1,5 +1,5 @@
 # After Effects 特效／外掛索引（繁體中文）
-# 共 3004 筆　格式：名稱｜來源｜型態｜分類｜說明｜官方連結
+# 共 3003 筆　格式：名稱｜來源｜型態｜分類｜說明｜官方連結
 # 完整資料（含中英搜尋標籤、外觀描述）：dist/all.jsonl
 # 線上搜尋：https://xup61069.github.io/ae-effects-db/
 Deep Glow 2｜aescripts｜plugin｜glow｜從高光產生自然的指數衰減電影級輝光；第二代加入影像式輝光、RGB 半徑、鏡頭污漬紋理、多色染色與電影色調映射。｜https://aescripts.com/deep-glow/
@@ -1385,6 +1385,7 @@ RainyDay｜BOOTH｜plugin｜particles｜以 GPU 加速模擬玻璃窗上的雨�
 CrossStreak｜BOOTH｜plugin｜light｜從畫面亮部延伸出十字形光芒，可調整長度、數量、方向與衰減，適合 Logo 反光、金屬高光或星光點綴等動態圖形效果。｜https://booth.pm/ja/items/8618241
 Fake3D Box｜BOOTH｜script｜3d｜用表達式即時生成、擺放最多 20 個可自訂六面顏色與三軸旋轉的假 3D 方塊，不需 3D 算圖引擎就能做出等角立體效果，適合動態圖形與 UI 風格影片。｜https://booth.pm/ja/items/8133054
 Kira Twinkle Studio｜BOOTH｜plugin｜particles｜套用即出現滿版閃亮粒子的原生外掛，內建 15 組預設與可跟隨攝影機的旋轉立體形狀（方塊、鑽石、硬幣），支援動態模糊與 GPU 加速，免去通用粒子工具的複雜學習曲線。｜https://booth.pm/ja/items/8620753
+NT3_FootageList｜BOOTH｜script｜workflow｜以單一面板列出專案內所有素材的連結狀態、使用次數、Proxy 與解析度，可一鍵在最多 5 個資料夾中搜尋重新連結、刪除未使用素材，並與 AE 專案面板連動選取，適合交件前整理或跨環境搬遷專案時修復大量連結中斷。｜https://booth.pm/ja/items/8723557
 Glow｜AE內建｜builtin｜glow｜AE內建輝光，讓亮部往外柔和擴散。品質普通、容易死白，講究時用 Deep Glow / Optical Glow。｜https://helpx.adobe.com/after-effects/desktop/apply-effects-and-animation-presets/list-of-effects/stylize-effects.html
 CC Light Rays｜AE內建｜builtin｜light｜從指定一點放射出光線，快速做上帝光、掃光、能量放射。｜https://helpx.adobe.com/after-effects/desktop/apply-effects-and-animation-presets/list-of-effects/generate-effects.html
 CC Light Sweep｜AE內建｜builtin｜light｜一道光從文字/Logo表面掃過，做金屬反光或標題強調。｜https://helpx.adobe.com/after-effects/desktop/apply-effects-and-animation-presets/list-of-effects/generate-effects.html
@@ -2905,8 +2906,6 @@ Pearelax｜第三方｜plugin｜3d｜在 After Effects 將分層 2D 合成或 Ph
 Nice O Metric｜第三方｜plugin｜3d｜在 After Effects 一鍵建立符合合成尺寸的等角攝影機並擠出平面圖層，快速把普通合成轉成可用 KBar 操作的等角 3D 場景。｜https://www.aescreens.com/tools/nice-o-metric
 Xplode｜第三方｜script｜workflow｜在 After Effects 將形狀圖層拆成獨立圖層並分離位置維度，同時保留效果、表達式與緩動，還能自動清除多餘關鍵影格。｜https://www.aescreens.com/tools/xplode
 Titler Pro 7｜第三方｜plugin｜text｜可在 After Effects 內以外掛面板使用的專業字幕與動態圖形範本工具，內建 700 多組可自訂範本、多標題管理與可縮放文字樣式，適合新聞下標、片頭與宣傳字卡。｜https://newbluefx.com/titler-pro/
-Caption Engine｜第三方｜plugin｜text｜在 After Effects 匯入 SRT、WebVTT 或 TTML 字幕檔，以單一文字圖層搭配圖層標記建立整支字幕，可一次調整安全邊界、位移、底框與圓角等樣式；字幕檔更新後可重新匯入時間與文字而不遺失原有樣式設定。｜https://exchange.adobe.com/apps/cc/204917/caption-engine
-Pixflow Voice AI｜第三方｜script｜audio｜在 After Effects 面板內把文字轉成 29 種語言的 AI 真人感配音，可調整語氣情緒、語速與音調並選擇不同風格的配音員，生成的旁白直接落在時間軸上，適合廣告、教學與社群影片配音。｜https://pixflow.net/ai-voiceover/
 Bokeh｜Universe｜plugin｜blur-glow｜為畫面加上真實鏡頭散景失焦效果，模擬淺景深/對焦呼吸，亮部化成柔和光斑。｜https://www.maxon.net/en/product-detail/red-giant/universe/bokeh
 Glow｜Universe｜plugin｜blur-glow｜柔和輝光，讓亮部往外擴散發光；可只針對指定顏色發光(如只讓紅色霓虹發亮)。｜https://www.maxon.net/en/product-detail/red-giant/universe/glow
 Quantum｜Universe｜plugin｜blur-glow｜在物體前方或後方生成動態光軌拖尾，適合文字、圖形、Logo的能量掃尾。｜https://www.maxon.net/en/product-detail/red-giant/universe/quantum
