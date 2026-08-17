@@ -183,6 +183,7 @@ KIND_OVERRIDES = {
     "アニメの撮影用ツール": "script",
     "Transition Master 2 Basic / Pro": "plugin",
     "XDoG Studio": "plugin",
+    "Fake3D Box": "script",
 }
 
 def classify(filename, row):
