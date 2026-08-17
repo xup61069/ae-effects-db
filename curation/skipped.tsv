@@ -17,6 +17,9 @@
 8mm-distress-kit-4k-premium	8mm 膠卷素材包，非外掛工具
 Color-Genius-App	摰?Ｗ?蝝Ｗ??內??Color Genius standalone app嚗fter Effects 憭???Color Genius 撌脣?迤撘???pv-feather	摰?Ｗ?蝝Ｗ??內 DISCONTINUED嚗??園??撌亙
 Twixtor-App	摰?Ｗ?蝝Ｗ??內??standalone Twixtor App嚗??祈??澈?園???After Effects 憭?璇
+accentize-deroom	Accentize DeRoom：音訊去殘響外掛，非視覺效果，官方頁未列 After Effects host
+accentize-dialogueenhance	Accentize DialogueEnhance：音訊人聲增強外掛，非視覺效果，官方頁未列 After Effects host
+accentize-dxrevive	Accentize dxRevive：音訊修復外掛（語音降噪），非視覺效果，官方頁未列 After Effects host
 activatedisabledexpressions	極小型單一功能腳本（重新啟用被停用的運算式）
 active-transitions	摰?Ｗ??? Works in ?? Final Cut Pro嚗???質??飛銋?摰?Final Cut Pro
 add-anchor-point	官方頁只有廣告詞，查不到實際功能說明
@@ -656,6 +659,7 @@ booth-6859891	?嗡??芾摩頠?撠撌亙嚗? AE 撌亙
 booth-6859898	?嗡??芾摩頠?撠撌亙嚗? AE 撌亙
 booth-6859907	?嗡??芾摩頠?撠撌亙嚗? AE 撌亙
 booth-6859950	敶梁?嚗??湛?璅⊥蝝?嚗? AE 撌亙
+booth-6872180	MultiSlicer（361do 經銷）：官方頁確認為 rebuildup/Ae_MultiSlicer 同一 GitHub 專案的重新上架，與既有 installed.jsonl 的 MultiSlicer 為同一工具
 booth-6872383	Slingshot ??VRChat avatar嚗??脩?????After Effects 撌亙
 booth-6874485	AutoMove & AutoScale ??After Effects ?身嚗??函? AE 撌亙
 booth-6878383	?豢?蝭憓??～?怒??AEP嚗FX 璅⊥嚗??函? AE 撌亙
@@ -1287,6 +1291,13 @@ chubs	單一動態字型素材，不是通用 AE 外掛或腳本工具
 chump-nft-engine	僅用於產生 NFT 圖像與 metadata，功能過於小眾且非一般 AE 工作流需求
 ci-master-thumbnailer	?歇?園???Batch Shot ?寞活?Ｙ??????葬???賡?摨阡?銴?ci-move-anchor	?歇?園???Move Anchor Point ?券???雿??賡?摨阡?銴?coco-color-coworker	摰??蝔梯敶拙??蝻箔?頞喃誑皞Ⅱ?膩撖阡???牧??command-frame	?歇?園???FX Console?each Pro?Bar 蝑隞斗?撠?敹急?Ｘ擃漲??
 cinebrush-for-davinci-resolve	DaVinci Resolve 專用繪畫風格外掛，不支援 After Effects
+cineflare-cinetext	FxFactory CineFlare 系列：官方頁 Works in 僅列 Final Cut Pro，不支援 After Effects（分類頁列表誤標為支援）
+cineflare-detailer	FxFactory CineFlare 系列：官方頁 Works in 僅列 Final Cut Pro，不支援 After Effects
+cineflare-horizon-fixer	FxFactory CineFlare 系列：官方頁 Works in 僅列 Final Cut Pro，不支援 After Effects
+cineflare-living-titles	FxFactory CineFlare 系列：官方頁 Works in 僅列 Final Cut Pro，不支援 After Effects
+cineflare-objectanimator	FxFactory CineFlare 系列：官方頁 Works in 僅列 Final Cut Pro，不支援 After Effects
+cineflare-smarttools	FxFactory CineFlare 系列：官方頁 Works in 僅列 Final Cut Pro，不支援 After Effects
+cineflare-vestige	FxFactory CineFlare 系列：官方頁 Works in 僅列 Final Cut Pro，不支援 After Effects
 cinema-4d-shortcut-icons	Cinema 4D ??Stream Deck嚗oupedeck ?內蝝???銝??After Effects
 cinema-4d-shortcut-icons	Cinema 4D 的 Stream Deck／Loupedeck 圖示素材包，不支援 After Effects
 cinematch	FilmConvert 官方外掛頁只列 Premiere Pro／Final Cut Pro，未見 After Effects 支援
@@ -1558,6 +1569,7 @@ fx-texturator-800-dctl	DaVinci Resolve 專用 DCTL 與材質集合，不支援 A
 fx-texturator-800-dctl	DaVinci Resolve 撠 DCTL ??鞈芷???銝??After Effects
 fx-trippy-dctl	DaVinci Resolve Studio 專用 DCTL，不支援 After Effects
 fx-trippy-dctl	DaVinci Resolve Studio 撠 DCTL嚗??舀 After Effects
+fxfactory-looksweet	FxFactory Ripple Training「Look Sweet」：官方頁僅有「Ultimate image polishing tools」廣告詞，無具體功能說明
 gaussian-splatting-for-davinci-resolve	DaVinci Resolve 專用 Gaussian Splatting 工具，不支援 After Effects
 gaussian-splatting-for-davinci-resolve	DaVinci Resolve 撠 Gaussian Splatting 撌亙嚗??舀 After Effects
 gaussian-splatting-for-nuke	?? slug ??蝔望???Nuke嚗??寞?閬隤文神 After Effects嚗?皞?閮??暹??思??園?
