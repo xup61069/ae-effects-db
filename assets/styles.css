@@ -85,12 +85,16 @@
   .summary{display:inline-flex;flex-wrap:wrap;gap:5px;margin-left:7px}
   .summary .kindchip{font-style:normal;border:1px solid var(--border);border-radius:20px;padding:1px 7px;font-family:inherit}
   .summary .kindchip:hover,.summary .kindchip.on{color:var(--accent);border-color:var(--accent)}
-  .card{background:var(--panel);border:1px solid var(--border);border-left-width:4px;border-radius:12px;padding:13px 15px;margin:9px 0;
+  .card{position:relative;background:var(--panel);border:1px solid var(--border);border-left-width:4px;border-radius:12px;padding:13px 15px;margin:9px 0;cursor:pointer;transition:border-color .12s ease,box-shadow .12s ease;
     content-visibility:auto;contain-intrinsic-size:0 220px}
   .card.kind-plugin{background:var(--plugin-bg);border-color:var(--plugin-border)}
   .card.kind-script{background:var(--script-bg);border-color:var(--script-border)}
   .card.kind-builtin{background:var(--builtin-bg);border-color:var(--builtin-border)}
   .card.kind-recipe{background:var(--recipe-bg);border-color:var(--recipe-border)}
+  .card:hover{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+  .card:has(.cardopen:focus-visible){outline:2px solid var(--accent);outline-offset:2px;border-color:var(--accent)}
+  .cardopen{position:absolute;inset:0;width:100%;height:100%;border:0;border-radius:12px;background:transparent;font-size:0;pointer-events:none}
+  .cardopen:focus-visible{outline:none}
   .card .top{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap}
   .name{font-size:16px;font-weight:650}
   .kindbadge,.catbadge,.officialbadge{font-size:11px;padding:2px 8px;border-radius:20px;border:1px solid transparent}

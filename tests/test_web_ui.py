@@ -42,7 +42,9 @@ class WebUiContractTests(unittest.TestCase):
     def test_detail_compare_recommendations_and_legacy_urls(self):
         for element_id in ("compareTray", "compareDialog", "detailDialog"):
             self.assertIn(f'id="{element_id}"', HTML)
+        self.assertIn('class="cardopen" data-open-detail="${escapeHtml(item.id)}"', RENDER)
         self.assertIn('data-detail="${escapeHtml(item.id)}"', RENDER)
+        self.assertIn('closest?.(".card")', APP)
         self.assertIn('url.searchParams.set("item"', APP)
         self.assertIn("legacyMap.get(value)", STATE)
         self.assertIn('t("similarTools")', RENDER)

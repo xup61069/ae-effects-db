@@ -40,15 +40,15 @@ export function cardMarkup(item, context) {
   const variants = item.variants ? `<div class="variants">${Object.entries(item.variants).map(([name, label]) => `<span>${escapeHtml(name)} · ${escapeHtml(label)}</span>`).join("")}</div>` : "";
   const kindActive = context.activeKinds?.has(kind) ? " on" : "";
   const catActive = context.activeCats?.has(item.cat) ? " on" : "";
-  return `<article class="card kind-${escapeHtml(kind)}" data-id="${escapeHtml(item.id)}"><div class="top">
+  return `<article class="card kind-${escapeHtml(kind)}" data-id="${escapeHtml(item.id)}"><button type="button" class="cardopen" data-open-detail="${escapeHtml(item.id)}" aria-label="${escapeHtml(t("details"))}"></button><div class="top">
     <a class="name namelink" href="${escapeHtml(officialUrl(item.url))}" target="_blank" rel="noopener">${highlight(item.name, terms)}<span class="ext">↗</span></a>
     <button type="button" class="kindbadge kind-${escapeHtml(kind)}${kindActive}" data-kind-filter="${escapeHtml(kind)}" aria-pressed="${context.activeKinds?.has(kind) ? "true" : "false"}">${escapeHtml(kindLabels[kind] || kind)}</button>
     <button type="button" class="catbadge${catActive}" data-cat-filter="${escapeHtml(item.cat)}" aria-pressed="${context.activeCats?.has(item.cat) ? "true" : "false"}">${escapeHtml(category)}</button>${adobeBadge}
     ${date ? `<span class="datebadge">${escapeHtml(item.updated ? t("updated") : t("released"))} ${escapeHtml(date)}</span>` : `<span class="datebadge">${escapeHtml(t("updated"))} —</span>`}
     <span class="popscore" title="${escapeHtml(t("popularityTitle", {...pop, order:pop.curatedOrder}))}">${escapeHtml(t("popularity", {score:pop.total}))}</span>
     ${match}<span class="src">${escapeHtml(origin)}</span>
-    <span class="cardactions"><button type="button" data-detail="${escapeHtml(item.id)}">${escapeHtml(t("details"))}</button><button type="button" data-compare="${escapeHtml(item.id)}" aria-pressed="${compared}">${escapeHtml(compared ? t("compareSelected") : t("compare"))}</button><button class="favbtn${favorite ? " on" : ""}" type="button" data-favorite="${escapeHtml(item.id)}" aria-pressed="${favorite}" aria-label="${escapeHtml(t("favoriteLabel", {name:item.name}))}">${favorite ? "★" : "☆"}</button></span>
-  </div><div class="desc">${highlight(item._desc, terms)}${original}</div>${stack}${variants}<div class="tags">${(item.tags || []).slice(0, 12).map(tag => `<button type="button" data-q="${escapeHtml(tag)}">${escapeHtml(tag)}</button>`).join("")}</div></article>`;
+    <span class="cardactions"><button type="button" data-compare="${escapeHtml(item.id)}" aria-pressed="${compared}">${escapeHtml(compared ? t("compareSelected") : t("compare"))}</button><button class="favbtn${favorite ? " on" : ""}" type="button" data-favorite="${escapeHtml(item.id)}" aria-pressed="${favorite}" aria-label="${escapeHtml(t("favoriteLabel", {name:item.name}))}">${favorite ? "★" : "☆"}</button></span>
+  </div><div class="desc" tabindex="-1">${highlight(item._desc, terms)}${original}</div>${stack}${variants}<div class="tags">${(item.tags || []).slice(0, 12).map(tag => `<button type="button" data-q="${escapeHtml(tag)}">${escapeHtml(tag)}</button>`).join("")}</div></article>`;
 }
 
 export function detailMarkup(item, context) {

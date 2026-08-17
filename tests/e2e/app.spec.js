@@ -127,9 +127,9 @@ test("search suggestions, dynamic facets, history, detail and compare", async ({
 
   await page.locator("[data-clear-all]").last().click();
   for (let i = 0; i < 60; i++) {
-    const detail = page.locator("[data-detail]").nth(i);
-    if (!(await detail.isVisible().catch(() => false))) break;
-    await detail.click();
+    const card = page.locator(".card").nth(i);
+    if (!(await card.isVisible().catch(() => false))) break;
+    await card.locator(".desc").click();
     if (await page.locator("#detailDialog .recommendations").first().isVisible().catch(() => false)) break;
     await page.keyboard.press("Escape");
   }
@@ -245,7 +245,7 @@ test("stale URL filters and sort modes are canonicalized on load and popstate", 
     item:"missing-item",
   });
   await ready(page, `/?${params}`);
-  await expect(page.locator(`[data-detail="${FIRST.id}"]`)).toBeVisible();
+  await expect(page.locator(`.card[data-id="${FIRST.id}"]`)).toBeVisible();
   await expect(page.locator("#sort")).toHaveValue("latest");
   await expect(page.locator("#activeFilters .a")).toHaveCount(3);
   await expect.poll(() => page.evaluate(() => Object.fromEntries(new URL(location.href).searchParams))).toEqual({
@@ -328,7 +328,7 @@ test.describe("locale request ordering", () => {
     await page.locator('[data-lang="en"]').click();
     await page.locator('[data-lang="ja"]').click();
     await page.waitForTimeout(700);
-    const card = page.locator(`article:has([data-detail="${FIRST.id}"])`);
+    const card = page.locator(`.card[data-id="${FIRST.id}"]`);
     await expect(page.locator("html")).toHaveAttribute("lang", "ja");
     await expect(card.locator(".desc")).toHaveText(LOCALES.ja[FIRST.id][0]);
     await expect(card.locator(".desc")).not.toHaveText(LOCALES.en[FIRST.id][0]);
@@ -421,11 +421,18 @@ test("mobile dialogs expose named 44px targets, pass axe, and restore focus", as
   await page.setViewportSize({width:390, height:844});
   await ready(page);
 
-  const detailOpener = page.locator("[data-detail]").first();
+  const detailOpener = page.locator(".card").first().locator(".desc");
   await detailOpener.click();
   await verifyDialogAccessibility(page, "#detailDialog", ".close, .detailactions a, .detailactions button, .recommendcard");
   await page.keyboard.press("Escape");
   await expect(detailOpener).toBeFocused();
+
+  const keyboardOpener = page.locator(".card").first().locator(".cardopen");
+  await keyboardOpener.focus();
+  await page.keyboard.press("Enter");
+  await expect(page.locator("#detailDialog")).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(keyboardOpener).toBeFocused();
 
   await page.locator("[data-compare]").nth(0).click();
   await page.locator("[data-compare]").nth(1).click();
@@ -464,16 +471,16 @@ test("PWA isolates the current catalog version and reloads offline", async ({pag
   await page.reload();
   await expect(page.locator(".card").first()).toBeVisible();
   await page.locator("#q").fill(FIRST.name);
-  await expect(page.locator(`[data-detail="${FIRST.id}"]`)).toBeVisible();
+  await expect(page.locator(`.card[data-id="${FIRST.id}"]`)).toBeVisible();
   await page.locator('[data-lang="en"]').click();
   await expect(page.locator("html")).toHaveAttribute("lang", "en");
-  await expect(page.locator(`article:has([data-detail="${FIRST.id}"]) .desc`)).toHaveText(LOCALES.en[FIRST.id][0]);
+  await expect(page.locator(`.card[data-id="${FIRST.id}"] .desc`)).toHaveText(LOCALES.en[FIRST.id][0]);
   await page.locator('[data-lang="ja"]').click();
   await expect(page.locator("html")).toHaveAttribute("lang", "ja");
-  await expect(page.locator(`article:has([data-detail="${FIRST.id}"]) .desc`)).toHaveText(LOCALES.ja[FIRST.id][0]);
+  await expect(page.locator(`.card[data-id="${FIRST.id}"] .desc`)).toHaveText(LOCALES.ja[FIRST.id][0]);
   await page.reload();
   await expect(page.locator("html")).toHaveAttribute("lang", "ja");
-  await expect(page.locator(`article:has([data-detail="${FIRST.id}"]) .desc`)).toHaveText(LOCALES.ja[FIRST.id][0]);
+  await expect(page.locator(`.card[data-id="${FIRST.id}"] .desc`)).toHaveText(LOCALES.ja[FIRST.id][0]);
 });
 
 test("site title, count header and summary kind chips are clickable", async ({page}) => {

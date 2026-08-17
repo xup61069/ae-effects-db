@@ -290,6 +290,7 @@ function adoptHistoryState(next) {
 }
 function clearAll() { state.categories.clear(); state.sources.clear(); state.kinds.clear(); state.favoritesOnly = false; state.query = ""; commitState(); render(); }
 function closePanels() { document.querySelectorAll(".catpanel").forEach(panel => panel.hidden = true); document.querySelectorAll("[aria-expanded]").forEach(button => button.setAttribute("aria-expanded", "false")); hideSuggestions(); }
+let lastCardOpener = null;
 
 function openDetail(id, {write = true} = {}) {
   const item = BY_ID.get(id); if (!item) return;
@@ -418,7 +419,7 @@ function bindEvents(version) {
   document.getElementById("languageSwitch").addEventListener("click", event => { const button = event.target.closest("[data-lang]"); if (button) switchLanguage(button.dataset.lang, version); });
   document.getElementById("compareOpen").addEventListener("click", openCompare); document.getElementById("compareClear").addEventListener("click", () => { state.compare.clear(); commitState(); render(true); });
   document.getElementById("backTop").addEventListener("click", scrollToPageTop); window.addEventListener("scroll", () => { document.getElementById("backTop").hidden = scrollY < 700; }, {passive:true});
-  document.getElementById("detailDialog").addEventListener("close", () => { if (state.item) { state.item = ""; writeUrlState(state); } });
+  document.getElementById("detailDialog").addEventListener("close", () => { if (state.item) { state.item = ""; writeUrlState(state); } if (lastCardOpener) { const opener = lastCardOpener; lastCardOpener = null; requestAnimationFrame(() => opener.focus?.({preventScroll:true})); } });
   document.getElementById("mobileFilterToggle").addEventListener("click", () => document.getElementById("filterDialog").showModal()); document.getElementById("filterClose").addEventListener("click", () => document.getElementById("filterDialog").close());
   document.getElementById("aiBtn").addEventListener("click", async () => {
     const prompt = localeData().aiPrompt;
@@ -442,6 +443,8 @@ function delegatedClick(event) {
   const suggestion = event.target.closest?.("[data-suggestion]"); if (suggestion) { selectSuggestion(suggestion); return; }
   const active = event.target.closest?.("[data-filter]"); if (active) { if (active.dataset.filter === "fav") state.favoritesOnly = false; else filters[active.dataset.filter]?.set.delete(active.dataset.value); commitState(); render(); return; }
   if (event.target.closest?.("[data-clear-all]")) { event.preventDefault(); clearAll(); scrollToPageTop(); return; }
+  const cardOpen = event.target.closest?.("[data-open-detail]"); if (cardOpen) { openDetail(cardOpen.dataset.openDetail); return; }
+  const card = event.target.closest?.(".card"); if (card && !event.target.closest?.("a, button, input, select, textarea, label")) { lastCardOpener = event.target.closest?.("[tabindex]") || card; openDetail(card.dataset.id); return; }
   if (!event.target.closest?.(".dd")) closePanels();
 }
 
