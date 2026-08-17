@@ -203,6 +203,16 @@ test("programmatic result scrolling honors reduced-motion changes", async ({page
   await expect.poll(() => page.evaluate(() => window.__scrollOptions.at(-1)?.behavior)).toBe("smooth");
 });
 
+test("Adobe official category badges link to official Adobe pages", async ({page}) => {
+  await ready(page);
+  await page.locator("#q").fill("CC Mr. Smoothie");
+  const card = page.locator("article.card", {hasText:"CC Mr. Smoothie"}).first();
+  await expect(card.locator("a.officialbadge")).toHaveText(/Adobe · Stylize/i);
+  const href = await card.locator("a.officialbadge").getAttribute("href");
+  expect(href).toMatch(/^https:\/\/helpx\.adobe\.com\//);
+  expect(href).not.toContain("?cat=");
+});
+
 test("every card shows a last-updated badge, with a dash fallback for undated entries", async ({page}) => {
   await ready(page);
   const cards = page.locator(".card");

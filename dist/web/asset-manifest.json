@@ -1,5 +1,5 @@
 {
-  "version": "6d85f7f3c16b13d5",
+  "version": "ed745279d8658001",
   "data": [
     "dist/web/catalog.json",
     "dist/web/locales/zh.json",
@@ -34,7 +34,7 @@
     "index.html": "1fc96ae22dc7200edddb07061457a65abe67183619bbe924217a5c6f6be61f7a",
     "i18n.js": "ce6166bec3030a259a50a62e8dc74df437b5bb46de4f9737e07e57bf05303752",
     "assets/styles.css": "a9017ae1e46409fdb811ff93f199a5c74ae0ea1c84194120f8b6a42fa320de94",
-    "assets/app.js": "70c5e10cb47dd94d2c945c1ec53c9472f1afe8b71ac1aed9ff9585ae0b4614c3",
+    "assets/app.js": "b4bf67fd023c34f2d0a607a201ee759879fba74f744ca487ee655ace7af09cc9",
     "assets/search.js": "b0b0ff83d758e694a5212cbba1337eadf2e523f7a09d6e66a193d4c31ab31393",
     "assets/state.js": "1ca423237bf7460a7a4c238596a1b724d29bc1cdb3e080d9cad87e9e82ae1fcc",
     "assets/favorites.js": "2fa61c5fadaa04d22e6523c1e4fcd40950cbb69613c9f3c9c39a7139a357ca86",
@@ -42,7 +42,7 @@
     "assets/pwa.js": "a7c4ba6e74f142c0af2e335ebfcf3b4fc67f25cfb42193cba848ef3d71fb5748",
     "assets/icon.svg": "899c02ea2c31bf1151dcd3cf598926e9eeadfa33f3e9b1cbf32683e960bd598e",
     "manifest.webmanifest": "d444e66a092aafe6985bd8b67e15296707c45cbb50b95963b1dc38ed52014102",
-    "service-worker.js": "58674e7bfcae1a56512b192778dabdf4de65c159563914f4629ba4e92ff89dc3",
+    "service-worker.js": "f837ad3da05d1929b4916d0c1b6ce129751c236c66de4783254b82aad4fc152d",
     "curation/popularity.json": "e0f24e6c2871aa360712425ee9d7e0420bcaae67b24bdca50f568906b37e4f56",
     "curation/localization.json": "07b677be774124ca663f2613bd932654de790441235f6a98dc7ae2820ef79062",
     "curation/search.json": "ce8c74d113836f1aeff0535891382ff51c3a376c8aeecda50d63a460ace7e7d8",

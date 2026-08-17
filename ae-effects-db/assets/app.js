@@ -39,7 +39,7 @@ function officialCategory(item) {
   if (item.kind !== "builtin") return null;
   const categoryId = LOCALIZATION.official_effect_categories?.[item.name];
   const direct = categoryId ? LOCALIZATION.official_categories?.[categoryId] : null;
-  if (direct) return {label:direct.labels?.[state.lang] || direct.labels?.en || categoryId, source:direct.source};
+  if (direct) return {label:direct.labels?.[state.lang] || direct.labels?.en || categoryId, source:direct.source || item.url};
   let path = "";
   try { path = new URL(item.url).pathname.toLowerCase(); } catch (_) {}
   const rule = (LOCALIZATION.official_category_rules || []).find(entry => (entry.patterns || []).some(pattern => path.includes(pattern.toLowerCase())));
