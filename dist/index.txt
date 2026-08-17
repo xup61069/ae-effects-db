@@ -1,5 +1,5 @@
 # After Effects 特效／外掛索引（繁體中文）
-# 共 2994 筆　格式：名稱｜來源｜型態｜分類｜說明｜官方連結
+# 共 2996 筆　格式：名稱｜來源｜型態｜分類｜說明｜官方連結
 # 完整資料（含中英搜尋標籤、外觀描述）：dist/all.jsonl
 # 線上搜尋：https://xup61069.github.io/ae-effects-db/
 Deep Glow 2｜aescripts｜plugin｜glow｜從高光產生自然的指數衰減電影級輝光；第二代加入影像式輝光、RGB 半徑、鏡頭污漬紋理、多色染色與電影色調映射。｜https://aescripts.com/deep-glow/
@@ -1378,6 +1378,8 @@ moji_marker_cut｜BOOTH｜script｜workflow｜After Effects ScriptUI 腳本，�
 TextAnimator｜BOOTH｜script｜text｜After Effects 文字動畫腳本，可一鍵替文字圖層加入閃爍、跳格 Wiggle 與字距變化動畫，適合快速製作歌詞、標題與節奏感文字演出。｜https://booth.pm/ja/items/6766455
 カットナンバー増分スクリプト｜BOOTH｜script｜workflow｜After Effects 前期製作腳本，從選取文字圖層找出數字後加一並建立相連的新文字圖層，同步更新圖層名稱，方便連續編排 V コン或 Animatic 的鏡頭號碼。｜https://booth.pm/ja/items/5856209
 StairTrim｜BOOTH｜script｜animation｜After Effects 動畫輔助腳本，自動將圖層做階梯式或隨機錯開配置，並協助複製與調整 Colorama 等色彩效果，縮短時間軸排列與演出調整流程。｜https://booth.pm/ja/items/6813075
+ColorFlow｜BOOTH｜plugin｜color｜Windows 專用的 After Effects 2026 原生調色外掛，將 Primary Grade、Tone Curve、Color Range、Bloom／Halation、可回編預設與 GPU 處理整合在 Live Edit 面板，適合在合成畫面中並排比較與精修色調、光暈及暗部氛圍。｜https://booth.pm/ja/items/8683443
+Layer Splitter｜BOOTH｜script｜workflow｜在 Illustrator 將向量物件自動拆成圖層、命名並套用 AE 標籤色，再以 Artboard、AI Layer 或可編輯 Shape Layer 三種方式送進 After Effects，適合角色、UI 與動態圖形素材的交接整理。｜https://booth.pm/ja/items/8369118
 Glow｜AE內建｜builtin｜glow｜AE內建輝光，讓亮部往外柔和擴散。品質普通、容易死白，講究時用 Deep Glow / Optical Glow。｜https://helpx.adobe.com/after-effects/desktop/apply-effects-and-animation-presets/list-of-effects/stylize-effects.html
 CC Light Rays｜AE內建｜builtin｜light｜從指定一點放射出光線，快速做上帝光、掃光、能量放射。｜https://helpx.adobe.com/after-effects/desktop/apply-effects-and-animation-presets/list-of-effects/generate-effects.html
 CC Light Sweep｜AE內建｜builtin｜light｜一道光從文字/Logo表面掃過，做金屬反光或標題強調。｜https://helpx.adobe.com/after-effects/desktop/apply-effects-and-animation-presets/list-of-effects/generate-effects.html
