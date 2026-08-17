@@ -8,11 +8,6 @@ import {registerPwa} from "./pwa.js";
 
 const FILES = ["red-giant", "universe", "sapphire", "continuum", "builtin-ae", "aescripts", "third-party", "booth", "gumroad", "installed", "recipes"];
 const SOURCE_ORDER = [...FILES];
-const DISCOVERY = [
-  ["discoverGlow", "glow bloom", "glow"], ["discoverClean", "denoise restore", "restore"],
-  ["discoverMotion", "motion graphics animation", "mograph"], ["discoverRetro", "old film vhs grain", "film"],
-  ["discoverKeying", "keying green screen", "keying"], ["discoverWorkflow", "workflow automation", "workflow"],
-];
 
 let DATA = [];
 let BY_ID = new Map();
@@ -313,7 +308,7 @@ function applyLanguage() {
   const text = (id, value) => { const element = document.getElementById(id); if (element) element.textContent = value; };
   text("siteTitle", messages.siteTitle); text("siteSubtitle", messages.subtitle); text("favManageBtn", messages.favoritesManage); text("aiBtn", messages.aiButton);
   text("filterDialogTitle", messages.filtersTitle); text("filterClose", messages.close); text("mobileFilterToggle", messages.filtersTitle);
-  text("discoveryTitle", messages.moreUsage); text("compareTitle", messages.compareTitle); text("compareOpen", messages.compare); text("compareClear", messages.clear);
+  text("compareTitle", messages.compareTitle); text("compareOpen", messages.compare); text("compareClear", messages.clear);
   text("favoritesDialogTitle", messages.favoritesManage); text("favoritesHelp", messages.favoritesHelp);
   text("favExport", messages.exportFavorites); text("favImport", messages.importFavorites); text("favClearAll", messages.clearFavorites);
   text("askAiTitle", messages.askAiTitle); text("askAiHelp", messages.askAiHelp); text("askAiCopy", messages.askAiCopy);
@@ -328,7 +323,6 @@ function applyLanguage() {
   [...sort.options].forEach((option, index) => option.textContent = messages[sortLabels[index]]);
   document.getElementById("kindLegend").innerHTML = `<span><i class="plugin"></i>${escapeHtml(localeData().kinds.plugin)}</span><span><i class="script"></i>${escapeHtml(localeData().kinds.script)}</span><span><i class="builtin"></i>${escapeHtml(localeData().kinds.builtin)}</span><span><i class="recipe"></i>${escapeHtml(localeData().kinds.recipe)}</span>`;
   document.getElementById("hintBox").innerHTML = `${escapeHtml(messages.try)} ${localeData().hints.map(value => `<button type="button" data-q="${escapeHtml(value)}">${escapeHtml(value)}</button>`).join(" · ")}`;
-  document.getElementById("discoveryGrid").innerHTML = DISCOVERY.map(([key, query, category]) => `<button type="button" data-discovery-query="${escapeHtml(query)}" data-discovery-cat="${category}"><b>${escapeHtml(t(key))}</b><span>${escapeHtml(t(`${key}Help`))}</span></button>`).join("");
   document.getElementById("footerSummary").innerHTML = `${escapeHtml(t("footerTotal", {count:DATA.length}))} · ${escapeHtml(messages.footerOfficial)} · ${escapeHtml(messages.footerImage)}`;
   for (const filter of Object.values(filters)) { filter.labelOf = filter.id === "cat" ? key => localeData().categories[key] || key : filter.id === "src" ? key => localeData().sources[key] || key : key => localeData().kinds[key] || key; }
 }
@@ -443,7 +437,6 @@ function delegatedClick(event) {
   const kindFilter = event.target.closest?.("[data-kind-filter]"); if (kindFilter) { state.kinds.has(kindFilter.dataset.kindFilter) ? state.kinds.delete(kindFilter.dataset.kindFilter) : state.kinds.add(kindFilter.dataset.kindFilter); commitState(); render(); scrollToPageTop(); return; }
   const catFilter = event.target.closest?.("[data-cat-filter]"); if (catFilter) { state.categories.has(catFilter.dataset.catFilter) ? state.categories.delete(catFilter.dataset.catFilter) : state.categories.add(catFilter.dataset.catFilter); commitState(); render(); scrollToPageTop(); return; }
   const suggestion = event.target.closest?.("[data-suggestion]"); if (suggestion) { selectSuggestion(suggestion); return; }
-  const discovery = event.target.closest?.("[data-discovery-query]"); if (discovery) { state.query = discovery.dataset.discoveryQuery; state.categories.clear(); if (discovery.dataset.discoveryCat) state.categories.add(discovery.dataset.discoveryCat); if (discovery.dataset.discoveryCat && !searchResults().matches.length) state.query = ""; commitState(); render(); scrollToPageTop(); return; }
   const active = event.target.closest?.("[data-filter]"); if (active) { if (active.dataset.filter === "fav") state.favoritesOnly = false; else filters[active.dataset.filter]?.set.delete(active.dataset.value); commitState(); render(); return; }
   if (event.target.closest?.("[data-clear-all]")) { event.preventDefault(); clearAll(); scrollToPageTop(); return; }
   if (!event.target.closest?.(".dd")) closePanels();

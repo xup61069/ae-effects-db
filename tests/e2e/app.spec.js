@@ -195,23 +195,12 @@ test("programmatic result scrolling honors reduced-motion changes", async ({page
     window.__scrollOptions = [];
     window.scrollTo = options => window.__scrollOptions.push(options);
   });
-  await page.locator("[data-discovery-query]").nth(0).click();
+  await page.locator("#hintBox [data-q]").nth(0).click();
   await expect.poll(() => page.evaluate(() => window.__scrollOptions.at(-1)?.behavior)).toBe("auto");
 
   await page.emulateMedia({reducedMotion:"no-preference"});
-  await page.locator("[data-discovery-query]").nth(1).click();
+  await page.locator("#hintBox [data-q]").nth(1).click();
   await expect.poll(() => page.evaluate(() => window.__scrollOptions.at(-1)?.behavior)).toBe("smooth");
-});
-
-test("discovery buttons never land on an empty category (query falls back to category-only)", async ({page}) => {
-  await ready(page);
-  for (const cat of ["mograph", "film"]) {
-    await page.locator(`[data-discovery-query][data-discovery-cat="${cat}"]`).click();
-    await expect(page.locator(`#activeFilters [data-filter="cat"][data-value="${cat}"]`)).toBeVisible();
-    await expect(page.locator(".card").first()).toBeVisible();
-    await expect(page).toHaveURL(new RegExp(`cat=${cat}`));
-    await expect(page.locator("#count")).toContainText("筆結果");
-  }
 });
 
 test("every card shows a last-updated badge, with a dash fallback for undated entries", async ({page}) => {
