@@ -1,5 +1,5 @@
 # After Effects 特效／外掛索引（繁體中文）
-# 共 3008 筆　格式：名稱｜來源｜型態｜分類｜說明｜官方連結
+# 共 3010 筆　格式：名稱｜來源｜型態｜分類｜說明｜官方連結
 # 完整資料（含中英搜尋標籤、外觀描述）：dist/all.jsonl
 # 線上搜尋：https://xup61069.github.io/ae-effects-db/
 Deep Glow 2｜aescripts｜plugin｜glow｜從高光產生自然的指數衰減電影級輝光；第二代加入影像式輝光、RGB 半徑、鏡頭污漬紋理、多色染色與電影色調映射。｜https://aescripts.com/deep-glow/
@@ -1389,6 +1389,8 @@ Kira Twinkle Studio｜BOOTH｜plugin｜particles｜套用即出現滿版閃亮�
 NT3_FootageList｜BOOTH｜script｜workflow｜以單一面板列出專案內所有素材的連結狀態、使用次數、Proxy 與解析度，可一鍵在最多 5 個資料夾中搜尋重新連結、刪除未使用素材，並與 AE 專案面板連動選取，適合交件前整理或跨環境搬遷專案時修復大量連結中斷。｜https://booth.pm/ja/items/8723557
 Shippo trim null｜BOOTH｜script｜rigging｜偵測形狀路徑上的修剪路徑（Trim Paths）動畫，自動在起點或終點位置生成同步移動的 Null，供其他圖層以拾取工具綁定跟隨，適合讓物件沿描邊修剪軌跡移動。｜https://booth.pm/ja/items/8237538
 Projecton｜BOOTH｜script｜workflow｜一鍵把專案面板內的合成、圖片、影片、音訊與色塊等項目，依副檔名與類型自動分類到 11 個資料夾，支援自訂資料夾名稱與副檔名規則、MainComp 標記與批次復原，適合大型專案的素材整理。｜https://booth.pm/ja/items/8016864
+SwayMate｜BOOTH｜plugin｜animation｜用表達式自動生成不重複的風吹搖擺動畫，從根部到尖端有延遲彎曲與陣風效果，適合樹葉、頭髮、旗幟等隨風擺動素材。｜https://booth.pm/ja/items/8603133
+Mask_mitameissyo_copype｜BOOTH｜script｜utility｜在不同大小或位置的圖層間複製貼上遮罩路徑時，自動保持原本的視覺外觀，避免直接貼上造成的錯位。｜https://booth.pm/ja/items/5892231
 Glow｜AE內建｜builtin｜glow｜AE內建輝光，讓亮部往外柔和擴散。品質普通、容易死白，講究時用 Deep Glow / Optical Glow。｜https://helpx.adobe.com/after-effects/desktop/apply-effects-and-animation-presets/list-of-effects/stylize-effects.html
 CC Light Rays｜AE內建｜builtin｜light｜從指定一點放射出光線，快速做上帝光、掃光、能量放射。｜https://helpx.adobe.com/after-effects/desktop/apply-effects-and-animation-presets/list-of-effects/generate-effects.html
 CC Light Sweep｜AE內建｜builtin｜light｜一道光從文字/Logo表面掃過，做金屬反光或標題強調。｜https://helpx.adobe.com/after-effects/desktop/apply-effects-and-animation-presets/list-of-effects/generate-effects.html
