@@ -298,13 +298,7 @@ test("favorites repair malformed storage and import only known stable IDs", asyn
   expect(await page.evaluate(() => JSON.parse(localStorage.getItem("ae-effects-db:favorites:v2")))).toEqual([FIRST.id]);
 });
 
-test("three languages and local-only visual finder", async ({page}) => {
-  await page.addInitScript(() => {
-    const create = URL.createObjectURL.bind(URL), revoke = URL.revokeObjectURL.bind(URL);
-    window.__visualUrls = {created:[], revoked:[]};
-    URL.createObjectURL = value => { const url = create(value); window.__visualUrls.created.push(url); return url; };
-    URL.revokeObjectURL = url => { window.__visualUrls.revoked.push(url); return revoke(url); };
-  });
+test("three languages and local-only ask-AI prompt", async ({page}) => {
   const requests = [];
   page.on("request", request => { if (request.method() !== "GET") requests.push(request.url()); });
   await ready(page);
@@ -315,36 +309,12 @@ test("three languages and local-only visual finder", async ({page}) => {
   await expect(page.locator("#siteSubtitle")).toContainText("After Effects");
 
   await page.locator("#aiBtn").click();
-  await expect(page.locator("#visualDialog")).toBeVisible();
-  await page.locator("#visualFile").setInputFiles({name:"reference.gif", mimeType:"image/gif", buffer:Buffer.from("GIF89a")});
-  await expect(page.locator("#visualMsg")).toContainText("PNG、JPEG、WebP");
-  await page.evaluate(() => {
-    const transfer = new DataTransfer();
-    transfer.items.add(new File([new Uint8Array(20 * 1024 * 1024 + 1)], "too-large.png", {type:"image/png"}));
-    const input = document.getElementById("visualFile");
-    input.files = transfer.files;
-    input.dispatchEvent(new Event("change", {bubbles:true}));
-  });
-  await expect(page.locator("#visualMsg")).toContainText("20 MB");
-  expect(await page.evaluate(() => window.__visualUrls.created)).toEqual([]);
-  await page.locator("#visualFile").setInputFiles({
-    name:"reference.png", mimeType:"image/png",
-    buffer:Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=", "base64"),
-  });
-  await expect(page.locator("#visualPreview")).toBeVisible();
-  const validPreview = await page.locator("#visualPreview").getAttribute("src");
-  await page.locator("#visualFile").setInputFiles({
-    name:"damaged.png", mimeType:"image/png", buffer:Buffer.from("not an image"),
-  });
-  await expect(page.locator("#visualMsg")).toContainText("読み込めません");
-  await expect(page.locator("#visualPreview")).toHaveAttribute("src", validPreview);
-  await page.locator('[data-visual="glow"]').click();
-  await page.locator('[data-visual="texture"]').click();
-  await page.locator("#visualSearch").click();
-  await expect(page.locator("#q")).toHaveValue(/glow bloom/);
-  const urls = await page.evaluate(() => window.__visualUrls);
-  expect(urls.created.length).toBe(2);
-  expect(new Set(urls.revoked)).toEqual(new Set(urls.created));
+  await expect(page.locator("#askAiDialog")).toBeVisible();
+  await page.locator("#askAiCopy").click();
+  await expect(page.locator("#askAiMsg")).toContainText("説明してください");
+  await page.locator("#askAiInput").fill("發光的霓虹文字標題");
+  await page.locator("#askAiCopy").click();
+  await expect(page.locator("#askAiMsg")).toContainText("コピー");
   expect(requests).toEqual([]);
 });
 
@@ -474,11 +444,11 @@ test("mobile dialogs expose named 44px targets, pass axe, and restore focus", as
   await page.keyboard.press("Escape");
   await expect(favoritesOpener).toBeFocused();
 
-  const visualOpener = page.locator("#aiBtn");
-  await visualOpener.click();
-  await verifyDialogAccessibility(page, "#visualDialog", ".close, #visualDrop, [data-visual], .visualactions button");
+  const aiOpener = page.locator("#aiBtn");
+  await aiOpener.click();
+  await verifyDialogAccessibility(page, "#askAiDialog", ".close, #askAiInput, #askAiCopy");
   await page.keyboard.press("Escape");
-  await expect(visualOpener).toBeFocused();
+  await expect(aiOpener).toBeFocused();
 });
 
 test("PWA isolates the current catalog version and reloads offline", async ({page, context}) => {

@@ -8,11 +8,6 @@ import {registerPwa} from "./pwa.js";
 
 const FILES = ["red-giant", "universe", "sapphire", "continuum", "builtin-ae", "aescripts", "third-party", "booth", "gumroad", "installed", "recipes"];
 const SOURCE_ORDER = [...FILES];
-const VISUAL_FEATURES = {
-  glow:"glow bloom 發光 光暈", particles:"particles 粒子", color:"color grading 調色", texture:"grain texture 顆粒 材質",
-  glitch:"glitch chromatic aberration 故障 色差", motion:"motion blur trails 動態 拖尾", distortion:"warp distortion 扭曲 變形",
-  composite:"compositing keying 合成 去背", retro:"old film vhs retro 老電影 復古", text:"text typography 文字 字幕",
-};
 const DISCOVERY = [
   ["discoverGlow", "glow bloom", "glow"], ["discoverClean", "denoise restore", "restore"],
   ["discoverMotion", "motion graphics animation", "mograph"], ["discoverRetro", "old film vhs grain", "film"],
@@ -37,9 +32,6 @@ let LOCALIZATION = {localized_urls:{}, official_categories:{}, official_category
 let POPULAR_INDEX = new Map();
 let filters = {};
 let allowedState = {};
-let visualUrl = null;
-let visualLoadToken = 0;
-const visualSelection = new Set();
 
 const localeData = () => globalThis.AE_I18N.locales[state?.lang || "zh"] || globalThis.AE_I18N.locales.zh;
 function t(key, variables = {}) {
@@ -319,17 +311,17 @@ function applyLanguage() {
   const messages = localeData().messages;
   document.documentElement.lang = localeData().htmlLang; document.title = messages.pageTitle;
   const text = (id, value) => { const element = document.getElementById(id); if (element) element.textContent = value; };
-  text("siteTitle", messages.siteTitle); text("siteSubtitle", messages.subtitle); text("favManageBtn", messages.favoritesManage); text("aiBtn", messages.visualFinder);
+  text("siteTitle", messages.siteTitle); text("siteSubtitle", messages.subtitle); text("favManageBtn", messages.favoritesManage); text("aiBtn", messages.aiButton);
   text("filterDialogTitle", messages.filtersTitle); text("filterClose", messages.close); text("mobileFilterToggle", messages.filtersTitle);
   text("discoveryTitle", messages.moreUsage); text("compareTitle", messages.compareTitle); text("compareOpen", messages.compare); text("compareClear", messages.clear);
   text("favoritesDialogTitle", messages.favoritesManage); text("favoritesHelp", messages.favoritesHelp);
   text("favExport", messages.exportFavorites); text("favImport", messages.importFavorites); text("favClearAll", messages.clearFavorites);
-  text("visualTitle", messages.visualFinder); text("visualHelp", messages.visualHelp); text("visualDropText", messages.visualDrop); text("visualSearch", messages.visualSearch); text("visualCopy", messages.visualCopy);
+  text("askAiTitle", messages.askAiTitle); text("askAiHelp", messages.askAiHelp); text("askAiCopy", messages.askAiCopy);
   text("reportMissingLink", messages.reportMissing); text("contributeLink", messages.contribute); text("githubLink", messages.github);
   const attrs = (id, values) => { const element = document.getElementById(id); if (element) Object.entries(values).forEach(([key, value]) => element.setAttribute(key, value)); };
   attrs("q", {placeholder:messages.searchPlaceholder, "aria-label":messages.searchAria}); attrs("mq", {placeholder:messages.mobileSearchPlaceholder, "aria-label":messages.searchAria});
   attrs("clearQ", {"aria-label":messages.clearSearch}); attrs("clearMq", {"aria-label":messages.clearSearch}); attrs("sort", {"aria-label":messages.sortTitle});
-  attrs("kindLegend", {"aria-label":messages.kindLegend}); attrs("visualFeatures", {"aria-label":messages.visualFinder});
+  attrs("kindLegend", {"aria-label":messages.kindLegend}); attrs("askAiInput", {placeholder:messages.askAiPlaceholder});
   document.querySelectorAll("#languageSwitch [data-lang]").forEach(button => { const active = button.dataset.lang === state.lang; button.classList.toggle("on", active); button.setAttribute("aria-pressed", String(active)); });
   document.querySelectorAll("[data-close]").forEach(button => button.setAttribute("aria-label", messages.close));
   const sort = document.getElementById("sort"), sortLabels = ["sortPopular", "sortRelevance", "sortName", "sortCategory", "sortSource", "sortLatest"];
@@ -337,7 +329,6 @@ function applyLanguage() {
   document.getElementById("kindLegend").innerHTML = `<span><i class="plugin"></i>${escapeHtml(localeData().kinds.plugin)}</span><span><i class="script"></i>${escapeHtml(localeData().kinds.script)}</span><span><i class="builtin"></i>${escapeHtml(localeData().kinds.builtin)}</span><span><i class="recipe"></i>${escapeHtml(localeData().kinds.recipe)}</span>`;
   document.getElementById("hintBox").innerHTML = `${escapeHtml(messages.try)} ${localeData().hints.map(value => `<button type="button" data-q="${escapeHtml(value)}">${escapeHtml(value)}</button>`).join(" · ")}`;
   document.getElementById("discoveryGrid").innerHTML = DISCOVERY.map(([key, query, category]) => `<button type="button" data-discovery-query="${escapeHtml(query)}" data-discovery-cat="${category}"><b>${escapeHtml(t(key))}</b><span>${escapeHtml(t(`${key}Help`))}</span></button>`).join("");
-  document.getElementById("visualFeatures").innerHTML = Object.keys(VISUAL_FEATURES).map(key => `<button type="button" data-visual="${key}" aria-pressed="${visualSelection.has(key)}">${escapeHtml(t(`visual_${key}`))}</button>`).join("");
   document.getElementById("footerSummary").innerHTML = `${escapeHtml(t("footerTotal", {count:DATA.length}))} · ${escapeHtml(messages.footerOfficial)} · ${escapeHtml(messages.footerImage)}`;
   for (const filter of Object.values(filters)) { filter.labelOf = filter.id === "cat" ? key => localeData().categories[key] || key : filter.id === "src" ? key => localeData().sources[key] || key : key => localeData().kinds[key] || key; }
 }
@@ -436,8 +427,8 @@ function bindEvents(version) {
   document.getElementById("backTop").addEventListener("click", scrollToPageTop); window.addEventListener("scroll", () => { document.getElementById("backTop").hidden = scrollY < 700; }, {passive:true});
   document.getElementById("detailDialog").addEventListener("close", () => { if (state.item) { state.item = ""; writeUrlState(state); } });
   document.getElementById("mobileFilterToggle").addEventListener("click", () => document.getElementById("filterDialog").showModal()); document.getElementById("filterClose").addEventListener("click", () => document.getElementById("filterDialog").close());
-  document.getElementById("aiBtn").addEventListener("click", () => document.getElementById("visualDialog").showModal());
-  bindVisualFinder();
+  document.getElementById("aiBtn").addEventListener("click", () => document.getElementById("askAiDialog").showModal());
+  bindAskAi();
   document.addEventListener("click", delegatedClick); document.addEventListener("keydown", event => { if (event.key === "/" && !/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)) { event.preventDefault(); document.getElementById(matchMedia("(max-width:640px)").matches ? "mq" : "q").focus(); } else if (event.key === "Escape") closePanels(); });
   window.addEventListener("popstate", () => { const restored = restoreResolvedState(readUrlState(), BY_ID, LEGACY, allowedState); adoptHistoryState(restored); const lang = state.lang; loadLocale(lang, version).then(applied => { if (!applied) return; applyLanguage(); appliedLang = lang; render(); if (state.item) openDetail(state.item, {write:false}); else closeDetail({write:false}); }).catch(error => { if (state.lang === lang) { state.lang = appliedLang; writeUrlState(state); showToast(t("loadLocaleError", {error:error.message})); } }); });
 }
@@ -458,38 +449,19 @@ function delegatedClick(event) {
   if (!event.target.closest?.(".dd")) closePanels();
 }
 
-function bindVisualFinder() {
-  const input = document.getElementById("visualFile"), drop = document.getElementById("visualDrop");
-  const accept = async file => {
-    const token = ++visualLoadToken;
-    const msg = document.getElementById("visualMsg");
-    if (!file || !["image/png", "image/jpeg", "image/webp"].includes(file.type)) { msg.textContent = t("visualInvalidType"); return; }
-    if (file.size > 20 * 1024 * 1024) { msg.textContent = t("visualTooLarge"); return; }
-    const nextUrl = URL.createObjectURL(file);
-    const probe = new Image();
-    try {
-      await new Promise((resolve, reject) => { probe.onload = resolve; probe.onerror = reject; probe.src = nextUrl; });
-    } catch (_) {
-      URL.revokeObjectURL(nextUrl);
-      if (token === visualLoadToken) msg.textContent = t("visualInvalidImage");
-      return;
-    }
-    if (token !== visualLoadToken) { URL.revokeObjectURL(nextUrl); return; }
-    if (visualUrl) URL.revokeObjectURL(visualUrl);
-    visualUrl = nextUrl;
-    const image = document.getElementById("visualPreview"); image.src = visualUrl; image.hidden = false; msg.textContent = t("visualLocalOnly");
-  };
-  input.addEventListener("change", () => { const file = input.files[0]; input.value = ""; accept(file); }); drop.addEventListener("click", () => input.click());
-  drop.addEventListener("dragover", event => { event.preventDefault(); drop.classList.add("dragging"); }); drop.addEventListener("dragleave", () => drop.classList.remove("dragging"));
-  drop.addEventListener("drop", event => { event.preventDefault(); drop.classList.remove("dragging"); accept(event.dataTransfer.files[0]); });
-  window.addEventListener("paste", event => { if (!document.getElementById("visualDialog").open) return; const file = [...event.clipboardData.files].find(value => value.type.startsWith("image/")); if (file) accept(file); });
-  document.getElementById("visualFeatures").addEventListener("click", event => { const button = event.target.closest("[data-visual]"); if (!button) return; visualSelection.has(button.dataset.visual) ? visualSelection.delete(button.dataset.visual) : visualSelection.add(button.dataset.visual); button.setAttribute("aria-pressed", String(visualSelection.has(button.dataset.visual))); button.classList.toggle("on", visualSelection.has(button.dataset.visual)); });
-  document.getElementById("visualSearch").addEventListener("click", () => { if (!visualSelection.size) { document.getElementById("visualMsg").textContent = t("visualChooseFeature"); return; } state.query = [...visualSelection].map(key => VISUAL_FEATURES[key]).join(" "); document.getElementById("visualDialog").close(); commitState(); render(); scrollToPageTop(); });
-  document.getElementById("visualCopy").addEventListener("click", async () => { const features = [...visualSelection].map(key => t(`visual_${key}`)).join("、"); const prompt = `${localeData().aiPrompt}\n\n${t("visualPrompt", {features:features || t("visualNone")})}`; try { await navigator.clipboard.writeText(prompt); document.getElementById("visualMsg").textContent = t("copied"); } catch (_) { promptFallback(prompt); } });
-  document.getElementById("visualDialog").addEventListener("close", () => { visualLoadToken += 1; if (visualUrl) { URL.revokeObjectURL(visualUrl); visualUrl = null; } const image = document.getElementById("visualPreview"); image.removeAttribute("src"); image.hidden = true; input.value = ""; });
+function bindAskAi() {
+  const input = document.getElementById("askAiInput"), msg = document.getElementById("askAiMsg");
+  const compose = () => `${localeData().aiPrompt}\n\n${t("askAiPrompt", {look:input.value.trim()})}`;
+  document.getElementById("askAiCopy").addEventListener("click", async () => {
+    if (!input.value.trim()) { msg.textContent = t("askAiEmpty"); return; }
+    const prompt = compose();
+    try { await navigator.clipboard.writeText(prompt); msg.textContent = t("aiCopied"); }
+    catch (_) { promptFallback(prompt); }
+  });
+  document.getElementById("askAiDialog").addEventListener("close", () => { msg.textContent = ""; });
 }
 
-function promptFallback(value) { const box = document.getElementById("visualMsg"); box.textContent = t("copyFallback"); const textarea = document.createElement("textarea"); textarea.value = value; textarea.rows = 6; box.appendChild(textarea); textarea.focus(); textarea.select(); }
+function promptFallback(value) { const box = document.getElementById("askAiMsg"); box.textContent = t("copyFallback"); const textarea = document.createElement("textarea"); textarea.value = value; textarea.rows = 6; box.appendChild(textarea); textarea.focus(); textarea.select(); }
 function showToast(message) { const box = document.getElementById("toast"); box.textContent = message; box.hidden = false; clearTimeout(showToast.timer); showToast.timer = setTimeout(() => { box.hidden = true; }, 5000); }
 function showUpdate(activate) { const banner = document.getElementById("updateBanner"); banner.hidden = false; banner.querySelector("span").textContent = t("updateAvailable"); const button = banner.querySelector("button"); button.textContent = t("updateNow"); button.onclick = activate; }
 
