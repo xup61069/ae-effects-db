@@ -1,5 +1,5 @@
 # After Effects 特效／外掛索引（繁體中文）
-# 共 2999 筆　格式：名稱｜來源｜型態｜分類｜說明｜官方連結
+# 共 3000 筆　格式：名稱｜來源｜型態｜分類｜說明｜官方連結
 # 完整資料（含中英搜尋標籤、外觀描述）：dist/all.jsonl
 # 線上搜尋：https://xup61069.github.io/ae-effects-db/
 Deep Glow 2｜aescripts｜plugin｜glow｜從高光產生自然的指數衰減電影級輝光；第二代加入影像式輝光、RGB 半徑、鏡頭污漬紋理、多色染色與電影色調映射。｜https://aescripts.com/deep-glow/
@@ -2902,6 +2902,7 @@ Speed｜第三方｜script｜workflow｜在 After Effects 以 Script UI Panel �
 Pearelax｜第三方｜plugin｜3d｜在 After Effects 將分層 2D 合成或 Photoshop 照片快速轉成可控制攝影機的 3D 視差場景，適合照片動畫與多層空間推鏡。｜https://www.aescreens.com/tools/pearelax
 Nice O Metric｜第三方｜plugin｜3d｜在 After Effects 一鍵建立符合合成尺寸的等角攝影機並擠出平面圖層，快速把普通合成轉成可用 KBar 操作的等角 3D 場景。｜https://www.aescreens.com/tools/nice-o-metric
 Xplode｜第三方｜script｜workflow｜在 After Effects 將形狀圖層拆成獨立圖層並分離位置維度，同時保留效果、表達式與緩動，還能自動清除多餘關鍵影格。｜https://www.aescreens.com/tools/xplode
+Titler Pro 7｜第三方｜plugin｜text｜可在 After Effects 內以外掛面板使用的專業字幕與動態圖形範本工具，內建 700 多組可自訂範本、多標題管理與可縮放文字樣式，適合新聞下標、片頭與宣傳字卡。｜https://newbluefx.com/titler-pro/
 Bokeh｜Universe｜plugin｜blur-glow｜為畫面加上真實鏡頭散景失焦效果，模擬淺景深/對焦呼吸，亮部化成柔和光斑。｜https://www.maxon.net/en/product-detail/red-giant/universe/bokeh
 Glow｜Universe｜plugin｜blur-glow｜柔和輝光，讓亮部往外擴散發光；可只針對指定顏色發光(如只讓紅色霓虹發亮)。｜https://www.maxon.net/en/product-detail/red-giant/universe/glow
 Quantum｜Universe｜plugin｜blur-glow｜在物體前方或後方生成動態光軌拖尾，適合文字、圖形、Logo的能量掃尾。｜https://www.maxon.net/en/product-detail/red-giant/universe/quantum
