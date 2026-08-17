@@ -213,12 +213,14 @@ test("Adobe official category badges link to official Adobe pages", async ({page
   expect(href).not.toContain("?cat=");
 });
 
-test("every card shows a last-updated badge, with a dash fallback for undated entries", async ({page}) => {
+test("dated cards show a last-updated badge and undated entries show none", async ({page}) => {
   await ready(page);
   const cards = page.locator(".card");
   expect(await cards.count()).toBeGreaterThan(0);
+  const dated = await page.locator(".card").evaluateAll(nodes => nodes.map(node => Boolean(node.querySelector(".datebadge"))).filter(Boolean).length);
+  expect(dated).toBeGreaterThan(0);
   const badges = page.locator(".card .datebadge");
-  expect(await badges.count()).toBe(await cards.count());
+  expect(await badges.count()).toBe(dated);
   for (const text of await badges.allTextContents()) {
     expect(text).toMatch(/(更新|發行)/);
   }

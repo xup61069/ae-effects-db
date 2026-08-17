@@ -44,7 +44,7 @@ export function cardMarkup(item, context) {
     <a class="name namelink" href="${escapeHtml(officialUrl(item.url))}" target="_blank" rel="noopener">${highlight(item.name, terms)}<span class="ext">↗</span></a>
     <button type="button" class="kindbadge kind-${escapeHtml(kind)}${kindActive}" data-kind-filter="${escapeHtml(kind)}" aria-pressed="${context.activeKinds?.has(kind) ? "true" : "false"}">${escapeHtml(kindLabels[kind] || kind)}</button>
     <button type="button" class="catbadge${catActive}" data-cat-filter="${escapeHtml(item.cat)}" aria-pressed="${context.activeCats?.has(item.cat) ? "true" : "false"}">${escapeHtml(category)}</button>${adobeBadge}
-    ${date ? `<span class="datebadge">${escapeHtml(item.updated ? t("updated") : t("released"))} ${escapeHtml(date)}</span>` : `<span class="datebadge">${escapeHtml(t("updated"))} —</span>`}
+    ${date ? `<span class="datebadge">${escapeHtml(item.updated ? t("updated") : t("released"))} ${escapeHtml(date)}</span>` : ""}
     <span class="popscore" title="${escapeHtml(t("popularityTitle", {...pop, order:pop.curatedOrder}))}">${escapeHtml(t("popularity", {score:pop.total}))}</span>
     ${match}<span class="src">${escapeHtml(origin)}</span>
     <span class="cardactions"><button type="button" data-compare="${escapeHtml(item.id)}" aria-pressed="${compared}">${escapeHtml(compared ? t("compareSelected") : t("compare"))}</button><button class="favbtn${favorite ? " on" : ""}" type="button" data-favorite="${escapeHtml(item.id)}" aria-pressed="${favorite}" aria-label="${escapeHtml(t("favoriteLabel", {name:item.name}))}">${favorite ? "★" : "☆"}</button></span>
