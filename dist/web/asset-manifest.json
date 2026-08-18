@@ -1,5 +1,5 @@
 {
-  "version": "2168c6593a41ba17",
+  "version": "179f4263406bf009",
   "data": [
     "dist/web/catalog.json",
     "dist/web/locales/zh.json",
@@ -33,7 +33,7 @@
     "dist/web/locales/ja.json": "ed47d330562861b9fec726a3312576e09e3ddef2472110348d09bcd503671ae3",
     "./": "0746379b0e38f261d7a8e8aa262ab8dd705b985888660aaad465f33ce6cd7c22",
     "index.html": "0746379b0e38f261d7a8e8aa262ab8dd705b985888660aaad465f33ce6cd7c22",
-    "i18n.js": "aa0d94eb319b6f0a859bf55e0e7a9cd1122b9b933521d2a8817b28d2899a777e",
+    "i18n.js": "06a72535e7010931ef444d912142bd5d3de9b0637bb06024ef808a0164bc2160",
     "assets/styles.css": "3c3564ed9e0e6191338eb7300cdba459fa6e5fddbc917f8f31f6ed2680644652",
     "assets/app.js": "aa18f19ff2bd338fe87220f60c90e6a1ac2c27f584dbba49050cb85b9b3f5677",
     "assets/sort.js": "24488a78abeeb814ee6308f4c96ca0895faf4e30ef6d22ef7e92ab7313f160de",
@@ -44,7 +44,7 @@
     "assets/pwa.js": "a7c4ba6e74f142c0af2e335ebfcf3b4fc67f25cfb42193cba848ef3d71fb5748",
     "assets/icon.svg": "899c02ea2c31bf1151dcd3cf598926e9eeadfa33f3e9b1cbf32683e960bd598e",
     "manifest.webmanifest": "d444e66a092aafe6985bd8b67e15296707c45cbb50b95963b1dc38ed52014102",
-    "service-worker.js": "fe1244f81504bc2bcb0078a837e92eabf11f54a85506f34ef3bf2a2bc6151709",
+    "service-worker.js": "32671428bb261b80a5d9a7ec856a6d8c6fcf653193a2b00ec177cf5f977f5799",
     "curation/popularity.json": "e0f24e6c2871aa360712425ee9d7e0420bcaae67b24bdca50f568906b37e4f56",
     "curation/localization.json": "07b677be774124ca663f2613bd932654de790441235f6a98dc7ae2820ef79062",
     "curation/search.json": "ce8c74d113836f1aeff0535891382ff51c3a376c8aeecda50d63a460ace7e7d8",

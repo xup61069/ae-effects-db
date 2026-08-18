@@ -56,7 +56,7 @@
     kinds:{plugin:"外掛／效果",script:"腳本／面板",builtin:"AE 內建",recipe:"效果配方"},
     sources:{...sharedSources,"builtin-ae":"AE 內建","third-party":"第三方",installed:"本機補充",recipes:"配方"},
     categories:{glow:"發光","blur-glow":"模糊／發光",light:"光線",flare:"鏡頭光暈",particles:"粒子",stylize:"風格化",film:"底片／復古",color:"調色",blur:"模糊",warp:"扭曲",keying:"去背／鍵控",tracking:"追蹤",restore:"修復",time:"時間",transition:"轉場",text:"文字",generate:"生成","3d":"3D",draw:"繪圖",paint:"繪畫",art:"藝術化",texture:"材質",audio:"音訊",physics:"物理",rigging:"綁定",workflow:"工作流程",render:"算圖／輸出",expression:"表達式",animation:"動畫",preset:"預設管理",utility:"工具",distort:"變形",mograph:"動態設計",beauty:"美顏",edge:"邊緣",emboss:"浮雕",composite:"合成",matte:"遮罩",perspective:"透視",kaleido:"萬花筒",vr:"VR／360",recipe:"效果配方"},
-    hints:["霓虹","老電影","故障","甩鏡","去背","慢動作","魔法","調色"],
+    hints:["霓虹","音訊","魔法","調色"],
     aiPrompt:`你是我的 After Effects 特效顧問。請讀取繁體中文特效資料庫：https://raw.githubusercontent.com/xup61069/ae-effects-db/main/dist/index.txt\n需要完整搜尋標籤時再讀：https://raw.githubusercontent.com/xup61069/ae-effects-db/main/dist/all.jsonl\n請分析我描述或貼出的畫面，從資料庫挑出最合適的 3～5 個工具，說明選擇理由、關鍵參數與 AE 內建替代方案，並附官方連結。全程用繁體中文回答；資料庫沒有時請明說，不要編造。讀好後請回覆「準備好了」。`
   };
   const en={
@@ -106,7 +106,7 @@
     kinds:{plugin:"Plugin / Effect",script:"Script / Panel",builtin:"AE built-in",recipe:"Effect recipe"},
     sources:{...sharedSources,"builtin-ae":"AE built-in","third-party":"Third-party",installed:"Local additions",recipes:"Recipes"},
     categories:{glow:"Glow","blur-glow":"Blur / Glow",light:"Light",flare:"Lens flare",particles:"Particles",stylize:"Stylize",film:"Film / Retro",color:"Color",blur:"Blur",warp:"Warp",keying:"Keying",tracking:"Tracking",restore:"Restoration",time:"Time",transition:"Transition",text:"Text",generate:"Generate","3d":"3D",draw:"Drawing",paint:"Painting",art:"Art",texture:"Texture",audio:"Audio",physics:"Physics",rigging:"Rigging",workflow:"Workflow",render:"Render / Export",expression:"Expression",animation:"Animation",preset:"Preset management",utility:"Utility",distort:"Distortion",mograph:"Motion graphics",beauty:"Beauty",edge:"Edge",emboss:"Emboss",composite:"Compositing",matte:"Matte",perspective:"Perspective",kaleido:"Kaleidoscope",vr:"VR / 360",recipe:"Effect recipe"},
-    hints:["neon","old film","glitch","whip transition","keying","slow motion","magic","color grading"],
+    hints:["neon","audio","magic","color grading"],
     aiPrompt:`Act as my After Effects effects adviser. Read this curated database: https://raw.githubusercontent.com/xup61069/ae-effects-db/main/dist/index.txt\nUse the full tags when needed: https://raw.githubusercontent.com/xup61069/ae-effects-db/main/dist/all.jsonl\nAnalyze the look I describe or attach. Recommend the 3–5 best matching tools from the database, explain why each fits, suggest key parameters and an AE built-in alternative, and include every official link. Answer in English. If the database has no match, say so instead of inventing a product. Reply “Ready” when the database is loaded.`
   };
   const ja={
@@ -154,7 +154,7 @@
     kinds:{plugin:"プラグイン／エフェクト",script:"スクリプト／パネル",builtin:"AE 組み込み",recipe:"エフェクトレシピ"},
     sources:{...sharedSources,"builtin-ae":"AE 組み込み","third-party":"サードパーティ",installed:"ローカル追加",recipes:"レシピ"},
     categories:{glow:"グロー","blur-glow":"ブラー／グロー",light:"ライト",flare:"レンズフレア",particles:"パーティクル",stylize:"スタイライズ",film:"フィルム／レトロ",color:"カラー補正",blur:"ブラー",warp:"ワープ",keying:"キーイング",tracking:"トラッキング",restore:"修復",time:"時間",transition:"トランジション",text:"テキスト",generate:"生成","3d":"3D",draw:"描画",paint:"ペイント",art:"アート",texture:"テクスチャ",audio:"オーディオ",physics:"物理",rigging:"リギング",workflow:"ワークフロー",render:"レンダー／出力",expression:"エクスプレッション",animation:"アニメーション",preset:"プリセット管理",utility:"ユーティリティ",distort:"ディストーション",mograph:"モーショングラフィックス",beauty:"ビューティー",edge:"エッジ",emboss:"エンボス",composite:"コンポジット",matte:"マット",perspective:"遠近",kaleido:"万華鏡",vr:"イマーシブ／360°",recipe:"エフェクトレシピ"},
-    hints:["ネオン","古いフィルム","グリッチ","ウィップトランジション","キーイング","スローモーション","魔法","カラーグレーディング"],
+    hints:["ネオン","オーディオ","魔法","カラーグレーディング"],
     aiPrompt:`After Effects エフェクトのアドバイザーとして対応してください。次の厳選データベースを読み込んでください：https://raw.githubusercontent.com/xup61069/ae-effects-db/main/dist/index.txt\n必要に応じて完全版タグも参照してください：https://raw.githubusercontent.com/xup61069/ae-effects-db/main/dist/all.jsonl\n私が説明または添付するルックを分析し、データベースから最適なツールを 3～5 個選び、理由、主要パラメーター、AE 標準の代替方法、公式リンクを示してください。日本語で回答し、該当がなければ製品を作り出さず「ない」と明記してください。読み込み後は「準備完了」と返答してください。`
   };
   globalThis.AE_I18N={locales:{zh,en,ja},searchAliases:{
