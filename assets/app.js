@@ -419,6 +419,7 @@ function bindEvents(version) {
   document.getElementById("compareOpen").addEventListener("click", openCompare); document.getElementById("compareClear").addEventListener("click", () => { state.compare.clear(); commitState(); render(true); });
   document.getElementById("backTop").addEventListener("click", scrollToPageTop); window.addEventListener("scroll", () => { document.getElementById("backTop").hidden = scrollY < 700; }, {passive:true});
   document.getElementById("detailDialog").addEventListener("close", () => { if (state.item) { state.item = ""; writeUrlState(state); } if (lastCardOpener) { const opener = lastCardOpener; lastCardOpener = null; requestAnimationFrame(() => opener.focus?.({preventScroll:true})); } });
+  for (const d of document.querySelectorAll("dialog.modal")) d.addEventListener("click", e => { if (e.target === d) { if (d.id === "detailDialog") closeDetail(); else d.close(); } });
   document.getElementById("mobileFilterToggle").addEventListener("click", () => document.getElementById("filterDialog").showModal()); document.getElementById("filterClose").addEventListener("click", () => document.getElementById("filterDialog").close());
   document.getElementById("aiBtn").addEventListener("click", async () => {
     const prompt = localeData().aiPrompt;
