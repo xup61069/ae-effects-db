@@ -1,5 +1,5 @@
 # After Effects 特效／外掛索引（繁體中文）
-# 共 3010 筆　格式：名稱｜來源｜型態｜分類｜說明｜官方連結
+# 共 3027 筆　格式：名稱｜來源｜型態｜分類｜說明｜官方連結
 # 完整資料（含中英搜尋標籤、外觀描述）：dist/all.jsonl
 # 線上搜尋：https://xup61069.github.io/ae-effects-db/
 Deep Glow 2｜aescripts｜plugin｜glow｜從高光產生自然的指數衰減電影級輝光；第二代加入影像式輝光、RGB 半徑、鏡頭污漬紋理、多色染色與電影色調映射。｜https://aescripts.com/deep-glow/
@@ -2118,6 +2118,23 @@ Polytrace｜未驗證｜plugin｜stylize｜演算法三角化外掛，把畫面�
 內建配方：監視器夜視｜配方｜recipe｜recipe｜把影像轉成高反差綠階並加入增益雜訊，適合監視器、軍事夜視與低光搜查畫面。｜https://helpx.adobe.com/after-effects/desktop/apply-effects-and-animation-presets/effects-and-animation-presets/effect-list.html
 內建配方：深度霧化｜配方｜recipe｜recipe｜依深度拉開清晰度與霧量，適合 3D 場景、遠景合成與空氣透視。｜https://helpx.adobe.com/after-effects/desktop/apply-effects-and-animation-presets/effects-and-animation-presets/effect-list.html
 內建配方：發光描邊｜配方｜recipe｜recipe｜抽出物件輪廓並控制粗細與溢光，適合角色能量邊、Logo 外框與科技掃描。｜https://helpx.adobe.com/after-effects/desktop/apply-effects-and-animation-presets/effects-and-animation-presets/effect-list.html
+上帝光 / 體積光束｜配方｜recipe｜recipe｜從亮部向外放射光柱，模擬陽光穿過雲層或窗戶的丁達爾效應，適合戲劇化氛圍、舞台與科幻場景。｜https://helpx.adobe.com/after-effects/desktop/apply-effects-and-animation-presets/effects-and-animation-presets/effect-list.html
+綠幕去背合成｜配方｜recipe｜recipe｜先做粗去背再清溢色與邊緣，最後補光溢讓前景自然融入背景，適合訪談、特效合成與虛擬背景。｜https://helpx.adobe.com/after-effects/desktop/apply-effects-and-animation-presets/effects-and-animation-presets/effect-list.html
+多巴胺糖果色調｜配方｜recipe｜recipe｜拉高飽和與明度並保留柔和過渡，營造明亮甜美的糖果色調，適合短影音、美妝與流行商品。｜https://helpx.adobe.com/after-effects/desktop/apply-effects-and-animation-presets/effects-and-animation-presets/effect-list.html
+液態金屬文字｜配方｜recipe｜recipe｜以流動置換與漣漪變形讓文字像熔融金屬般起伏，再用金屬色調與高光收尾，適合科幻片頭與遊戲標題。｜https://helpx.adobe.com/after-effects/desktop/apply-effects-and-animation-presets/effects-and-animation-presets/effect-list.html
+霓虹招牌閃爍｜配方｜recipe｜recipe｜霓虹描邊加上老化招牌的明滅閃爍與輝光，適合夜晚街頭、酒吧與復古都市氛圍。｜https://helpx.adobe.com/after-effects/desktop/apply-effects-and-animation-presets/effects-and-animation-presets/effect-list.html
+漫畫集中線 / 速度線｜配方｜recipe｜recipe｜以放射狀集中線強調主體並配合輕微震動，適合漫畫風分鏡、爆點演出與角色登場。｜https://helpx.adobe.com/after-effects/desktop/apply-effects-and-animation-presets/effects-and-animation-presets/effect-list.html
+子彈時間 / 時間凍結｜配方｜recipe｜recipe｜把片段放慢或凍結再繞著主體環繞，附碎屑粒子與光暈，適合動作名場面、產品展示與科幻慢鏡。｜https://helpx.adobe.com/after-effects/desktop/apply-effects-and-animation-presets/effects-and-animation-presets/effect-list.html
+鏡頭光暈轉場｜配方｜recipe｜recipe｜讓光暈掃過畫面後切到下一鏡，常見於強光與逆光場景的無縫過場，適合音樂錄影帶、廣告與電影感剪輯。｜https://helpx.adobe.com/after-effects/desktop/apply-effects-and-animation-presets/effects-and-animation-presets/effect-list.html
+卡通化 / 賽璐璐風｜配方｜recipe｜recipe｜把影像壓成色塊並加上乾淨描邊，適合卡通風格影片、角色介紹與動態貼圖。｜https://helpx.adobe.com/after-effects/desktop/apply-effects-and-animation-presets/effects-and-animation-presets/effect-list.html
+色彩彈出 / 保留強調色｜配方｜recipe｜recipe｜把畫面抽成單色只保留指定顏色，讓主體色彩瞬間跳出來，適合產品廣告、穿搭與品牌視覺。｜https://helpx.adobe.com/after-effects/desktop/apply-effects-and-animation-presets/effects-and-animation-presets/effect-list.html
+手持晃動 / 偽手持鏡頭｜配方｜recipe｜recipe｜在靜態素材上加入輕微位置旋轉抖動與焦距呼吸，模擬手持拍攝，適合偽紀錄片、驚悚氛圍與補救死板素材。｜https://helpx.adobe.com/after-effects/desktop/apply-effects-and-animation-presets/effects-and-animation-presets/effect-list.html
+內建配方：下三分之一字幕條｜配方｜recipe｜recipe｜以形狀層與修剪路徑建立可重複使用的下三分之一字幕條，適合新聞、訪談與教學影片的姓名或重點標示。｜https://helpx.adobe.com/after-effects/desktop/apply-effects-and-animation-presets/effects-and-animation-presets/effect-list.html
+內建配方：打字機字幕｜配方｜recipe｜recipe｜以文字動畫器逐字揭示並附閃爍游標，適合旁白、訊息、駭客與歌詞字幕。｜https://helpx.adobe.com/after-effects/desktop/apply-effects-and-animation-presets/effects-and-animation-presets/effect-list.html
+內建配方：3D 翻轉圖卡｜配方｜recipe｜recipe｜以 3D 圖層旋轉製作卡片翻面，搭配陰影與回彈，適合圖卡輪播、問答與專輯切換。｜https://helpx.adobe.com/after-effects/desktop/apply-effects-and-animation-presets/effects-and-animation-presets/effect-list.html
+內建配方：星空穿越｜配方｜recipe｜recipe｜以星點拉伸與急速縮放模擬曲速穿越，適合科幻片頭、過場與宇宙背景。｜https://helpx.adobe.com/after-effects/desktop/apply-effects-and-animation-presets/effects-and-animation-presets/effect-list.html
+內建配方：景深對焦轉移｜配方｜recipe｜recipe｜以鏡頭模糊與距離表達式在不同主體間轉移焦點，適合訪談、產品與敘事鏡頭。｜https://helpx.adobe.com/after-effects/desktop/apply-effects-and-animation-presets/effects-and-animation-presets/effect-list.html
+內建配方：操作演示介面｜配方｜recipe｜recipe｜以游標圖層、點擊圈與按鍵提示建立螢幕錄製的操作演示，適合教學、軟體導覽與開箱影片。｜https://helpx.adobe.com/after-effects/desktop/apply-effects-and-animation-presets/effects-and-animation-presets/effect-list.html
 Particular｜Red Giant｜plugin｜particles｜業界標準3D粒子系統，AE做粒子的第一名。可做煙、火、火花、爆炸、魔法仙塵、粒子流體、雨雪、Logo粒子聚散/打散。含物理力場、風、湍流、群集，粒子可用貼圖或3D模型。｜https://www.maxon.net/en/product-detail/red-giant/particles-and-3d/trapcode-particular
 Form｜Red Giant｜plugin｜particles｜不衰減的3D粒子網格/有機形態生成器（粒子永遠存在，不像Particular會生滅）。做全息人像、音樂驅動的波形/律動、粒子地形、抽象生物體、星雲。｜https://www.maxon.net/en/product-detail/red-giant/particles-and-3d/form
 Mir｜Red Giant｜plugin｜3d｜快速3D多邊形網格生成器。做起伏地形、流動波浪面、無限隧道、低多邊形山脈、復古線框(wireframe)、抽象流動曲面。常帶漸層色與霧氣。｜https://www.maxon.net/en/product-detail/red-giant/particles-and-3d/mir
