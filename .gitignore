@@ -25,3 +25,5 @@ playwright-report/
 
 # deprecated nested copy; the repository root is the single source of truth
 ae-effects-db/
+
+ms_bopomofo_*.txt
