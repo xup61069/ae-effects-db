@@ -41,6 +41,7 @@ KIND_OVERRIDES = {
     "Fixel EdgeHancer 3": "plugin",
     "Fixel LightIT 2": "plugin",
     "Fluid": "plugin",
+    "Flowr": "plugin",
     "FoldLayers": "plugin",
     "Fluxion Warp": "plugin",
     "Fractal Noise 3D v2": "plugin",
