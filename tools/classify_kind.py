@@ -185,6 +185,8 @@ KIND_OVERRIDES = {
     "Transition Master 2 Basic / Pro": "plugin",
     "XDoG Studio": "plugin",
     "Fake3D Box": "script",
+    "Find Intersections": "plugin",
+    "Popcorn!": "script",
 }
 
 def classify(filename, row):

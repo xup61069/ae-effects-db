@@ -1,5 +1,5 @@
 # After Effects 特效／外掛索引（繁體中文）
-# 共 3030 筆　格式：名稱｜來源｜型態｜分類｜說明｜官方連結
+# 共 3045 筆　格式：名稱｜來源｜型態｜分類｜說明｜官方連結
 # 完整資料（含中英搜尋標籤、外觀描述）：dist/all.jsonl
 # 線上搜尋：https://xup61069.github.io/ae-effects-db/
 Deep Glow 2｜aescripts｜plugin｜glow｜從高光產生自然的指數衰減電影級輝光；第二代加入影像式輝光、RGB 半徑、鏡頭污漬紋理、多色染色與電影色調映射。｜https://aescripts.com/deep-glow/
@@ -781,7 +781,7 @@ Reverse Text｜aescripts｜script｜text｜批次反轉所選文字圖層的內�
 Review Importer｜aescripts｜script｜workflow｜把 Frame.io、Vimeo、Kollaborate.tv 或 Screenlight.tv 匯出的 CSV 審稿留言直接帶入 AE 合成；腳本建立文字圖層，依留言 Timecode 產生可選標籤色的 Marker，切換圖層可在畫面上查看回饋而不必往返瀏覽器。｜https://aescripts.com/review-importer/
 roop｜aescripts｜plugin｜generate｜從所選圖層一鍵建立可無縫循環的隨機 3D 空間，提供 Space、Floor、Ceiling、左右牆等五種循環結構，並自動建立 Camera、背景、暗角、虛擬表面與反射；可隨機配置各類圖層、避開目標區域，並以視點工具快速移動攝影機。｜https://aescripts.com/roop/
 Roll it!｜aescripts｜plugin｜animation｜分析 Bezier Shape 或 Mask 的輪廓邊緣並建立滾動 Rig，讓複雜或 Compound Shape 隨圖層 Rotation 精確沿自身外形翻滾；可指定 Shape、Mask 或兩者共同參與，並相容 Bodymovin／Lottie 輸出。｜https://aescripts.com/roll-it/
-Save Objects 2｜aescripts｜script｜workflow｜把合成、單一或多個圖層、屬性 Preset、Mask、Marker、關鍵影格插值、Expression、JSX 與 Font 保存成可搜尋、可預覽的跨專案資產庫；支援巢狀資料夾、多合成批次保存、共享來源路徑、Collect Files／字型收集及備份。｜https://aescripts.com/save-objects/
+Save Objects 3｜aescripts｜script｜utility｜具備即時預覽的合成與屬性儲存工具，第 3 版經過全面重新設計。支援一鍵儲存多個合成並生成優化後的 GIF 預覽，具備類似檔案總管的資料夾結構、程式碼編輯器與字體收集功能，是 AE 內部的全方位素材管理中心。｜https://aescripts.com/save-objects/
 ReverseMaskPath｜aescripts｜script｜workflow｜反轉所選遮罩路徑的行進方向，但不改變頂點與切線的位置；適合修正描邊、路徑動畫或依方向運算時的正反順序。｜https://aescripts.com/reversemaskpath/
 RubikCube｜aescripts｜plugin｜3d｜在 After Effects 中建立並動畫化可轉動的魔術方塊，省去手動排列小方塊與設定各層旋轉的繁瑣流程。｜https://aescripts.com/rubikcube/
 Scene Clip｜aescripts｜script｜workflow｜用縮圖與註解替合成中的場景建立目錄，之後可一鍵跳到指定位置，並能匯出、匯入清單供團隊協作與交接。｜https://aescripts.com/scene-clip/
@@ -1003,6 +1003,21 @@ Aurum｜aescripts｜plugin｜stylize｜以 PBR 材質、HDRI 環境反射與 Sma
 Bounce Motion｜aescripts｜script｜animation｜以點擊起點與每個落點快速建立自然彈跳動畫，可調弧線、時間與擠壓拉伸，輸出可編輯關鍵影格或表達式，適合彈跳球、落地與拋物動畫。｜https://aescripts.com/bounce-motion/
 Flowr｜aescripts｜plugin｜particles｜GPU 加速從文字、Alpha 圖層或 OBJ 模型表面長出受多種力場導向的漸層色絲線，可調 curl noise、方向向量與表面吸引，並提供漸層配色、景深與遮罩球，適合有機毛髮、流動線條與抽象粒子畫面。｜https://aescripts.com/flowr/
 Highlighter｜aescripts｜script｜utility｜一鍵為文字、圖片或形狀圖層建立對齊的動畫高亮框與游標，會隨圖層縮放與內容變化回應，可獨立自訂並匯出 Premiere 用的 MOGRT，適合教學錄影、UI 教學與網頁展示的重點標示。｜https://aescripts.com/highlighter/
+AEP Transplant｜aescripts｜script｜utility｜從任意 AEP、PSD 或 AI 檔案中精準挑選合成、圖層與素材並合併至目前專案。自動處理依賴關係、合併同名資料夾、解決重複素材並重連表達式與腳本連結，適合重組角色 Rig、更新 PSD/AI 來源或從舊專案搬運組件。｜https://aescripts.com/aep-transplant/
+Atomico｜aescripts｜script｜generate｜一鍵建立符合波耳模型（Bohr model）的原子結構。只需輸入質子、中子與各層電子數，即可生成具備獨立軌道、電子旋轉速度與粒子外觀的系統。所有參數均為即時可調，適合科學圖表、資訊圖表與教育動畫。｜https://aescripts.com/atomico/
+AVIF Pro Web｜aescripts｜script｜utility｜針對現代網頁格式的完整媒體匯出方案，包含 AE 面板與獨立桌面應用程式。支援 AVIF、WebM、WebP 與 GIF 的批次處理、自訂預設、透明通道（Alpha）與智慧縮放，底層由 FFmpeg 與 Gifsicle 驅動，適合高效能網頁動畫交付。｜https://aescripts.com/avif-pro-web/
+Citron｜aescripts｜script｜utility｜為 After Effects 打造的專業級曲線編輯器。採用類似 Maya、Blender 的操作邏輯，支援多通道同時顯示、權重切線控制、FFD 晶格變形編輯與精準的數值輸入，彌補了 AE 原生 Graph Editor 在複雜動畫調整上的不足。｜https://aescripts.com/citron/
+Find Intersections｜aescripts｜plugin｜generate｜自動找出動畫路徑（遮罩、形狀路徑、參數化形狀）之間的所有交點，並在交點處即時渲染指定的圖層。支援形狀圖層算子（如 Trim Paths, Repeater），交點會隨路徑變形動態更新，適合製作複雜的幾何連結與裝飾效果。｜https://aescripts.com/find-intersections/
+Heatmap｜aescripts｜plugin｜stylize｜基於 AI 的熱顯像模擬外掛。透過神經網路分析畫面內容（而非僅是亮度映射），將普通影片轉換為具備深度感與主體辨識的熱感影像。內建 12 種配色方案與感應器模擬（雜訊、掃描線、光暈），適合製作科技感或監視畫面。｜https://aescripts.com/heatmap/
+Label Isolate｜aescripts｜script｜utility｜一鍵孤立相同標籤顏色的圖層。選取圖層後點擊按鈕，其餘不同顏色的圖層將自動變為隱藏（Shy），再次點擊即可恢復完整清單。簡單高效，適合處理擁有大量圖層且依標籤分類的大型專案。｜https://aescripts.com/label-isolate/
+MotionStack｜aescripts｜script｜utility｜After Effects 的持久性視覺剪貼簿。可將圖層、關鍵影格、表達式、效果、色板與文字捕捉為「卡片」存入堆疊，隨時在不同合成間貼上。與原生剪貼簿不同，它能同時保留多項臨時決策，並在專案間切換，縮短重複搭建的時間。｜https://aescripts.com/motionstack/
+PathPainter｜aescripts｜script｜generate｜為 AE 打造的手繪感筆刷動畫系統。可將路徑、文字或內建的 189 種動畫塗鴉轉換為可編輯的紋理筆觸。包含壓克力、鉛筆、粉筆等六種擬真筆刷，且全系統基於表達式，移動路徑後筆觸會自動跟隨，完全非破壞性。｜https://aescripts.com/pathpainter/
+Popcorn!｜aescripts｜script｜generate｜在 After Effects 內建立 2D 物理碰撞系統。能讓文字、形狀、圖片或圖層像實體對象般互相碰撞、堆疊、彈跳或受風力與重力影響。支援自訂容器遮罩，並可將模擬結果烘焙（Bake）為標準關鍵影格，適合動態排版與趣味圖表。｜https://aescripts.com/popcorn/
+Retend｜aescripts｜script｜utility｜一鍵遞迴處理整個巢狀合成樹的時長或速度。只需選取頂層合成，輸入目標時長或倍速，即可自動延伸所有子合成、圖層出點與比例縮放關鍵影格，且不使用會破壞影格率的「時間重映射（Time Remapping）」，適合大型專案的整體節奏調整。｜https://aescripts.com/retend/
+Shape It｜aescripts｜script｜generate｜在 AE 中儲存並重複使用 2D 與 3D 形狀。可將複雜的形狀圖層（含填色、筆觸、算子與動畫）儲存為按鈕預設，隨時點擊調用。支援多重形狀合併與 3D 參數化網格（Parametric Meshes），並可匯出預設與他人分享。｜https://aescripts.com/shape-it/
+Tambourine｜aescripts｜script｜generate｜在 AE 與 Premiere 內直接生成 AI 音樂與音效。透過描述文字與選擇風格、情緒、主題，即可產出最長 120 秒的背景音樂或單發音效（如撞擊、過場），並直接置入時間軸。內建生成配額管理與提示詞歷史記錄。｜https://aescripts.com/tambourine/
+XML2AE｜aescripts｜script｜utility｜在 After Effects 中重建來自 FCP7 XML 或 AAF 的剪輯。自動掃描素材資料夾、比對時碼與名稱、解決素材衝突，並建立精準保留剪輯節奏、變速與基本變形屬性的 AE 合成。專為影視後期 Conform 與 VFX 準備流程設計。｜https://aescripts.com/xml2ae/
+Gulp｜aescripts｜script｜utility｜專為 CGI 算圖設計的媒體瀏覽器與合成組建工具。能直接在 AE 面板中瀏覽數千個 EXR 序列、解析標頭資訊（通道、色彩空間），並一鍵建立已自動分配混合模式、深度映射與遮罩拆分的合成，大幅簡化多通道合成流程。｜https://aescripts.com/gulp/
 Japanese-effect-search｜BOOTH｜script｜workflow｜以日文、英文、平假名與片假名混合搜尋並直接套用 AE 效果、預設或執行腳本、擴充功能與常用命令，另含收藏、連續套用與隱藏舊效果選項，適合日文介面和輸入法工作流程。｜https://booth.pm/ja/items/7695646
 Layer Chicken｜BOOTH｜script｜workflow｜替已匯入 AE 的分層 Photoshop／Illustrator 文件找回後續在原檔新增的圖層，免去重新匯入整份 PSD／AI 再刪除多餘內容，適合設計稿反覆改版與補圖層的動態製作。｜https://booth.pm/ja/items/2728552
 SHIG Project Starter｜BOOTH｜script｜workflow｜依專案名、解析度、FPS、初始片長與色彩深度建立 MV 製作資料夾及 00_MAIN／00_RENDER 合成，並可把兩個合成、工作區和主合成圖層同步延長到 WAV 音樂長度，適合歌曲 MV 開案與統一專案結構。｜https://booth.pm/ja/items/8625638
